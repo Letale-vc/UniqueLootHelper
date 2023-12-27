@@ -4,17 +4,13 @@ using ExileCore.PoEMemory.MemoryObjects;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using System.Threading.Tasks;
 using System;
-using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ImGuiNET;
-using Newtonsoft.Json;
 using SharpDX;
 using Vector2 = System.Numerics.Vector2;
 namespace UniqueLootHelper
@@ -68,10 +64,9 @@ namespace UniqueLootHelper
             if (itemNamesCount.Count == 0) return;
             var posX = 0;
             var posY = 0;
-            var hight = itemNamesCount.Count * 45;
+            var hight = itemNamesCount.Count * 20 + 20;
             var rect = new RectangleF(posX, posY, 230, hight);
             Graphics.DrawBox(rect, new Color(0, 0, 0, 200));
-            Graphics.DrawFrame(rect, Color.White, 2);
 
             posX += 10;
             posY += 10;
@@ -84,28 +79,27 @@ namespace UniqueLootHelper
         public override Job Tick()
         {
             drawingList.Clear();
-            itemNamesCount.Clear();
-            if (GameController.Area.CurrentArea.IsHideout ||
-                GameController.Area.CurrentArea.IsTown)
+            if (GameController.Area.CurrentArea.IsHideout || GameController.Area.CurrentArea.IsTown)
             {
                 return null;
             }
-
-            var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = System.Environment.ProcessorCount };
 
             var worldItems = GameController.IngameState.IngameUi.ItemsOnGroundLabels?.AsParallel().Where(x => x.IsVisible).ToList() ?? [];
 
             if (worldItems != null)
             {
-                Parallel.ForEach(worldItems, parallelOptions, entity =>
+                var localItemNamesCount = new Dictionary<string, int>();
+
+                foreach (var entity in worldItems)
                 {
                     var worldItem = entity.ItemOnGround?.GetComponent<WorldItem>();
                     if (worldItem == null || worldItem.ItemEntity.Type != ExileCore.Shared.Enums.EntityType.Item)
-                        return;
+                        continue;
 
                     var renderItem = worldItem.ItemEntity.GetComponent<RenderItem>();
                     if (renderItem == null || renderItem.ResourcePath == null)
-                        return;
+                        continue;
+
                     var itemName = worldItem.ItemEntity.GetComponent<Base>().Name;
                     var modelPath = renderItem.ResourcePath;
 
@@ -113,18 +107,27 @@ namespace UniqueLootHelper
                     {
                         if (itemName != null)
                         {
-                            if (itemNamesCount.ContainsKey(itemName))
+                            if (localItemNamesCount.ContainsKey(itemName))
                             {
-                                itemNamesCount[itemName]++;
+                                localItemNamesCount[itemName]++;
                             }
                             else
                             {
-                                itemNamesCount[itemName] = 1;
+                                localItemNamesCount[itemName] = 1;
                             }
                         }
                         drawingList.Add(entity.Label.GetClientRectCache);
                     }
-                });
+                }
+
+                if (localItemNamesCount.Count != 0)
+                {
+                    itemNamesCount = localItemNamesCount;
+                }
+                else
+                {
+                    itemNamesCount.Clear();
+                }
             }
             return null;
         }

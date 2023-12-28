@@ -100,11 +100,12 @@ namespace UniqueLootHelper
                     if (renderItem == null || renderItem.ResourcePath == null)
                         continue;
 
-                    var itemName = worldItem.ItemEntity.GetComponent<Base>().Name;
+
                     var modelPath = renderItem.ResourcePath;
 
                     if (UniquesHashSet.Contains(modelPath))
                     {
+                        var itemName = worldItem.ItemEntity.GetComponent<Base>().Name;
                         if (itemName != null)
                         {
                             if (localItemNamesCount.ContainsKey(itemName))

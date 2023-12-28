@@ -62,11 +62,15 @@ namespace UniqueLootHelper
         private void DrawItemCountInfo()
         {
             if (itemNamesCount.Count == 0) return;
-            var posX = 0;
-            var posY = 0;
+            var posX = Settings.PositionX.Value;
+            var posY = Settings.PositionY.Value;
             var hight = itemNamesCount.Count * 20 + 20;
             var rect = new RectangleF(posX, posY, 230, hight);
             Graphics.DrawBox(rect, new Color(0, 0, 0, 200));
+            if (Settings.BoxOutline.Value == true)
+            {
+                Graphics.DrawFrame(rect, Color.White, 2);
+            }
 
             posX += 10;
             posY += 10;

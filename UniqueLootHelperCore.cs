@@ -100,6 +100,7 @@ namespace UniqueLootHelper
             drawingList.Clear();
             if (GameController.Area.CurrentArea.IsHideout || GameController.Area.CurrentArea.IsTown)
             {
+                itemNamesCount.Clear();
                 return null;
             }
 

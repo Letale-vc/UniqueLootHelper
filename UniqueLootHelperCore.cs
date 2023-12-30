@@ -1,6 +1,7 @@
 ﻿using ExileCore;
 using ExileCore.PoEMemory.Components;
 using ExileCore.PoEMemory.MemoryObjects;
+using ImGuiNET;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -29,9 +30,22 @@ namespace UniqueLootHelper
             ReadUniquesArtworkFile();
             return base.Initialise();
         }
+
+
+        public override void DrawSettings()
+        {
+            base.DrawSettings();
+            if (ImGui.Button("Open Config Folder"))
+            {
+                Process.Start("explorer.exe", ConfigDirectory);
+            }
+
+        }
+
         private void ReadUniquesArtworkFile()
         {
-            var path = $"{DirectoryFullName}\\{UNIQUESARTWORK_FILE}";
+            var path = Path.Combine(ConfigDirectory, UNIQUESARTWORK_FILE);
+
             if (File.Exists(path))
             {
                 UniquesHashSet = File.ReadAllLines(path).Where(line => !string.IsNullOrWhiteSpace(line) && !line.StartsWith("#")).ToList().Select(x => x + ".dds").ToHashSet();
@@ -42,7 +56,8 @@ namespace UniqueLootHelper
 
         private void CreateUniquesArtworkFile()
         {
-            var path = $"{DirectoryFullName}\\{UNIQUESARTWORK_FILE}";
+
+            var path = Path.Combine(ConfigDirectory, UNIQUESARTWORK_FILE);
             if (File.Exists(path)) return;
             using (var streamWriter = new StreamWriter(path, true))
             {

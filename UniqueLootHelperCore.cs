@@ -119,14 +119,21 @@ namespace UniqueLootHelper
             {
                 if (!string.IsNullOrEmpty(_tempUniqueItemSettings.ArtPath) && !string.IsNullOrEmpty(_tempUniqueItemSettings.Label))
                 {
-                    if (!_cashUniqueArtWork.ContainsKey(_tempUniqueItemSettings.ArtPath))
+                    string key = _tempUniqueItemSettings.ArtPath + ".dds";
+                    if (_cashUniqueArtWork.TryGetValue(key, out _))
                     {
-                        _cashUniqueArtWork.Add(_tempUniqueItemSettings.ArtPath + ".dds", _tempUniqueItemSettings);
-                        SaveUniquesArtToFile();
-                        _tempUniqueItemSettings = new();
-                        LogMessage($"UniqueLootHelper: Added {_tempUniqueItemSettings.ArtPath} to unique list");
-
+                        // Key exists, update the value
+                        _cashUniqueArtWork[key] = _tempUniqueItemSettings;
+                        LogMessage($"UniqueLootHelper: Updated {key} in unique list");
                     }
+                    else
+                    {
+                        // Key does not exist, add new key-value pair
+                        _cashUniqueArtWork.Add(key, _tempUniqueItemSettings);
+                        LogMessage($"UniqueLootHelper: Added {key} to unique list");
+                    }
+                    SaveUniquesArtToFile();
+                    _tempUniqueItemSettings = new();
 
                 }
             }

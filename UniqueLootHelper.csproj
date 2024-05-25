@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <PackageReference Include="ImGui.NET" Version="1.90.0.1" />
+    <PackageReference Include="morelinq" Version="4.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
   </ItemGroup>

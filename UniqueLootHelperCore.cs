@@ -1,85 +1,194 @@
 ﻿using ExileCore;
+using ExileCore.PoEMemory;
 using ExileCore.PoEMemory.Components;
 using ExileCore.PoEMemory.MemoryObjects;
 using ImGuiNET;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using System;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using SharpDX;
+using Color = SharpDX.Color;
+using RectangleF = SharpDX.RectangleF;
 using Vector2 = System.Numerics.Vector2;
+
 namespace UniqueLootHelper
 {
+
+    public class CustomItemData(Entity worldEntity, Element label, UniqueItemSettings uniqueItemSettings)
+    {
+
+        public UniqueItemSettings UniqueItemSettings = uniqueItemSettings;
+
+        public Element Label = label;
+
+        public long LabelAddress { get; set; } = label.Address;
+
+        public Vector2 Location { get; set; } = worldEntity.GridPosNum;
+
+
+    }
+    public class UniqueItemSettings
+    {
+        public string ArtPath;
+        public bool LineDrawMap;
+        public string Label;
+        public UniqueItemSettings()
+        {
+            ArtPath = "";
+            Label = "";
+            LineDrawMap = false;
+        }
+    }
+
     public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
     {
-        private const string UNIQUESARTWORK_FILE = "UniquesArtworks.txt";
-        private HashSet<string> UniquesHashSet;
-        private Dictionary<string, int> itemNamesCount = new Dictionary<string, int>();
-        public List<SharpDX.RectangleF> drawingList = new List<SharpDX.RectangleF>();
+        public static Graphics _graphics;
+        private UniqueItemSettings _tempUniqueItemSettings = new();
+        private const string FILE_ART_NAME = "UniquesArtworks.json";
+        private string _pathArtFile
+        {
+            get { return Path.Combine(ConfigDirectory, FILE_ART_NAME); }
+        }
+        private HashSet<CustomItemData> _drawingList = [];
+
+        private Dictionary<string, UniqueItemSettings> _cashUniqueArtWork = [];
+        private Element _largeMap;
+
 
         public override bool Initialise()
         {
             Name = "UniqueLootHelper";
-            Settings.RefreshUniquesFile.OnPressed += () => { ReadUniquesArtworkFile(); };
-            ReadUniquesArtworkFile();
+            _cashUniqueArtWork = GetUniqueArtFromFile();
             return base.Initialise();
+        }
+        private void CreateUniqueArtFile()
+        {
+            if (File.Exists(_pathArtFile)) return;
+            File.WriteAllText(_pathArtFile, JsonConvert.SerializeObject(new Dictionary<string, UniqueItemSettings>(), Formatting.Indented));
+            LogMessage("UniqueLootHelper: Created new file for unique art");
+        }
+
+        private Dictionary<string, UniqueItemSettings> GetUniqueArtFromFile()
+        {
+
+            if (!File.Exists(_pathArtFile)) CreateUniqueArtFile();
+            try
+            {
+                var uniqueArtItemList = JsonConvert.DeserializeObject<Dictionary<string, UniqueItemSettings>>(File.ReadAllText(_pathArtFile));
+                return uniqueArtItemList;
+            }
+            catch (Exception)
+            {
+                File.Move(_pathArtFile, _pathArtFile + ".bak");
+                CreateUniqueArtFile();
+                return [];
+            }
+
+
+        }
+        private void SaveUniquesArtToFile()
+        {
+            if (!File.Exists(_pathArtFile))
+                CreateUniqueArtFile();
+            File.WriteAllText(_pathArtFile, JsonConvert.SerializeObject(_cashUniqueArtWork, Formatting.Indented));
+            LogMessage("UniqueLootHelper: Saved unique art to file");
         }
 
 
         public override void DrawSettings()
         {
-            base.DrawSettings();
             if (ImGui.Button("Open Config Folder"))
             {
                 Process.Start("explorer.exe", ConfigDirectory);
             }
-
-        }
-
-        private void ReadUniquesArtworkFile()
-        {
-            var path = Path.Combine(ConfigDirectory, UNIQUESARTWORK_FILE);
-
-            if (File.Exists(path))
+            ImGui.Spacing();
+            ImGui.Separator();
+            ImGui.Spacing();
+            base.DrawSettings();
+            ImGui.Spacing();
+            ImGui.Separator();
+            ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.Text("Add new unique to list");
+            ImGui.InputText("Unique art path", ref _tempUniqueItemSettings.ArtPath, 1024, ImGuiInputTextFlags.EnterReturnsTrue);
+            ImGui.InputText("Unique label", ref _tempUniqueItemSettings.Label, 1024, ImGuiInputTextFlags.EnterReturnsTrue);
+            ImGui.Checkbox("Draw line on map", ref _tempUniqueItemSettings.LineDrawMap);
+            if (ImGui.Button("Add Unique"))
             {
-                UniquesHashSet = File.ReadAllLines(path).Where(line => !string.IsNullOrWhiteSpace(line) && !line.StartsWith("#")).ToList().Select(x => x + ".dds").ToHashSet();
+                if (!string.IsNullOrEmpty(_tempUniqueItemSettings.ArtPath) && !string.IsNullOrEmpty(_tempUniqueItemSettings.Label))
+                {
+                    if (!_cashUniqueArtWork.ContainsKey(_tempUniqueItemSettings.ArtPath))
+                    {
+                        _cashUniqueArtWork.Add(_tempUniqueItemSettings.ArtPath + ".dds", _tempUniqueItemSettings);
+                        SaveUniquesArtToFile();
+                        _tempUniqueItemSettings = new();
+                        LogMessage($"UniqueLootHelper: Added {_tempUniqueItemSettings.ArtPath} to unique list");
+
+                    }
+
+                }
             }
-            else
-                CreateUniquesArtworkFile();
-        }
-
-        private void CreateUniquesArtworkFile()
-        {
-
-            var path = Path.Combine(ConfigDirectory, UNIQUESARTWORK_FILE);
-            if (File.Exists(path)) return;
-            using (var streamWriter = new StreamWriter(path, true))
+            ImGui.Spacing();
+            ImGui.Separator();
+            ImGui.Spacing();
+            ImGui.Text("Uniques list:");
+            foreach (var uniqueArtItem in _cashUniqueArtWork)
             {
-                streamWriter.Write("");
-                streamWriter.Close();
+                ImGui.Text($"{uniqueArtItem.Key} - {uniqueArtItem.Value.Label}");
+                ImGui.SameLine();
+                if (ImGui.Button($"Delete##{uniqueArtItem.Key}"))
+                {
+                    _cashUniqueArtWork.Remove(uniqueArtItem.Key);
+                    SaveUniquesArtToFile();
+                    LogMessage($"UniqueLootHelper: Removed {uniqueArtItem.Key} from unique list");
+                }
             }
+
+
         }
+
+
         public override void Render()
         {
-            foreach (var frame in drawingList)
+            if (_drawingList.Count != 0)
             {
-                Graphics.DrawFrame(frame, Settings.Color, Settings.FrameThickness);
-            }
 
-            DrawItemCountInfo();
+                foreach (var item in _drawingList)
+                {
+                    Graphics.DrawFrame(item.Label.GetClientRectCache, Settings.OutlineLabelColor, Settings.FrameThickness);
+
+                }
+            }
+            DrawLinesMap();
+
         }
+        private void DrawLinesMap()
+        {
+            if (!Settings.EnableMapDrawing || !_largeMap.IsVisible)
+            {
+                return;
+            }
+            var filterList = _drawingList.Where(x => x.UniqueItemSettings.LineDrawMap == true);
+            foreach (var item in filterList)
+                Graphics.DrawLine(
+                    GameController.IngameState.Data.GetGridMapScreenPosition(item.Location),
+                    GameController.IngameState.Data.GetGridMapScreenPosition(GameController.Player.GridPosNum),
+                    Settings.MapLineThickness,
+                    Settings.MapLineColor
+                );
+        }
+
+
         private void DrawItemCountInfo()
         {
-            if (itemNamesCount.Count == 0) return;
+            if (_drawingList.Count == 0) return;
+            var labelCount = _drawingList.GroupBy(item => item.UniqueItemSettings.Label).ToDictionary(group => group.Key, group => group.Count());
+
             var posX = Settings.PositionX.Value;
             var posY = Settings.PositionY.Value;
-            var hight = itemNamesCount.Count * 20 + 20;
+            var hight = labelCount.Count * 20 + 20;
             var rect = new RectangleF(posX, posY, 230, hight);
             Graphics.DrawBox(rect, new Color(0, 0, 0, 200));
             if (Settings.BoxOutline.Value == true)
@@ -89,67 +198,58 @@ namespace UniqueLootHelper
 
             posX += 10;
             posY += 10;
-            foreach (var itemNameCount in itemNamesCount)
+
+
+            foreach (var item in labelCount)
             {
-                Graphics.DrawText($"{itemNameCount.Key}: {itemNameCount.Value}", new Vector2(posX, posY), Color.White, 15);
+                Graphics.DrawText($"{item.Key}: {item.Value}", new Vector2(posX, posY), Color.White, 15);
                 posY += 20;
             }
         }
+
         public override Job Tick()
         {
-            drawingList.Clear();
+            _largeMap = GameController.IngameState.IngameUi.Map.LargeMap;
             if (GameController.Area.CurrentArea.IsHideout || GameController.Area.CurrentArea.IsTown)
             {
-                itemNamesCount.Clear();
+                _drawingList.Clear();
                 return null;
             }
 
-            var worldItems = GameController.IngameState.IngameUi.ItemsOnGroundLabels?.AsParallel().Where(x => x.IsVisible).ToList() ?? [];
 
-            if (worldItems != null)
+            var newWorldItems = GameController?.IngameState?.IngameUi?.ItemsOnGroundLabelElement.VisibleGroundItemLabels?.Select(x => new { x.Entity, x.Label })?.ToList() ?? [];
+
+            if (newWorldItems != null)
             {
-                var localItemNamesCount = new Dictionary<string, int>();
+                var worldItemIds = new HashSet<long>(newWorldItems.Select(x => x.Label.Address));
 
-                foreach (var entity in worldItems)
+                _drawingList.RemoveWhere(item => !worldItemIds.Contains(item.LabelAddress));
+                var existingItemAddresses = new HashSet<long>(_drawingList.Select(item => item.LabelAddress));
+
+                foreach (var itemInfo in newWorldItems)
                 {
-                    var worldItem = entity.ItemOnGround?.GetComponent<WorldItem>();
-                    if (worldItem == null || worldItem.ItemEntity.Type != ExileCore.Shared.Enums.EntityType.Item)
-                        continue;
 
-                    var renderItem = worldItem.ItemEntity.GetComponent<RenderItem>();
-                    if (renderItem == null || renderItem.ResourcePath == null)
-                        continue;
-
-
-                    var modelPath = renderItem.ResourcePath;
-
-                    if (UniquesHashSet.Contains(modelPath))
+                    if (!existingItemAddresses.Contains(itemInfo.Label.Address) && itemInfo.Entity.TryGetComponent<WorldItem>(out var worldItem))
                     {
-                        var itemName = worldItem.ItemEntity.GetComponent<Base>().Name;
-                        if (itemName != null)
+                        var renderItem = worldItem.ItemEntity.GetComponent<RenderItem>();
+                        var modelPath = renderItem.ResourcePath;
+                        if (_cashUniqueArtWork.TryGetValue(modelPath, out UniqueItemSettings value))
                         {
-                            if (localItemNamesCount.ContainsKey(itemName))
-                            {
-                                localItemNamesCount[itemName]++;
-                            }
-                            else
-                            {
-                                localItemNamesCount[itemName] = 1;
-                            }
+                            var item = new CustomItemData(itemInfo.Entity, itemInfo.Label, value);
+                            _drawingList.Add(item);
                         }
-                        drawingList.Add(entity.Label.GetClientRectCache);
                     }
                 }
+                foreach (var item in _drawingList)
+                {
+                    if (existingItemAddresses.Contains(item.Label.Address))
+                    {
+                        item.Label = newWorldItems.Find(x => x.Label.Address == item.LabelAddress).Label;
 
-                if (localItemNamesCount.Count != 0)
-                {
-                    itemNamesCount = localItemNamesCount;
-                }
-                else
-                {
-                    itemNamesCount.Clear();
+                    }
                 }
             }
+
             return null;
         }
     }

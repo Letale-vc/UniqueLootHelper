@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Color = SharpDX.Color;
 using RectangleF = SharpDX.RectangleF;
 using Vector2 = System.Numerics.Vector2;
 
@@ -159,24 +158,41 @@ namespace UniqueLootHelper
 
         public override void Render()
         {
+            var inGameUi = GameController.Game.IngameState.IngameUi;
+            if (!Settings.IgnoreFullscreenPanels && inGameUi.FullscreenPanels.Any(x => x.IsVisible))
+            {
+                return;
+            }
+
+            if (!Settings.IgnoreRightPanels && inGameUi.OpenRightPanel.IsVisible)
+            {
+                return;
+            }
             if (_drawingList.Count != 0)
             {
 
                 foreach (var item in _drawingList)
                 {
-                    Graphics.DrawFrame(item.Label.GetClientRectCache, Settings.OutlineLabelColor, Settings.FrameThickness);
+                    var lab = item.Label.GetClientRect();
+                    Graphics.DrawFrame(lab, Settings.OutlineLabelColor, Settings.LabelFrameThickness);
 
                 }
             }
-            DrawLinesMap();
+
+            if (Settings.EnableBoxCountDrawing)
+            {
+                DrawItemCountInfo();
+            }
+
+            if (Settings.EnableMapDrawing || _largeMap.IsVisible)
+            {
+                DrawLinesMap();
+            }
+
 
         }
         private void DrawLinesMap()
         {
-            if (!Settings.EnableMapDrawing || !_largeMap.IsVisible)
-            {
-                return;
-            }
             var filterList = _drawingList.Where(x => x.UniqueItemSettings.LineDrawMap == true);
             foreach (var item in filterList)
                 Graphics.DrawLine(
@@ -193,14 +209,14 @@ namespace UniqueLootHelper
             if (_drawingList.Count == 0) return;
             var labelCount = _drawingList.GroupBy(item => item.UniqueItemSettings.Label).ToDictionary(group => group.Key, group => group.Count());
 
-            var posX = Settings.PositionX.Value;
-            var posY = Settings.PositionY.Value;
+            var posX = Settings.BoxPositionX.Value;
+            var posY = Settings.BoxPositionY.Value;
             var hight = labelCount.Count * 20 + 20;
             var rect = new RectangleF(posX, posY, 230, hight);
-            Graphics.DrawBox(rect, new Color(0, 0, 0, 200));
+            Graphics.DrawBox(rect, Settings.BoxBackgroundColor);
             if (Settings.BoxOutline.Value == true)
             {
-                Graphics.DrawFrame(rect, Color.White, 2);
+                Graphics.DrawFrame(rect, Settings.BoxOutlineColor, 2);
             }
 
             posX += 10;
@@ -209,7 +225,7 @@ namespace UniqueLootHelper
 
             foreach (var item in labelCount)
             {
-                Graphics.DrawText($"{item.Key}: {item.Value}", new Vector2(posX, posY), Color.White, 15);
+                Graphics.DrawText($"{item.Key}: {item.Value}", new Vector2(posX, posY), Settings.BoxTextColor, 12);
                 posY += 20;
             }
         }
@@ -232,10 +248,8 @@ namespace UniqueLootHelper
 
                 _drawingList.RemoveWhere(item => !worldItemIds.Contains(item.LabelAddress));
                 var existingItemAddresses = new HashSet<long>(_drawingList.Select(item => item.LabelAddress));
-
                 foreach (var itemInfo in newWorldItems)
                 {
-
                     if (!existingItemAddresses.Contains(itemInfo.Label.Address) && itemInfo.Entity.TryGetComponent<WorldItem>(out var worldItem))
                     {
                         var renderItem = worldItem.ItemEntity.GetComponent<RenderItem>();
@@ -245,14 +259,6 @@ namespace UniqueLootHelper
                             var item = new CustomItemData(itemInfo.Entity, itemInfo.Label, value);
                             _drawingList.Add(item);
                         }
-                    }
-                }
-                foreach (var item in _drawingList)
-                {
-                    if (existingItemAddresses.Contains(item.Label.Address))
-                    {
-                        item.Label = newWorldItems.Find(x => x.Label.Address == item.LabelAddress).Label;
-
                     }
                 }
             }

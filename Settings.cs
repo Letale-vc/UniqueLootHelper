@@ -1,5 +1,4 @@
-﻿using ExileCore.Shared.Attributes;
-using ExileCore.Shared.Interfaces;
+﻿using ExileCore.Shared.Interfaces;
 using ExileCore.Shared.Nodes;
 using SharpDX;
 
@@ -8,24 +7,23 @@ namespace UniqueLootHelper
     public class Settings : ISettings
     {
         public ToggleNode Enable { get; set; } = new ToggleNode(false);
-        [Menu("Color label outline")]
+        public ToggleNode IgnoreFullscreenPanels { get; set; } = new(false);
+        public ToggleNode IgnoreRightPanels { get; set; } = new(false);
         public ColorNode OutlineLabelColor { get; set; } = new ColorNode(SharpDX.Color.Purple);
-        public RangeNode<int> FrameThickness { get; set; } = new RangeNode<int>(2, 1, 5);
+        public RangeNode<int> LabelFrameThickness { get; set; } = new RangeNode<int>(2, 1, 10);
         public RangeNode<uint> CacheIntervall { get; set; } = new RangeNode<uint>(2, 1, 5);
-
-        [Menu("Position box X")]
-        public RangeNode<float> PositionX { get; set; } = new RangeNode<float>(576.0f, 0f, 3000f);
-
-        [Menu("Position box Y")]
-        public RangeNode<float> PositionY { get; set; } = new RangeNode<float>(576.0f, 0f, 3000f);
-
-        [Menu("Show Outline Box")]
+        public ToggleNode EnableBoxCountDrawing { get; set; } = new(true);
+        public ColorNode BoxBackgroundColor { get; set; } = new ColorNode(new Color(0, 0, 0, 200));
+        public ColorNode BoxOutlineColor { get; set; } = new ColorNode(new Color(255, 255, 255, 255));
+        public ColorNode BoxTextColor { get; set; } = new ColorNode(new Color(255, 255, 255, 255));
         public ToggleNode BoxOutline { get; set; } = new ToggleNode(false);
+        public RangeNode<float> BoxPositionX { get; set; } = new RangeNode<float>(576.0f, 0f, 3000f);
+        public RangeNode<float> BoxPositionY { get; set; } = new RangeNode<float>(576.0f, 0f, 3000f);
 
 
         public ToggleNode EnableMapDrawing { get; set; } = new(true);
         public ColorNode MapLineColor { get; set; } = new(new Color(214, 0, 255, 255));
-        public RangeNode<float> MapLineThickness { get; set; } = new(2.317f, 1f, 10f);
+        public RangeNode<uint> MapLineThickness { get; set; } = new(2, 1, 10);
 
     }
 }

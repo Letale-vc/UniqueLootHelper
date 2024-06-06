@@ -1,4 +1,6 @@
-﻿using ExileCore.Shared.Interfaces;
+﻿using System.Security.Cryptography.Xml;
+using System.Windows.Forms;
+using ExileCore.Shared.Interfaces;
 using ExileCore.Shared.Nodes;
 using SharpDX;
 
@@ -7,6 +9,7 @@ namespace UniqueLootHelper
     public class Settings : ISettings
     {
         public ToggleNode Enable { get; set; } = new ToggleNode(false);
+        public HotkeyNode CopyToClipboardHoverItemPath { get; set; } = new HotkeyNode(Keys.F7);
         public ToggleNode IgnoreFullscreenPanels { get; set; } = new(false);
         public ToggleNode IgnoreRightPanels { get; set; } = new(false);
         public ColorNode OutlineLabelColor { get; set; } = new ColorNode(SharpDX.Color.Purple);

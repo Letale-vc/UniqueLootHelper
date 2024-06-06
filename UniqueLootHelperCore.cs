@@ -1,7 +1,9 @@
 ﻿using ExileCore;
 using ExileCore.PoEMemory;
 using ExileCore.PoEMemory.Components;
+using ExileCore.PoEMemory.Elements;
 using ExileCore.PoEMemory.MemoryObjects;
+using ExileCore.Shared.Helpers;
 using ImGuiNET;
 using Newtonsoft.Json;
 using System;
@@ -9,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using RectangleF = SharpDX.RectangleF;
 using Vector2 = System.Numerics.Vector2;
 
@@ -60,6 +63,7 @@ namespace UniqueLootHelper
         {
             Name = "UniqueLootHelper";
             _cashUniqueArtWork = GetUniqueArtFromFile();
+
             return base.Initialise();
         }
         private void CreateUniqueArtFile()
@@ -118,7 +122,7 @@ namespace UniqueLootHelper
             {
                 if (!string.IsNullOrEmpty(_tempUniqueItemSettings.ArtPath) && !string.IsNullOrEmpty(_tempUniqueItemSettings.Label))
                 {
-                    string key = _tempUniqueItemSettings.ArtPath + ".dds";
+                    string key = _tempUniqueItemSettings.ArtPath;
                     if (_cashUniqueArtWork.TryGetValue(key, out _))
                     {
                         // Key exists, update the value
@@ -144,6 +148,15 @@ namespace UniqueLootHelper
             {
                 ImGui.Text($"{uniqueArtItem.Key} - {uniqueArtItem.Value.Label}");
                 ImGui.SameLine();
+                if (ImGui.Button($"Edit##{uniqueArtItem.Key}"))
+                {
+                    _tempUniqueItemSettings = uniqueArtItem.Value;
+                    _cashUniqueArtWork.Remove(uniqueArtItem.Key);
+                    SaveUniquesArtToFile();
+                    LogMessage($"UniqueLootHelper: Removed {uniqueArtItem.Key} from unique list");
+
+                }
+                ImGui.SameLine();
                 if (ImGui.Button($"Delete##{uniqueArtItem.Key}"))
                 {
                     _cashUniqueArtWork.Remove(uniqueArtItem.Key);
@@ -158,6 +171,17 @@ namespace UniqueLootHelper
 
         public override void Render()
         {
+            if (Input.IsKeyDown(Keys.F7))
+            {
+
+                var hoverItem = GameController.Game.IngameState.UIHover.AsObject<HoverItemIcon>();
+                if (hoverItem == null) return;
+                var modelPath = hoverItem.Item.Path;
+                ImGui.SetClipboardText(modelPath);
+                LogMessage($"UniqueLootHelper: Copied {modelPath} to clipboard");
+
+            }
+
             var inGameUi = GameController.Game.IngameState.IngameUi;
             if (!Settings.IgnoreFullscreenPanels && inGameUi.FullscreenPanels.Any(x => x.IsVisible))
             {
@@ -253,10 +277,12 @@ namespace UniqueLootHelper
                     if (!existingItemAddresses.Contains(itemInfo.Label.Address) && itemInfo.Entity.TryGetComponent<WorldItem>(out var worldItem))
                     {
                         var renderItem = worldItem.ItemEntity.GetComponent<RenderItem>();
-                        var modelPath = renderItem.ResourcePath;
-                        if (_cashUniqueArtWork.TryGetValue(modelPath, out UniqueItemSettings value))
+                        var renderArtPath = renderItem.ResourcePath;
+                        var modelPath = worldItem.ItemEntity.Path;
+                        string[] pathArray = [renderArtPath, modelPath, renderArtPath + ".dds"];
+                        if (pathArray.Any(_cashUniqueArtWork.ContainsKey))
                         {
-                            var item = new CustomItemData(itemInfo.Entity, itemInfo.Label, value);
+                            var item = new CustomItemData(itemInfo.Entity, itemInfo.Label, _cashUniqueArtWork[pathArray.First(_cashUniqueArtWork.ContainsKey)]);
                             _drawingList.Add(item);
                         }
                     }

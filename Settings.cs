@@ -14,7 +14,6 @@ namespace UniqueLootHelper
         public ToggleNode IgnoreRightPanels { get; set; } = new(false);
         public ColorNode OutlineLabelColor { get; set; } = new ColorNode(SharpDX.Color.Purple);
         public RangeNode<int> LabelFrameThickness { get; set; } = new RangeNode<int>(2, 1, 10);
-        public RangeNode<uint> CacheIntervall { get; set; } = new RangeNode<uint>(2, 1, 5);
         public ToggleNode EnableBoxCountDrawing { get; set; } = new(true);
         public ColorNode BoxBackgroundColor { get; set; } = new ColorNode(new Color(0, 0, 0, 200));
         public ColorNode BoxOutlineColor { get; set; } = new ColorNode(new Color(255, 255, 255, 255));
@@ -23,10 +22,13 @@ namespace UniqueLootHelper
         public RangeNode<float> BoxPositionX { get; set; } = new RangeNode<float>(576.0f, 0f, 3000f);
         public RangeNode<float> BoxPositionY { get; set; } = new RangeNode<float>(576.0f, 0f, 3000f);
 
-
         public ToggleNode EnableMapDrawing { get; set; } = new(true);
-        public ColorNode MapLineColor { get; set; } = new(new Color(214, 0, 255, 255));
-        public RangeNode<uint> MapLineThickness { get; set; } = new(2, 1, 10);
+        public ColorNode MapLineColor
+        { get; set; } = new(new Color(214, 0, 255, 255));
+        public RangeNode<int> MapLineThickness { get; set; } = new(2, 1, 10);
+        public ToggleNode WorldMapDrawing { get; set; } = new(true);
+        public ColorNode WorldMapLineColor { get; set; } = new(new Color(214, 0, 255, 255));
+        public RangeNode<int> WorldMapLineThickness { get; set; } = new(2, 1, 10);
 
     }
 }

@@ -20,7 +20,7 @@ namespace UniqueLootHelper
 
     public class CustomItemData(Entity worldEntity, Element label, UniqueItemSettings uniqueItemSettings)
     {
-
+        public Entity WorldEntity = worldEntity;
         public UniqueItemSettings UniqueItemSettings = uniqueItemSettings;
 
         public Element Label = label;
@@ -35,6 +35,7 @@ namespace UniqueLootHelper
     {
         public string ArtPath;
         public bool LineDrawMap;
+        public bool LineDrawWorld;
         public string Label;
         public UniqueItemSettings()
         {
@@ -118,6 +119,8 @@ namespace UniqueLootHelper
             ImGui.InputText("Unique art path", ref _tempUniqueItemSettings.ArtPath, 1024, ImGuiInputTextFlags.EnterReturnsTrue);
             ImGui.InputText("Unique label", ref _tempUniqueItemSettings.Label, 1024, ImGuiInputTextFlags.EnterReturnsTrue);
             ImGui.Checkbox("Draw line on map", ref _tempUniqueItemSettings.LineDrawMap);
+            ImGui.SameLine();
+            ImGui.Checkbox("Draw line on world", ref _tempUniqueItemSettings.LineDrawWorld);
             if (ImGui.Button("Add Unique"))
             {
                 if (!string.IsNullOrEmpty(_tempUniqueItemSettings.ArtPath) && !string.IsNullOrEmpty(_tempUniqueItemSettings.Label))
@@ -212,6 +215,10 @@ namespace UniqueLootHelper
             {
                 DrawLinesMap();
             }
+            if (Settings.WorldMapDrawing)
+            {
+                DrawLinesWorld();
+            }
 
 
         }
@@ -226,7 +233,24 @@ namespace UniqueLootHelper
                     Settings.MapLineColor
                 );
         }
+        private void DrawLinesWorld()
+        {
+            Entity player = GameController?.Player;
+            if (player == null) return;
+            Vector2 playerPos = GameController.IngameState.Data.GetGridScreenPosition(player.GridPosNum);
+            var filterList = _drawingList.Where(x => x.UniqueItemSettings.LineDrawWorld == true);
+            foreach (var item in filterList)
+            {
+                Vector2 itemPos = GameController.IngameState.Data.GetGridScreenPosition(item.Location);
+                Graphics.DrawLine(
+                       playerPos,
+                       itemPos,
+                        Settings.WorldMapLineThickness,
+                        Settings.WorldMapLineColor
+                    );
+            }
 
+        }
 
         private void DrawItemCountInfo()
         {

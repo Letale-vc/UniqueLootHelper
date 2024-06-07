@@ -179,9 +179,10 @@ namespace UniqueLootHelper
 
                 var hoverItem = GameController.Game.IngameState.UIHover.AsObject<HoverItemIcon>();
                 if (hoverItem == null) return;
-                var modelPath = hoverItem.Item.Path;
-                ImGui.SetClipboardText(modelPath);
-                LogMessage($"UniqueLootHelper: Copied {modelPath} to clipboard");
+                var renderItem = hoverItem.Item.GetComponent<RenderItem>();
+                if (renderItem == null) return;
+                ImGui.SetClipboardText(renderItem.ResourcePath);
+                LogMessage($"UniqueLootHelper: Copied {renderItem.ResourcePath} to clipboard");
 
             }
 
@@ -302,8 +303,7 @@ namespace UniqueLootHelper
                     {
                         var renderItem = worldItem.ItemEntity.GetComponent<RenderItem>();
                         var renderArtPath = renderItem.ResourcePath;
-                        var modelPath = worldItem.ItemEntity.Path;
-                        string[] pathArray = [renderArtPath, modelPath, renderArtPath + ".dds"];
+                        string[] pathArray = [renderArtPath, renderArtPath + ".dds"];
                         if (pathArray.Any(_cashUniqueArtWork.ContainsKey))
                         {
                             var item = new CustomItemData(itemInfo.Entity, itemInfo.Label, _cashUniqueArtWork[pathArray.First(_cashUniqueArtWork.ContainsKey)]);

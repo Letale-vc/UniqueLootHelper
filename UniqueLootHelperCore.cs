@@ -50,11 +50,11 @@ namespace UniqueLootHelper
         public static Graphics _graphics;
         private UniqueItemSettings _tempUniqueItemSettings = new();
         private const string FILE_ART_NAME = "UniquesArtworks.json";
-        private string _pathArtFile
+        private string PathArtFile
         {
             get { return Path.Combine(ConfigDirectory, FILE_ART_NAME); }
         }
-        private HashSet<CustomItemData> _drawingList = [];
+        private readonly HashSet<CustomItemData> _drawingList = [];
 
         private Dictionary<string, UniqueItemSettings> _cashUniqueArtWork = [];
         private Element _largeMap;
@@ -69,23 +69,23 @@ namespace UniqueLootHelper
         }
         private void CreateUniqueArtFile()
         {
-            if (File.Exists(_pathArtFile)) return;
-            File.WriteAllText(_pathArtFile, JsonConvert.SerializeObject(new Dictionary<string, UniqueItemSettings>(), Formatting.Indented));
+            if (File.Exists(PathArtFile)) return;
+            File.WriteAllText(PathArtFile, JsonConvert.SerializeObject(new Dictionary<string, UniqueItemSettings>(), Formatting.Indented));
             LogMessage("UniqueLootHelper: Created new file for unique art");
         }
 
         private Dictionary<string, UniqueItemSettings> GetUniqueArtFromFile()
         {
 
-            if (!File.Exists(_pathArtFile)) CreateUniqueArtFile();
+            if (!File.Exists(PathArtFile)) CreateUniqueArtFile();
             try
             {
-                var uniqueArtItemList = JsonConvert.DeserializeObject<Dictionary<string, UniqueItemSettings>>(File.ReadAllText(_pathArtFile));
+                var uniqueArtItemList = JsonConvert.DeserializeObject<Dictionary<string, UniqueItemSettings>>(File.ReadAllText(PathArtFile));
                 return uniqueArtItemList;
             }
             catch (Exception)
             {
-                File.Move(_pathArtFile, _pathArtFile + ".bak");
+                File.Move(PathArtFile, PathArtFile + ".bak");
                 CreateUniqueArtFile();
                 return [];
             }
@@ -94,9 +94,9 @@ namespace UniqueLootHelper
         }
         private void SaveUniquesArtToFile()
         {
-            if (!File.Exists(_pathArtFile))
+            if (!File.Exists(PathArtFile))
                 CreateUniqueArtFile();
-            File.WriteAllText(_pathArtFile, JsonConvert.SerializeObject(_cashUniqueArtWork, Formatting.Indented));
+            File.WriteAllText(PathArtFile, JsonConvert.SerializeObject(_cashUniqueArtWork, Formatting.Indented));
             LogMessage("UniqueLootHelper: Saved unique art to file");
         }
 
@@ -281,8 +281,8 @@ namespace UniqueLootHelper
 
         public override Job Tick()
         {
-            _largeMap = GameController.IngameState.IngameUi.Map.LargeMap;
-            if (GameController.Area.CurrentArea.IsHideout || GameController.Area.CurrentArea.IsTown)
+            _largeMap = GameController?.IngameState?.IngameUi?.Map?.LargeMap;
+            if (GameController?.Area?.CurrentArea?.IsHideout == true || GameController?.Area?.CurrentArea?.IsTown == true)
             {
                 _drawingList.Clear();
                 return null;
@@ -302,6 +302,9 @@ namespace UniqueLootHelper
                     if (!existingItemAddresses.Contains(itemInfo.Label.Address) && itemInfo.Entity.TryGetComponent<WorldItem>(out var worldItem))
                     {
                         var renderItem = worldItem.ItemEntity.GetComponent<RenderItem>();
+
+                        if (renderItem == null) continue;
+
                         var renderArtPath = renderItem.ResourcePath;
                         string[] pathArray = [renderArtPath, renderArtPath + ".dds"];
                         if (pathArray.Any(_cashUniqueArtWork.ContainsKey))

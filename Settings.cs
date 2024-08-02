@@ -29,6 +29,7 @@ namespace UniqueLootHelper
         public ToggleNode WorldMapDrawing { get; set; } = new(true);
         public ColorNode WorldMapLineColor { get; set; } = new(new Color(214, 0, 255, 255));
         public RangeNode<int> WorldMapLineThickness { get; set; } = new(2, 1, 10);
+        public ToggleNode UseCorruptedFilter { get; set; } = new(false);
 
     }
 }

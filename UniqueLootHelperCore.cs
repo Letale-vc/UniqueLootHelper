@@ -18,16 +18,32 @@ using Vector2 = System.Numerics.Vector2;
 namespace UniqueLootHelper
 {
 
-    public class CustomItemData(Entity worldEntity, Element label, UniqueItemSettings uniqueItemSettings)
+    public class CustomItemData
     {
-        public Entity WorldEntity = worldEntity;
-        public UniqueItemSettings UniqueItemSettings = uniqueItemSettings;
+        public Entity WorldEntity;
+        public UniqueItemSettings UniqueItemSettings;
 
-        public Element Label = label;
+        public bool IsCorrupted;
+        public Element Label;
 
-        public long LabelAddress { get; set; } = label.Address;
+        public long LabelAddress { get; set; }
 
-        public Vector2 Location { get; set; } = worldEntity.GridPosNum;
+        public Vector2 Location { get; set; }
+        public CustomItemData(Entity worldEntity, Element label, UniqueItemSettings uniqueItemSettings)
+        {
+            WorldEntity = worldEntity;
+            UniqueItemSettings = uniqueItemSettings;
+            Label = label;
+            LabelAddress = label.Address;
+            Location = worldEntity.GridPosNum;
+            if (worldEntity.TryGetComponent<WorldItem>(out var worldItem))
+            {
+                if (worldItem.ItemEntity.TryGetComponent<Base>(out var @base))
+                {
+                    IsCorrupted = @base.isCorrupted;
+                }
+            }
+        }
 
 
     }
@@ -37,6 +53,7 @@ namespace UniqueLootHelper
         public bool LineDrawMap;
         public bool LineDrawWorld;
         public string Label;
+        public bool DrawIsCorrupted = true;
         public UniqueItemSettings()
         {
             ArtPath = "";
@@ -121,6 +138,8 @@ namespace UniqueLootHelper
             ImGui.Checkbox("Draw line on map", ref _tempUniqueItemSettings.LineDrawMap);
             ImGui.SameLine();
             ImGui.Checkbox("Draw line on world", ref _tempUniqueItemSettings.LineDrawWorld);
+            ImGui.SameLine();
+            ImGui.Checkbox("Draw is corrupted", ref _tempUniqueItemSettings.DrawIsCorrupted);
             if (ImGui.Button("Add Unique"))
             {
                 if (!string.IsNullOrEmpty(_tempUniqueItemSettings.ArtPath) && !string.IsNullOrEmpty(_tempUniqueItemSettings.Label))
@@ -154,7 +173,6 @@ namespace UniqueLootHelper
                 if (ImGui.Button($"Edit##{uniqueArtItem.Key}"))
                 {
                     _tempUniqueItemSettings = uniqueArtItem.Value;
-                    _cashUniqueArtWork.Remove(uniqueArtItem.Key);
                     SaveUniquesArtToFile();
                     LogMessage($"UniqueLootHelper: Removed {uniqueArtItem.Key} from unique list");
 
@@ -315,7 +333,23 @@ namespace UniqueLootHelper
                     }
                 }
             }
-
+            if (Settings.UseCorruptedFilter)
+            {
+                var itemsToRemove = new List<CustomItemData>();
+                foreach (var drawItem in _drawingList)
+                {
+                    LogMessage($"{drawItem.IsCorrupted}");
+                    if (drawItem.UniqueItemSettings.DrawIsCorrupted == false && drawItem.IsCorrupted == true)
+                    {
+                        LogMessage($"remove {drawItem.UniqueItemSettings.Label}");
+                        itemsToRemove.Add(drawItem);
+                    }
+                }
+                foreach (var item in itemsToRemove)
+                {
+                    _drawingList.Remove(item);
+                }
+            }
             return null;
         }
     }

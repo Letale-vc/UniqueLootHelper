@@ -109,6 +109,11 @@ namespace UniqueLootHelper
 
 
         }
+        public override void Dispose()
+        {
+            SaveUniquesArtToFile();
+            base.Dispose();
+        }
         private void SaveUniquesArtToFile()
         {
             if (!File.Exists(PathArtFile))
@@ -157,7 +162,7 @@ namespace UniqueLootHelper
                         _cashUniqueArtWork.Add(key, _tempUniqueItemSettings);
                         LogMessage($"UniqueLootHelper: Added {key} to unique list");
                     }
-                    SaveUniquesArtToFile();
+
                     _tempUniqueItemSettings = new();
 
                 }
@@ -173,7 +178,7 @@ namespace UniqueLootHelper
                 if (ImGui.Button($"Edit##{uniqueArtItem.Key}"))
                 {
                     _tempUniqueItemSettings = uniqueArtItem.Value;
-                    SaveUniquesArtToFile();
+
                     LogMessage($"UniqueLootHelper: Removed {uniqueArtItem.Key} from unique list");
 
                 }
@@ -181,7 +186,7 @@ namespace UniqueLootHelper
                 if (ImGui.Button($"Delete##{uniqueArtItem.Key}"))
                 {
                     _cashUniqueArtWork.Remove(uniqueArtItem.Key);
-                    SaveUniquesArtToFile();
+
                     LogMessage($"UniqueLootHelper: Removed {uniqueArtItem.Key} from unique list");
                 }
             }
@@ -324,7 +329,7 @@ namespace UniqueLootHelper
                         if (renderItem == null) continue;
 
                         var renderArtPath = renderItem.ResourcePath;
-                        string[] pathArray = [renderArtPath, renderArtPath + ".dds"];
+                        string[] pathArray = [renderArtPath, renderArtPath + ".dds", renderItem.ResourcePath.Replace(".dds", "")];
                         if (pathArray.Any(_cashUniqueArtWork.ContainsKey))
                         {
                             var item = new CustomItemData(itemInfo.Entity, itemInfo.Label, _cashUniqueArtWork[pathArray.First(_cashUniqueArtWork.ContainsKey)]);
@@ -341,7 +346,6 @@ namespace UniqueLootHelper
                     LogMessage($"{drawItem.IsCorrupted}");
                     if (drawItem.UniqueItemSettings.DrawIsCorrupted == false && drawItem.IsCorrupted == true)
                     {
-                        LogMessage($"remove {drawItem.UniqueItemSettings.Label}");
                         itemsToRemove.Add(drawItem);
                     }
                 }

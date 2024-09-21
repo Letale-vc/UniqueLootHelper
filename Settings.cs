@@ -1,8 +1,7 @@
-﻿using System.Security.Cryptography.Xml;
-using System.Windows.Forms;
-using ExileCore.Shared.Interfaces;
+﻿using ExileCore.Shared.Interfaces;
 using ExileCore.Shared.Nodes;
 using SharpDX;
+using System.Windows.Forms;
 
 namespace UniqueLootHelper
 {

@@ -3,6 +3,7 @@ using ExileCore.PoEMemory;
 using ExileCore.PoEMemory.Components;
 using ExileCore.PoEMemory.Elements;
 using ExileCore.PoEMemory.MemoryObjects;
+using ExileCore.Shared.Cache;
 using ExileCore.Shared.Helpers;
 using ImGuiNET;
 using Newtonsoft.Json;
@@ -14,35 +15,41 @@ using System.Linq;
 using System.Windows.Forms;
 using RectangleF = SharpDX.RectangleF;
 using Vector2 = System.Numerics.Vector2;
+using Color = SharpDX.Color;
+using UniqueLootHelper;
+using System.Dynamic;
 
 namespace UniqueLootHelper
 {
 
     public class CustomItemData
     {
-        public Entity WorldEntity;
-        public UniqueItemSettings UniqueItemSettings;
-
+        public Entity Entity;
         public bool IsCorrupted;
-        public Element Label;
-
-        public long LabelAddress { get; set; }
-
-        public Vector2 Location { get; set; }
-        public CustomItemData(Entity worldEntity, Element label, UniqueItemSettings uniqueItemSettings)
+        public bool IsIdentified;
+        public Element Element;
+        public Vector2 Location;
+        public RectangleF ClientRect;
+        public string ResourcePath = string.Empty;
+        public CustomItemData(Entity entity, Element element, Vector2 location)
         {
-            WorldEntity = worldEntity;
-            UniqueItemSettings = uniqueItemSettings;
-            Label = label;
-            LabelAddress = label.Address;
-            Location = worldEntity.GridPosNum;
-            if (worldEntity.TryGetComponent<WorldItem>(out var worldItem))
+            Entity = entity;
+            Element = element;
+            Location = location;
+
+            if (entity.TryGetComponent<RenderItem>(out var renderItem))
             {
-                if (worldItem.ItemEntity.TryGetComponent<Base>(out var @base))
-                {
-                    IsCorrupted = @base.isCorrupted;
-                }
+                ResourcePath = entity.GetComponent<RenderItem>().ResourcePath;
             }
+            if (entity.TryGetComponent<Base>(out var @base))
+            {
+                IsCorrupted = @base.isCorrupted;
+            }
+            if (entity.TryGetComponent<Mods>(out var mods))
+            {
+                IsIdentified = mods.Identified;
+            }
+
         }
 
 
@@ -50,7 +57,10 @@ namespace UniqueLootHelper
     public class UniqueItemSettings
     {
         public string ArtPath;
+        public bool DrawLabelOutline;
+        public bool DrawLabelName;
         public bool LineDrawMap;
+        public bool DrawLabelInBox;
         public bool LineDrawWorld;
         public string Label;
         public bool DrawIsCorrupted = true;
@@ -59,6 +69,8 @@ namespace UniqueLootHelper
             ArtPath = "";
             Label = "";
             LineDrawMap = false;
+            DrawLabelOutline = true;
+            DrawLabelName = true;
         }
     }
 
@@ -71,12 +83,14 @@ namespace UniqueLootHelper
         {
             get { return Path.Combine(ConfigDirectory, FILE_ART_NAME); }
         }
-        private readonly HashSet<CustomItemData> _drawingList = [];
+        private CachedValue<List<CustomItemData>> _groundItems;
 
         private Dictionary<string, UniqueItemSettings> _cashUniqueArtWork = [];
-        private Element _largeMap;
 
-
+        public UniqueLootHelperCore()
+        {
+            _groundItems = new FrameCache<List<CustomItemData>>(CacheUtils.RememberLastValue(GetItemsOnGround, new List<CustomItemData>()));
+        }
         public override bool Initialise()
         {
             Name = "UniqueLootHelper";
@@ -144,6 +158,13 @@ namespace UniqueLootHelper
             ImGui.SameLine();
             ImGui.Checkbox("Draw line on world", ref _tempUniqueItemSettings.LineDrawWorld);
             ImGui.SameLine();
+            ImGui.Checkbox("Draw outline", ref _tempUniqueItemSettings.DrawLabelOutline);
+            ImGui.SameLine();
+            ImGui.Checkbox("Draw real name", ref _tempUniqueItemSettings.DrawLabelName);
+            ImGui.SameLine();
+            ImGui.Checkbox("Draw label in box", ref _tempUniqueItemSettings.DrawLabelInBox);
+            ImGui.SameLine();
+
             ImGui.Checkbox("Draw is corrupted", ref _tempUniqueItemSettings.DrawIsCorrupted);
             if (ImGui.Button("Add Unique"))
             {
@@ -219,68 +240,88 @@ namespace UniqueLootHelper
             {
                 return;
             }
-            if (_drawingList.Count != 0)
-            {
 
-                foreach (var item in _drawingList)
+            Entity player = GameController?.Player;
+            ImGui.Begin("lmao",
+           ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoFocusOnAppearing | ImGuiWindowFlags.NoNav);
+            var drawList = ImGui.GetBackgroundDrawList();
+            var countList = new List<string>();
+            foreach (var item in _groundItems.Value)
+            {
+                string[] pathArray = [item.ResourcePath, item.ResourcePath + ".dds", item.ResourcePath.Replace(".dds", "")];
+
+                if (!pathArray.Any(_cashUniqueArtWork.ContainsKey))
+                    continue;
+
+
+                var uniqueSettings = _cashUniqueArtWork[pathArray.First(_cashUniqueArtWork.ContainsKey)];
+
+                if (!uniqueSettings.DrawIsCorrupted && item.IsCorrupted)
+                    continue;
+
+                if (uniqueSettings.DrawLabelInBox)
                 {
-                    var lab = item.Label.GetClientRect();
-                    Graphics.DrawFrame(lab, Settings.OutlineLabelColor, Settings.LabelFrameThickness);
+                    countList.Add(uniqueSettings.Label);
+                }
+
+                if (uniqueSettings.LineDrawMap && Settings.EnableMapDrawing && GameController.IngameState.IngameUi.Map.LargeMap.IsVisible)
+                {
+                    var itemMapPost = GameController.IngameState.Data.GetGridMapScreenPosition(item.Location);
+                    var playerMapPost = GameController.IngameState.Data.GetGridMapScreenPosition(player.GridPosNum);
+                    Graphics.DrawLine(
+                    itemMapPost,
+                    playerMapPost,
+                    Settings.MapLineThickness,
+                    Settings.MapLineColor
+                );
+                }
+                if (Settings.WorldMapDrawing && uniqueSettings.LineDrawWorld)
+                {
+                    var itemWorldPos = GameController.IngameState.Data.GetGridScreenPosition(item.Location);
+                    Vector2 playerWorldPos = GameController.IngameState.Data.GetGridScreenPosition(player.GridPosNum);
+                    Graphics.DrawLine(
+                           playerWorldPos,
+                           itemWorldPos,
+                            Settings.WorldMapLineThickness,
+                            Settings.WorldMapLineColor);
+                }
+
+                var labelFrame = item.Element.GetClientRect();
+                if (Settings.EnableOutlineLebel && uniqueSettings.DrawLabelOutline)
+                {
+
+                    Graphics.DrawFrame(labelFrame, Settings.OutlineLabelColor, Settings.LabelFrameThickness);
+                }
+                if (Settings.EnableLabelName && uniqueSettings.DrawLabelName && !item.IsIdentified)
+                {
+                    string text = uniqueSettings.Label;
+                    var textSize = Graphics.MeasureText(text);
+                    var scale = Math.Min(labelFrame.Width * 1 / textSize.X, (labelFrame.Height - 2) / textSize.Y);
+                    ImGui.SetWindowFontScale(scale);
+                    var newTextSize = ImGui.CalcTextSize(text);
+                    var textPosition = labelFrame.Center.ToVector2Num() - newTextSize / 2;
+                    var rectPosition = new Vector2(textPosition.X, labelFrame.Top + 1);
+                    drawList.AddRectFilled(labelFrame.TopLeft.ToVector2Num(), labelFrame.BottomRight.ToVector2Num(), Settings.BackgroundLabel.Value.ToImgui());
+                    drawList.AddText(textPosition, Settings.TextColor.Value.ToImgui(), text);
+                    ImGui.SetWindowFontScale(1);
+
 
                 }
             }
 
+            ImGui.End();
             if (Settings.EnableBoxCountDrawing)
             {
-                DrawItemCountInfo();
-            }
-
-            if (Settings.EnableMapDrawing || _largeMap.IsVisible)
-            {
-                DrawLinesMap();
-            }
-            if (Settings.WorldMapDrawing)
-            {
-                DrawLinesWorld();
-            }
-
-
-        }
-        private void DrawLinesMap()
-        {
-            var filterList = _drawingList.Where(x => x.UniqueItemSettings.LineDrawMap == true);
-            foreach (var item in filterList)
-                Graphics.DrawLine(
-                    GameController.IngameState.Data.GetGridMapScreenPosition(item.Location),
-                    GameController.IngameState.Data.GetGridMapScreenPosition(GameController.Player.GridPosNum),
-                    Settings.MapLineThickness,
-                    Settings.MapLineColor
-                );
-        }
-        private void DrawLinesWorld()
-        {
-            Entity player = GameController?.Player;
-            if (player == null) return;
-            Vector2 playerPos = GameController.IngameState.Data.GetGridScreenPosition(player.GridPosNum);
-            var filterList = _drawingList.Where(x => x.UniqueItemSettings.LineDrawWorld == true);
-            foreach (var item in filterList)
-            {
-                Vector2 itemPos = GameController.IngameState.Data.GetGridScreenPosition(item.Location);
-                Graphics.DrawLine(
-                       playerPos,
-                       itemPos,
-                        Settings.WorldMapLineThickness,
-                        Settings.WorldMapLineColor
-                    );
+                DrawItemCountInfo(countList);
             }
 
         }
 
-        private void DrawItemCountInfo()
-        {
-            if (_drawingList.Count == 0) return;
-            var labelCount = _drawingList.GroupBy(item => item.UniqueItemSettings.Label).ToDictionary(group => group.Key, group => group.Count());
 
+        private void DrawItemCountInfo(List<string> countList)
+        {
+            if (countList.Count == 0) return;
+            var labelCount = countList.GroupBy(x => x).ToDictionary(group => group.Key, group => group.Count());
             var posX = Settings.BoxPositionX.Value;
             var posY = Settings.BoxPositionY.Value;
             var hight = labelCount.Count * 20 + 20;
@@ -297,64 +338,39 @@ namespace UniqueLootHelper
 
             foreach (var item in labelCount)
             {
-                Graphics.DrawText($"{item.Key}: {item.Value}", new Vector2(posX, posY), Settings.BoxTextColor, 12);
+                Graphics.DrawText($"{item.Key}: {item.Value}", new Vector2(posX, posY), Settings.BoxTextColor);
                 posY += 20;
             }
         }
 
-        public override Job Tick()
+        private List<CustomItemData> GetItemsOnGround(List<CustomItemData> previousValue)
         {
-            _largeMap = GameController?.IngameState?.IngameUi?.Map?.LargeMap;
-            if (GameController?.Area?.CurrentArea?.IsHideout == true || GameController?.Area?.CurrentArea?.IsTown == true)
+            var prevDict = previousValue
+                .DistinctBy(x => (x.Entity?.Address, x.Element?.Address))
+                .ToDictionary(x => (x.Element?.Address, x.Entity?.Address));
+            var labelsOnGround = GameController.IngameState.IngameUi.ItemsOnGroundLabelElement.VisibleGroundItemLabels;
+            var result = new List<CustomItemData>();
+
+            foreach (var description in labelsOnGround)
             {
-                _drawingList.Clear();
-                return null;
-            }
-
-
-            var newWorldItems = GameController?.IngameState?.IngameUi?.ItemsOnGroundLabelElement.VisibleGroundItemLabels?.Select(x => new { x.Entity, x.Label })?.ToList() ?? [];
-
-            if (newWorldItems != null)
-            {
-                var worldItemIds = new HashSet<long>(newWorldItems.Select(x => x.Label.Address));
-
-                _drawingList.RemoveWhere(item => !worldItemIds.Contains(item.LabelAddress));
-                var existingItemAddresses = new HashSet<long>(_drawingList.Select(item => item.LabelAddress));
-                foreach (var itemInfo in newWorldItems)
+                if (description.Entity.TryGetComponent<WorldItem>(out var worldItem) &&
+                    worldItem.ItemEntity is { IsValid: true } groundItemEntity)
                 {
-                    if (!existingItemAddresses.Contains(itemInfo.Label.Address) && itemInfo.Entity.TryGetComponent<WorldItem>(out var worldItem))
+
+                    var customItem = prevDict.GetValueOrDefault((description.Label?.Address, groundItemEntity.Address));
+
+                    if (customItem == null)
                     {
-                        var renderItem = worldItem.ItemEntity.GetComponent<RenderItem>();
-
-                        if (renderItem == null) continue;
-
-                        var renderArtPath = renderItem.ResourcePath;
-                        string[] pathArray = [renderArtPath, renderArtPath + ".dds", renderItem.ResourcePath.Replace(".dds", "")];
-                        if (pathArray.Any(_cashUniqueArtWork.ContainsKey))
-                        {
-                            var item = new CustomItemData(itemInfo.Entity, itemInfo.Label, _cashUniqueArtWork[pathArray.First(_cashUniqueArtWork.ContainsKey)]);
-                            _drawingList.Add(item);
-                        }
+                        customItem = new CustomItemData(groundItemEntity, description.Label, description.Entity.GridPosNum);
                     }
+
+                    result.Add(customItem);
                 }
             }
-            if (Settings.UseCorruptedFilter)
-            {
-                var itemsToRemove = new List<CustomItemData>();
-                foreach (var drawItem in _drawingList)
-                {
-                    LogMessage($"{drawItem.IsCorrupted}");
-                    if (drawItem.UniqueItemSettings.DrawIsCorrupted == false && drawItem.IsCorrupted == true)
-                    {
-                        itemsToRemove.Add(drawItem);
-                    }
-                }
-                foreach (var item in itemsToRemove)
-                {
-                    _drawingList.Remove(item);
-                }
-            }
-            return null;
+
+
+            return result;
         }
     }
+
 }

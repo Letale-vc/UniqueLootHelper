@@ -22,6 +22,10 @@ namespace UniqueLootHelper
         public RangeNode<float> BoxPositionY { get; set; } = new RangeNode<float>(576.0f, 0f, 3000f);
 
         public ToggleNode EnableMapDrawing { get; set; } = new(true);
+        public ToggleNode EnableOutlineLebel { get; set; } = new(true);
+        public ToggleNode EnableLabelName { get; set; } = new(true);
+        public ColorNode BackgroundLabel { get; set; } = new(Color.White);
+        public ColorNode TextColor { get; set; } = new(Color.Red);
         public ColorNode MapLineColor
         { get; set; } = new(new Color(214, 0, 255, 255));
         public RangeNode<int> MapLineThickness { get; set; } = new(2, 1, 10);

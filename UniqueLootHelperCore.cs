@@ -71,6 +71,7 @@ namespace UniqueLootHelper
             LineDrawMap = false;
             DrawLabelOutline = true;
             DrawLabelName = true;
+            DrawLabelInBox = true;
         }
     }
 
@@ -296,7 +297,7 @@ namespace UniqueLootHelper
                 {
                     string text = uniqueSettings.Label;
                     var textSize = Graphics.MeasureText(text);
-                    var scale = Math.Min(labelFrame.Width * 1 / textSize.X, (labelFrame.Height - 2) / textSize.Y);
+                    float scale = Math.Min(labelFrame.Width / textSize.X, (labelFrame.Height - 2) / textSize.Y) - 0.2f;
                     ImGui.SetWindowFontScale(scale);
                     var newTextSize = ImGui.CalcTextSize(text);
                     var textPosition = labelFrame.Center.ToVector2Num() - newTextSize / 2;

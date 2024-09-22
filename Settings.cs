@@ -11,7 +11,6 @@ namespace UniqueLootHelper
         public HotkeyNode CopyToClipboardHoverItemPath { get; set; } = new HotkeyNode(Keys.F7);
         public ToggleNode IgnoreFullscreenPanels { get; set; } = new(false);
         public ToggleNode IgnoreRightPanels { get; set; } = new(false);
-        public ColorNode OutlineLabelColor { get; set; } = new ColorNode(SharpDX.Color.Purple);
         public RangeNode<int> LabelFrameThickness { get; set; } = new RangeNode<int>(2, 1, 10);
         public ToggleNode EnableBoxCountDrawing { get; set; } = new(true);
         public ColorNode BoxBackgroundColor { get; set; } = new ColorNode(new Color(0, 0, 0, 200));
@@ -23,9 +22,10 @@ namespace UniqueLootHelper
 
         public ToggleNode EnableMapDrawing { get; set; } = new(true);
         public ToggleNode EnableOutlineLebel { get; set; } = new(true);
+        public ColorNode OutlineLabelColor { get; set; } = new ColorNode(SharpDX.Color.Purple);
         public ToggleNode EnableLabelName { get; set; } = new(true);
         public ColorNode BackgroundLabel { get; set; } = new(Color.White);
-        public ColorNode TextColor { get; set; } = new(Color.Red);
+        public ColorNode TextLabelColor { get; set; } = new(Color.Red);
         public ColorNode MapLineColor
         { get; set; } = new(new Color(214, 0, 255, 255));
         public RangeNode<int> MapLineThickness { get; set; } = new(2, 1, 10);

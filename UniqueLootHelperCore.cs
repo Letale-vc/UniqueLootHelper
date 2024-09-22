@@ -303,7 +303,7 @@ namespace UniqueLootHelper
                     var textPosition = labelFrame.Center.ToVector2Num() - newTextSize / 2;
                     var rectPosition = new Vector2(textPosition.X, labelFrame.Top + 1);
                     drawList.AddRectFilled(labelFrame.TopLeft.ToVector2Num(), labelFrame.BottomRight.ToVector2Num(), Settings.BackgroundLabel.Value.ToImgui());
-                    drawList.AddText(textPosition, Settings.TextLabelColor.Value.ToImgui(), text);
+                    drawList.AddText(textPosition, Settings.LabelTextColor.Value.ToImgui(), text);
                     ImGui.SetWindowFontScale(1);
 
 

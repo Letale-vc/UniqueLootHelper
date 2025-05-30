@@ -7,17 +7,18 @@ using ExileCore.Shared.Cache;
 using ExileCore.Shared.Helpers;
 using ImGuiNET;
 using Newtonsoft.Json;
+using SharpDX;
+using SharpDX.Text;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Color = SharpDX.Color;
 using RectangleF = SharpDX.RectangleF;
 using Vector2 = System.Numerics.Vector2;
-using Color = SharpDX.Color;
-using UniqueLootHelper;
-using System.Dynamic;
 
 namespace UniqueLootHelper
 {
@@ -25,8 +26,7 @@ namespace UniqueLootHelper
     public class CustomItemData
     {
         public Entity Entity;
-        public bool IsCorrupted;
-        public bool IsIdentified;
+        public bool IsCorrupted, IsIdentified;
         public Element Element;
         public Vector2 Location;
         public RectangleF ClientRect;
@@ -56,14 +56,9 @@ namespace UniqueLootHelper
     }
     public class UniqueItemSettings
     {
-        public string ArtPath;
-        public bool DrawLabelOutline;
-        public bool DrawLabelName;
-        public bool LineDrawMap;
-        public bool DrawLabelInBox;
-        public bool LineDrawWorld;
-        public string Label;
-        public bool DrawIsCorrupted = true;
+        public string ArtPath, Label;
+        public bool LineDrawWorld, DrawLabelInBox, DrawLabelOutline,
+                    LineDrawMap, DrawLabelName, DrawIsCorrupted;
         public UniqueItemSettings()
         {
             ArtPath = "";
@@ -72,6 +67,7 @@ namespace UniqueLootHelper
             DrawLabelOutline = true;
             DrawLabelName = true;
             DrawLabelInBox = true;
+            DrawIsCorrupted = true;
         }
     }
 
@@ -80,13 +76,11 @@ namespace UniqueLootHelper
         public static Graphics _graphics;
         private UniqueItemSettings _tempUniqueItemSettings = new();
         private const string FILE_ART_NAME = "UniquesArtworks.json";
-        private string PathArtFile
-        {
-            get { return Path.Combine(ConfigDirectory, FILE_ART_NAME); }
-        }
+        private string PathArtFile => Path.Combine(ConfigDirectory, FILE_ART_NAME);
         private CachedValue<List<CustomItemData>> _groundItems;
-
         private Dictionary<string, UniqueItemSettings> _cashUniqueArtWork = [];
+        private string _importExportText = string.Empty;
+
 
         public UniqueLootHelperCore()
         {
@@ -124,10 +118,15 @@ namespace UniqueLootHelper
 
 
         }
-        public override void Dispose()
+        public override void OnUnload()
         {
             SaveUniquesArtToFile();
-            base.Dispose();
+            base.OnUnload();
+        }
+        public override void OnClose()
+        {
+            SaveUniquesArtToFile();
+            base.OnClose();
         }
         private void SaveUniquesArtToFile()
         {
@@ -147,7 +146,11 @@ namespace UniqueLootHelper
             ImGui.Spacing();
             ImGui.Separator();
             ImGui.Spacing();
-            base.DrawSettings();
+            ImGui.InputText("Import/export##ImportExportText", ref _importExportText, 10240);
+            if (ImGui.Button("Import##ImportState")) Import();
+            ImGui.SameLine();
+            if (ImGui.Button("Export##ExportState")) Export();
+            ImGui.Dummy(new Vector2(0, 20)); base.DrawSettings();
             ImGui.Spacing();
             ImGui.Separator();
             ImGui.Spacing();
@@ -215,7 +218,27 @@ namespace UniqueLootHelper
 
 
         }
+        public void Import()
+        {
+            if (string.IsNullOrEmpty(_importExportText))
+            {
+                LogError("UniqueLootHelper: Import text is empty.");
+                return;
+            }
+            var jsonStr = Encoding.UTF8.GetString(Convert.FromBase64String(_importExportText));
 
+            var import = JsonConvert.DeserializeObject<Dictionary<string, UniqueItemSettings>>(jsonStr);
+            _cashUniqueArtWork = _cashUniqueArtWork.Concat(import).GroupBy(x => x.Key).ToDictionary(g => g.Key, g => g.First().Value);
+            LogMessage($"UniqueLootHelper: Imported {import.Count} unique items from clipboard.");
+        }
+
+        public void Export()
+        {
+            var jsonStr = JsonConvert.SerializeObject(_cashUniqueArtWork);
+            _importExportText = Convert.ToBase64String(Encoding.UTF8.GetBytes(jsonStr));
+            Clipboard.SetClipboardText(_importExportText);
+            LogMsg($"Copy to clipboard: {_importExportText}");
+        }
 
         public override void Render()
         {
@@ -244,7 +267,11 @@ namespace UniqueLootHelper
 
             Entity player = GameController?.Player;
             ImGui.Begin("lmao",
-           ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoFocusOnAppearing | ImGuiWindowFlags.NoNav);
+             ImGuiWindowFlags.NoDecoration
+           | ImGuiWindowFlags.NoBackground
+           | ImGuiWindowFlags.NoInputs
+           | ImGuiWindowFlags.NoFocusOnAppearing
+           | ImGuiWindowFlags.NoNav);
             var drawList = ImGui.GetBackgroundDrawList();
             var countList = new List<string>();
             foreach (var item in _groundItems.Value)
@@ -254,16 +281,13 @@ namespace UniqueLootHelper
                 if (!pathArray.Any(_cashUniqueArtWork.ContainsKey))
                     continue;
 
-
                 var uniqueSettings = _cashUniqueArtWork[pathArray.First(_cashUniqueArtWork.ContainsKey)];
 
                 if (!uniqueSettings.DrawIsCorrupted && item.IsCorrupted)
                     continue;
 
                 if (uniqueSettings.DrawLabelInBox)
-                {
                     countList.Add(uniqueSettings.Label);
-                }
 
                 if (uniqueSettings.LineDrawMap && Settings.EnableMapDrawing && GameController.IngameState.IngameUi.Map.LargeMap.IsVisible)
                 {
@@ -305,17 +329,13 @@ namespace UniqueLootHelper
                     drawList.AddRectFilled(labelFrame.TopLeft.ToVector2Num(), labelFrame.BottomRight.ToVector2Num(), Settings.BackgroundLabel.Value.ToImgui());
                     drawList.AddText(textPosition, Settings.LabelTextColor.Value.ToImgui(), text);
                     ImGui.SetWindowFontScale(1);
-
-
                 }
             }
 
             ImGui.End();
-            if (Settings.EnableBoxCountDrawing)
-            {
-                DrawItemCountInfo(countList);
-            }
 
+            if (Settings.EnableBoxCountDrawing)
+                DrawItemCountInfo(countList);
         }
 
 
@@ -329,9 +349,7 @@ namespace UniqueLootHelper
             var rect = new RectangleF(posX, posY, 230, hight);
             Graphics.DrawBox(rect, Settings.BoxBackgroundColor);
             if (Settings.BoxOutline.Value == true)
-            {
                 Graphics.DrawFrame(rect, Settings.BoxOutlineColor, 2);
-            }
 
             posX += 10;
             posY += 10;

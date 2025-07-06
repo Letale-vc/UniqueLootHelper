@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using Color = SharpDX.Color;
 using RectangleF = SharpDX.RectangleF;
@@ -58,7 +59,7 @@ namespace UniqueLootHelper
     {
         public string ArtPath, Label;
         public bool LineDrawWorld, DrawLabelInBox, DrawLabelOutline,
-                    LineDrawMap, DrawLabelName, DrawIsCorrupted;
+                    LineDrawMap, DrawLabelName, DrawIsCorrupted, PlayValuableSound;
         public UniqueItemSettings()
         {
             ArtPath = "";
@@ -68,6 +69,7 @@ namespace UniqueLootHelper
             DrawLabelName = true;
             DrawLabelInBox = true;
             DrawIsCorrupted = true;
+            PlayValuableSound = false;
         }
     }
 
@@ -80,7 +82,9 @@ namespace UniqueLootHelper
         private CachedValue<List<CustomItemData>> _groundItems;
         private Dictionary<string, UniqueItemSettings> _cashUniqueArtWork = [];
         private string _importExportText = string.Empty;
-
+        internal const string DefaultWav = "default.wav";
+        private readonly Dictionary<uint, bool> _soundCache = [];
+        private Dictionary<string, string> _soundFiles = [];
 
         public UniqueLootHelperCore()
         {
@@ -91,6 +95,7 @@ namespace UniqueLootHelper
             Name = "UniqueLootHelper";
             _cashUniqueArtWork = GetUniqueArtFromFile();
 
+            ReloadSoundList();
             return base.Initialise();
         }
         private void CreateUniqueArtFile()
@@ -98,6 +103,21 @@ namespace UniqueLootHelper
             if (File.Exists(PathArtFile)) return;
             File.WriteAllText(PathArtFile, JsonConvert.SerializeObject(new Dictionary<string, UniqueItemSettings>(), Formatting.Indented));
             LogMessage("UniqueLootHelper: Created new file for unique art");
+        }
+        private void ReloadSoundList()
+        {
+            var defaultFilePath = Path.Join(ConfigDirectory, DefaultWav);
+            if (!File.Exists(defaultFilePath))
+            {
+                using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(DefaultWav);
+                using var file = File.OpenWrite(defaultFilePath);
+                stream.CopyTo(file);
+            }
+
+            _soundFiles = Directory.EnumerateFiles(ConfigDirectory, "*.wav")
+                .Select(x => (Path.GetFileNameWithoutExtension(x), x))
+                .DistinctBy(x => x.Item1, StringComparer.InvariantCultureIgnoreCase)
+                .ToDictionary(x => x.Item1, x => x.x, StringComparer.InvariantCultureIgnoreCase);
         }
 
         private Dictionary<string, UniqueItemSettings> GetUniqueArtFromFile()
@@ -168,8 +188,10 @@ namespace UniqueLootHelper
             ImGui.SameLine();
             ImGui.Checkbox("Draw label in box", ref _tempUniqueItemSettings.DrawLabelInBox);
             ImGui.SameLine();
-
             ImGui.Checkbox("Draw is corrupted", ref _tempUniqueItemSettings.DrawIsCorrupted);
+            ImGui.SameLine();
+            ImGui.Checkbox("Play valuable sound", ref _tempUniqueItemSettings.PlayValuableSound);
+
             if (ImGui.Button("Add Unique"))
             {
                 if (!string.IsNullOrEmpty(_tempUniqueItemSettings.ArtPath) && !string.IsNullOrEmpty(_tempUniqueItemSettings.Label))
@@ -192,6 +214,7 @@ namespace UniqueLootHelper
 
                 }
             }
+
             ImGui.Spacing();
             ImGui.Separator();
             ImGui.Spacing();
@@ -289,6 +312,44 @@ namespace UniqueLootHelper
                 if (uniqueSettings.DrawLabelInBox)
                     countList.Add(uniqueSettings.Label);
 
+                if (Settings.SoundNotificationSettings.Enabled && uniqueSettings.PlayValuableSound)
+                {
+                    if (!_soundCache.ContainsKey(item.Entity.Id))
+                    {
+                        if (_soundCache.TryAdd(item.Entity.Id, true))
+                        {
+                            if (!_soundFiles.TryGetValue(uniqueSettings.ArtPath, out var soundFilePath))
+                            {
+                                soundFilePath = Path.Join(ConfigDirectory, uniqueSettings.ArtPath);
+                            }
+
+                            if (File.Exists(soundFilePath))
+                            {
+                                GameController.SoundController.PlaySound(soundFilePath, Settings.SoundNotificationSettings.Volume);
+                                LogMessage($"UniqueLootHelper: Playing sound for {uniqueSettings.Label} from {soundFilePath}");
+                            }
+                            else
+                            {
+                                LogError($"UniqueLootHelper: Sound file {soundFilePath} not found for {uniqueSettings.Label}");
+                            }
+                        }
+
+                        var defaultFile = Path.Join(ConfigDirectory, "default.wav");
+
+                        var fileToPlay = defaultFile;
+
+                        if (File.Exists(fileToPlay))
+                        {
+                            GameController.SoundController.PlaySound(fileToPlay, Settings.SoundNotificationSettings.Volume);
+                        }
+                        else if (fileToPlay == defaultFile)
+                        {
+                            LogError(
+                                $"Unable to find the default sound file ({defaultFile}) to play. Disable the sound notification feature, reload the sound list to let the plugin create it, or create it yourself");
+                        }
+                    }
+
+                }
                 if (uniqueSettings.LineDrawMap && Settings.EnableMapDrawing && GameController.IngameState.IngameUi.Map.LargeMap.IsVisible)
                 {
                     var itemMapPost = GameController.IngameState.Data.GetGridMapScreenPosition(item.Location);
@@ -310,6 +371,7 @@ namespace UniqueLootHelper
                             Settings.WorldMapLineThickness,
                             Settings.WorldMapLineColor);
                 }
+
 
                 var labelFrame = item.Element.GetClientRect();
                 if (Settings.EnableOutlineLebel && uniqueSettings.DrawLabelOutline)
@@ -337,6 +399,7 @@ namespace UniqueLootHelper
             if (Settings.EnableBoxCountDrawing)
                 DrawItemCountInfo(countList);
         }
+
 
 
         private void DrawItemCountInfo(List<string> countList)
@@ -388,6 +451,10 @@ namespace UniqueLootHelper
             }
 
 
+            foreach (var id in _soundCache.Keys.Except(result.Select(x => x.Entity.Id)).ToList())
+            {
+                _soundCache.Remove(id);
+            }
             return result;
         }
     }

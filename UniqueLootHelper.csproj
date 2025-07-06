@@ -12,6 +12,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="default.wav" LogicalName="default.wav">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <!--Rather than replacing this with absolute or relative paths, you should create an environment variable for wherever your HUD folder is-->
     <Reference Include="ExileCore">
       <HintPath>$(exapiPackage)\ExileCore.dll</HintPath>

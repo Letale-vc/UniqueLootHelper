@@ -7,17 +7,14 @@ using ExileCore.Shared.Cache;
 using ExileCore.Shared.Helpers;
 using ImGuiNET;
 using Newtonsoft.Json;
-using SharpDX;
-using SharpDX.Text;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
-using Color = SharpDX.Color;
+using Encoding = System.Text.Encoding;
 using RectangleF = SharpDX.RectangleF;
 using Vector2 = System.Numerics.Vector2;
 
@@ -26,107 +23,133 @@ namespace UniqueLootHelper
 
     public class CustomItemData
     {
-        public Entity Entity;
-        public bool IsCorrupted, IsIdentified;
-        public Element Element;
-        public Vector2 Location;
+        public readonly uint Id;
+        public readonly Element Element;
+        public readonly Entity Entity;
+        public readonly bool IsCorrupted;
+        public readonly bool IsIdentified;
+        public readonly string ResourcePath = string.Empty;
         public RectangleF ClientRect;
-        public string ResourcePath = string.Empty;
+        public Vector2 Location;
         public CustomItemData(Entity entity, Element element, Vector2 location)
         {
+            Id = entity.Id;
             Entity = entity;
             Element = element;
             Location = location;
 
-            if (entity.TryGetComponent<RenderItem>(out var renderItem))
+            if (entity.TryGetComponent<RenderItem>(out RenderItem renderItem))
             {
-                ResourcePath = entity.GetComponent<RenderItem>().ResourcePath;
+                ResourcePath = renderItem.ResourcePath;
             }
-            if (entity.TryGetComponent<Base>(out var @base))
+            if (entity.TryGetComponent<Base>(out Base @base))
             {
                 IsCorrupted = @base.isCorrupted;
             }
-            if (entity.TryGetComponent<Mods>(out var mods))
+            if (entity.TryGetComponent<Mods>(out Mods mods))
             {
                 IsIdentified = mods.Identified;
             }
 
         }
-
-
     }
     public class UniqueItemSettings
     {
-        public string ArtPath, Label;
-        public bool LineDrawWorld, DrawLabelInBox, DrawLabelOutline,
-                    LineDrawMap, DrawLabelName, DrawIsCorrupted, PlayValuableSound;
-        public UniqueItemSettings()
-        {
-            ArtPath = "";
-            Label = "";
-            LineDrawMap = false;
-            DrawLabelOutline = true;
-            DrawLabelName = true;
-            DrawLabelInBox = true;
-            DrawIsCorrupted = true;
-            PlayValuableSound = false;
-        }
+        public string ArtPath = "", Label = "";
+        public bool LineDrawWorld,
+            DrawLabelInBox = true,
+            DrawLabelOutline = true,
+            LineDrawMap,
+            DrawLabelName = true,
+            DrawIsCorrupted = true,
+            PlayValuableSound;
     }
 
     public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
     {
+        private const string FileArtName = "UniquesArtworks.json";
+        private const string FileStatisticsName = "Statistics.json";
+        public const string DefaultWav = "default.wav";
         public static Graphics _graphics;
-        private UniqueItemSettings _tempUniqueItemSettings = new();
-        private const string FILE_ART_NAME = "UniquesArtworks.json";
-        private string PathArtFile => Path.Combine(ConfigDirectory, FILE_ART_NAME);
-        private CachedValue<List<CustomItemData>> _groundItems;
-        private Dictionary<string, UniqueItemSettings> _cashUniqueArtWork = [];
-        private string _importExportText = string.Empty;
-        internal const string DefaultWav = "default.wav";
+        private readonly CachedValue<List<CustomItemData>> _groundItems;
         private readonly Dictionary<uint, bool> _soundCache = [];
+        private readonly HashSet<uint> _statisticsCache = [];
+        private Dictionary<string, UniqueItemSettings> _cacheUniqueArtWork = [];
+        private ItemStatistics _itemStatistics = new();
+        private string _importExportText = string.Empty;
         private Dictionary<string, string> _soundFiles = [];
+        private UniqueItemSettings _tempUniqueItemSettings = new();
+        private bool _showStatisticsWindow = false;
 
         public UniqueLootHelperCore()
         {
             _groundItems = new FrameCache<List<CustomItemData>>(CacheUtils.RememberLastValue(GetItemsOnGround, new List<CustomItemData>()));
         }
+        private string PathArtFile => Path.Combine(ConfigDirectory, FileArtName);
+        private string PathStatisticsFile => Path.Combine(ConfigDirectory, FileStatisticsName);
+
         public override bool Initialise()
         {
             Name = "UniqueLootHelper";
-            _cashUniqueArtWork = GetUniqueArtFromFile();
+            _cacheUniqueArtWork = GetUniqueArtFromFile();
+            _itemStatistics = LoadStatistics();
+
+            Settings.SoundNotificationSettings.ResetEntityNotificationFlags.OnPressed += () =>
+            {
+                _soundCache.Clear();
+            };
+            Settings.SoundNotificationSettings.OpenConfigDirectory.OnPressed += () =>
+            {
+                Process.Start("explorer.exe", ConfigDirectory);
+            };
+            Settings.SoundNotificationSettings.ReloadSoundList.OnPressed += ReloadSoundList;
 
             ReloadSoundList();
             return base.Initialise();
         }
         private void CreateUniqueArtFile()
         {
-            if (File.Exists(PathArtFile)) return;
+            if (File.Exists(PathArtFile))
+            {
+                return;
+            }
             File.WriteAllText(PathArtFile, JsonConvert.SerializeObject(new Dictionary<string, UniqueItemSettings>(), Formatting.Indented));
             LogMessage("UniqueLootHelper: Created new file for unique art");
         }
         private void ReloadSoundList()
         {
-            var defaultFilePath = Path.Join(ConfigDirectory, DefaultWav);
+            string defaultFilePath = Path.Join(ConfigDirectory, DefaultWav);
             if (!File.Exists(defaultFilePath))
             {
-                using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(DefaultWav);
-                using var file = File.OpenWrite(defaultFilePath);
-                stream.CopyTo(file);
+                using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(DefaultWav);
+                using FileStream file = File.OpenWrite(defaultFilePath);
+                if (stream != null)
+                {
+                    stream.CopyTo(file);
+                }
             }
 
             _soundFiles = Directory.EnumerateFiles(ConfigDirectory, "*.wav")
                 .Select(x => (Path.GetFileNameWithoutExtension(x), x))
                 .DistinctBy(x => x.Item1, StringComparer.InvariantCultureIgnoreCase)
                 .ToDictionary(x => x.Item1, x => x.x, StringComparer.InvariantCultureIgnoreCase);
+
+            foreach (var soundFile in _soundFiles)
+            {
+                LogMessage($"UniqueLootHelper: Loaded sound file {soundFile.Value}, key: {soundFile.Key}");
+            }
         }
 
         private Dictionary<string, UniqueItemSettings> GetUniqueArtFromFile()
         {
 
-            if (!File.Exists(PathArtFile)) CreateUniqueArtFile();
+            if (!File.Exists(PathArtFile))
+            {
+                CreateUniqueArtFile();
+            }
             try
             {
-                var uniqueArtItemList = JsonConvert.DeserializeObject<Dictionary<string, UniqueItemSettings>>(File.ReadAllText(PathArtFile));
+                Dictionary<string, UniqueItemSettings> uniqueArtItemList = JsonConvert.DeserializeObject<Dictionary<string, UniqueItemSettings>>(File.ReadAllText(PathArtFile));
                 return uniqueArtItemList;
             }
             catch (Exception)
@@ -135,24 +158,66 @@ namespace UniqueLootHelper
                 CreateUniqueArtFile();
                 return [];
             }
-
-
         }
+
+        private ItemStatistics LoadStatistics()
+        {
+            if (!File.Exists(PathStatisticsFile))
+            {
+                return new ItemStatistics();
+            }
+
+            try
+            {
+                string json = File.ReadAllText(PathStatisticsFile);
+                var statistics = JsonConvert.DeserializeObject<ItemStatistics>(json);
+                if (statistics != null)
+                {
+                    statistics.ResetSessionStatistics();
+                    return statistics;
+                }
+                return new ItemStatistics();
+            }
+            catch (Exception ex)
+            {
+                LogError($"UniqueLootHelper: Failed to load statistics: {ex.Message}");
+                return new ItemStatistics();
+            }
+        }
+
+        private void SaveStatistics()
+        {
+            try
+            {
+                string json = JsonConvert.SerializeObject(_itemStatistics, Formatting.Indented);
+                File.WriteAllText(PathStatisticsFile, json);
+                LogMessage("UniqueLootHelper: Saved statistics to file");
+            }
+            catch (Exception ex)
+            {
+                LogError($"UniqueLootHelper: Failed to save statistics: {ex.Message}");
+            }
+        }
+
         public override void OnUnload()
         {
             SaveUniquesArtToFile();
+            SaveStatistics();
             base.OnUnload();
         }
         public override void OnClose()
         {
             SaveUniquesArtToFile();
+            SaveStatistics();
             base.OnClose();
         }
         private void SaveUniquesArtToFile()
         {
             if (!File.Exists(PathArtFile))
+            {
                 CreateUniqueArtFile();
-            File.WriteAllText(PathArtFile, JsonConvert.SerializeObject(_cashUniqueArtWork, Formatting.Indented));
+            }
+            File.WriteAllText(PathArtFile, JsonConvert.SerializeObject(_cacheUniqueArtWork, Formatting.Indented));
             LogMessage("UniqueLootHelper: Saved unique art to file");
         }
 
@@ -163,14 +228,26 @@ namespace UniqueLootHelper
             {
                 Process.Start("explorer.exe", ConfigDirectory);
             }
+            ImGui.SameLine();
+            if (ImGui.Button("Show Statistics"))
+            {
+                _showStatisticsWindow = !_showStatisticsWindow;
+            }
             ImGui.Spacing();
             ImGui.Separator();
             ImGui.Spacing();
             ImGui.InputText("Import/export##ImportExportText", ref _importExportText, 10240);
-            if (ImGui.Button("Import##ImportState")) Import();
+            if (ImGui.Button("Import##ImportState"))
+            {
+                Import();
+            }
             ImGui.SameLine();
-            if (ImGui.Button("Export##ExportState")) Export();
-            ImGui.Dummy(new Vector2(0, 20)); base.DrawSettings();
+            if (ImGui.Button("Export##ExportState"))
+            {
+                Export();
+            }
+            ImGui.Dummy(new Vector2(0, 20));
+            base.DrawSettings();
             ImGui.Spacing();
             ImGui.Separator();
             ImGui.Spacing();
@@ -184,7 +261,7 @@ namespace UniqueLootHelper
             ImGui.SameLine();
             ImGui.Checkbox("Draw outline", ref _tempUniqueItemSettings.DrawLabelOutline);
             ImGui.SameLine();
-            ImGui.Checkbox("Draw real name", ref _tempUniqueItemSettings.DrawLabelName);
+            ImGui.Checkbox("Draw Label name", ref _tempUniqueItemSettings.DrawLabelName);
             ImGui.SameLine();
             ImGui.Checkbox("Draw label in box", ref _tempUniqueItemSettings.DrawLabelInBox);
             ImGui.SameLine();
@@ -197,20 +274,20 @@ namespace UniqueLootHelper
                 if (!string.IsNullOrEmpty(_tempUniqueItemSettings.ArtPath) && !string.IsNullOrEmpty(_tempUniqueItemSettings.Label))
                 {
                     string key = _tempUniqueItemSettings.ArtPath;
-                    if (_cashUniqueArtWork.TryGetValue(key, out _))
+                    if (_cacheUniqueArtWork.TryGetValue(key, out _))
                     {
                         // Key exists, update the value
-                        _cashUniqueArtWork[key] = _tempUniqueItemSettings;
+                        _cacheUniqueArtWork[key] = _tempUniqueItemSettings;
                         LogMessage($"UniqueLootHelper: Updated {key} in unique list");
                     }
                     else
                     {
                         // Key does not exist, add new key-value pair
-                        _cashUniqueArtWork.Add(key, _tempUniqueItemSettings);
+                        _cacheUniqueArtWork.Add(key, _tempUniqueItemSettings);
                         LogMessage($"UniqueLootHelper: Added {key} to unique list");
                     }
 
-                    _tempUniqueItemSettings = new();
+                    _tempUniqueItemSettings = new UniqueItemSettings();
 
                 }
             }
@@ -219,7 +296,7 @@ namespace UniqueLootHelper
             ImGui.Separator();
             ImGui.Spacing();
             ImGui.Text("Uniques list:");
-            foreach (var uniqueArtItem in _cashUniqueArtWork)
+            foreach (KeyValuePair<string, UniqueItemSettings> uniqueArtItem in _cacheUniqueArtWork)
             {
                 ImGui.Text($"{uniqueArtItem.Key} - {uniqueArtItem.Value.Label}");
                 ImGui.SameLine();
@@ -227,13 +304,14 @@ namespace UniqueLootHelper
                 {
                     _tempUniqueItemSettings = uniqueArtItem.Value;
 
-                    LogMessage($"UniqueLootHelper: Removed {uniqueArtItem.Key} from unique list");
-
+                    LogMessage($"UniqueLootHelper: Editing {uniqueArtItem.Key} from unique list");
                 }
+
                 ImGui.SameLine();
+
                 if (ImGui.Button($"Delete##{uniqueArtItem.Key}"))
                 {
-                    _cashUniqueArtWork.Remove(uniqueArtItem.Key);
+                    _cacheUniqueArtWork.Remove(uniqueArtItem.Key);
 
                     LogMessage($"UniqueLootHelper: Removed {uniqueArtItem.Key} from unique list");
                 }
@@ -241,23 +319,108 @@ namespace UniqueLootHelper
 
 
         }
-        public void Import()
+
+        private void DrawStatisticsWindow()
+        {
+            if (!_showStatisticsWindow)
+            {
+                return;
+            }
+
+            ImGui.SetNextWindowSize(new Vector2(900, 450), ImGuiCond.FirstUseEver);
+            if (ImGui.Begin("Unique Items Statistics", ref _showStatisticsWindow))
+            {
+                ImGui.Text($"Session Start: {_itemStatistics.SessionStartTime:yyyy-MM-dd HH:mm:ss}");
+                ImGui.Text($"Total Items Found This Session: {_itemStatistics.TotalItemsFoundInSession}");
+                ImGui.Text($"Session Duration: {DateTime.Now - _itemStatistics.SessionStartTime:hh\\:mm\\:ss}");
+
+                if (ImGui.Button("Reset Session Statistics"))
+                {
+                    _itemStatistics.ResetSessionStatistics();
+                    LogMessage("UniqueLootHelper: Reset session statistics");
+                }
+                ImGui.SameLine();
+                if (ImGui.Button("Reset All Statistics"))
+                {
+                    _itemStatistics = new ItemStatistics();
+                    SaveStatistics();
+                    LogMessage("UniqueLootHelper: Reset all statistics");
+                }
+                ImGui.SameLine();
+                if (ImGui.Button("Save Statistics"))
+                {
+                    SaveStatistics();
+                }
+
+                ImGui.Separator();
+                ImGui.Spacing();
+
+                if (ImGui.BeginTable("StatisticsTable", 6, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg | ImGuiTableFlags.Resizable | ImGuiTableFlags.Sortable | ImGuiTableFlags.ScrollY))
+                {
+                    ImGui.TableSetupColumn("Label", ImGuiTableColumnFlags.WidthFixed, 200);
+                    ImGui.TableSetupColumn("ArtPath", ImGuiTableColumnFlags.WidthStretch);
+                    ImGui.TableSetupColumn("Total Found", ImGuiTableColumnFlags.WidthFixed, 100);
+                    ImGui.TableSetupColumn("This Session", ImGuiTableColumnFlags.WidthFixed, 100);
+                    ImGui.TableSetupColumn("First Discovery", ImGuiTableColumnFlags.WidthFixed, 140);
+                    ImGui.TableSetupColumn("Last Discovery", ImGuiTableColumnFlags.WidthFixed, 140);
+                    ImGui.TableHeadersRow();
+
+                    var sortedStats = _itemStatistics.Statistics
+                        .OrderByDescending(x => x.Value.TotalFound)
+                        .ToList();
+
+                    foreach (var stat in sortedStats)
+                    {
+                        // stat.Key is ArtPath
+                        string artPath = stat.Key;
+                        string label = _cacheUniqueArtWork.TryGetValue(artPath, out var settings) && !string.IsNullOrEmpty(settings.Label)
+                            ? settings.Label
+                            : "N/A";
+
+                        ImGui.TableNextRow();
+
+                        ImGui.TableNextColumn();
+                        ImGui.Text(label);
+
+                        ImGui.TableNextColumn();
+                        ImGui.Text(artPath);
+
+                        ImGui.TableNextColumn();
+                        ImGui.Text(stat.Value.TotalFound.ToString());
+
+                        ImGui.TableNextColumn();
+                        ImGui.Text(stat.Value.FoundInCurrentSession.ToString());
+
+                        ImGui.TableNextColumn();
+                        ImGui.Text(stat.Value.FirstDiscoveryTime?.ToString("yyyy-MM-dd HH:mm") ?? "N/A");
+
+                        ImGui.TableNextColumn();
+                        ImGui.Text(stat.Value.LastDiscoveryTime?.ToString("yyyy-MM-dd HH:mm") ?? "N/A");
+                    }
+
+                    ImGui.EndTable();
+                }
+            }
+            ImGui.End();
+        }
+
+        private void Import()
         {
             if (string.IsNullOrEmpty(_importExportText))
             {
                 LogError("UniqueLootHelper: Import text is empty.");
                 return;
             }
-            var jsonStr = Encoding.UTF8.GetString(Convert.FromBase64String(_importExportText));
+            string jsonStr = Encoding.UTF8.GetString(Convert.FromBase64String(_importExportText));
 
-            var import = JsonConvert.DeserializeObject<Dictionary<string, UniqueItemSettings>>(jsonStr);
-            _cashUniqueArtWork = _cashUniqueArtWork.Concat(import).GroupBy(x => x.Key).ToDictionary(g => g.Key, g => g.First().Value);
+            Dictionary<string, UniqueItemSettings> import = JsonConvert.DeserializeObject<Dictionary<string, UniqueItemSettings>>(jsonStr);
+            _cacheUniqueArtWork = _cacheUniqueArtWork.Concat(import).GroupBy(x => x.Key).ToDictionary(g => g.Key, g => g.First().Value);
             LogMessage($"UniqueLootHelper: Imported {import.Count} unique items from clipboard.");
         }
 
         public void Export()
         {
-            var jsonStr = JsonConvert.SerializeObject(_cashUniqueArtWork);
+            string jsonStr = JsonConvert.SerializeObject(_cacheUniqueArtWork);
             _importExportText = Convert.ToBase64String(Encoding.UTF8.GetBytes(jsonStr));
             Clipboard.SetClipboardText(_importExportText);
             LogMsg($"Copy to clipboard: {_importExportText}");
@@ -265,19 +428,28 @@ namespace UniqueLootHelper
 
         public override void Render()
         {
+            DrawStatisticsWindow();
+
             if (Input.IsKeyDown(Keys.F7))
             {
 
-                var hoverItem = GameController.Game.IngameState.UIHover.AsObject<HoverItemIcon>();
-                if (hoverItem == null) return;
-                var renderItem = hoverItem.Item.GetComponent<RenderItem>();
-                if (renderItem == null) return;
+                HoverItemIcon hoverItem = GameController.Game.IngameState.UIHover.AsObject<HoverItemIcon>();
+                if (hoverItem == null)
+                {
+                    return;
+                }
+                RenderItem renderItem = hoverItem.Item.GetComponent<RenderItem>();
+                if (renderItem == null)
+                {
+                    return;
+                }
                 ImGui.SetClipboardText(renderItem.ResourcePath);
                 LogMessage($"UniqueLootHelper: Copied {renderItem.ResourcePath} to clipboard");
 
             }
 
-            var inGameUi = GameController.Game.IngameState.IngameUi;
+            IngameUIElements inGameUi = GameController.Game.IngameState.IngameUi;
+
             if (!Settings.IgnoreFullscreenPanels && inGameUi.FullscreenPanels.Any(x => x.IsVisible))
             {
                 return;
@@ -290,38 +462,61 @@ namespace UniqueLootHelper
 
             Entity player = GameController?.Player;
             ImGui.Begin("lmao",
-             ImGuiWindowFlags.NoDecoration
-           | ImGuiWindowFlags.NoBackground
-           | ImGuiWindowFlags.NoInputs
-           | ImGuiWindowFlags.NoFocusOnAppearing
-           | ImGuiWindowFlags.NoNav);
-            var drawList = ImGui.GetBackgroundDrawList();
-            var countList = new List<string>();
-            foreach (var item in _groundItems.Value)
+                ImGuiWindowFlags.NoDecoration
+                | ImGuiWindowFlags.NoBackground
+                | ImGuiWindowFlags.NoInputs
+                | ImGuiWindowFlags.NoFocusOnAppearing
+                | ImGuiWindowFlags.NoNav);
+            ImDrawListPtr drawList = ImGui.GetBackgroundDrawList();
+            List<string> countList = new();
+
+            foreach (CustomItemData item in _groundItems.Value)
             {
                 string[] pathArray = [item.ResourcePath, item.ResourcePath + ".dds", item.ResourcePath.Replace(".dds", "")];
 
-                if (!pathArray.Any(_cashUniqueArtWork.ContainsKey))
+                if (!pathArray.Any(_cacheUniqueArtWork.ContainsKey))
+                {
                     continue;
+                }
 
-                var uniqueSettings = _cashUniqueArtWork[pathArray.First(_cashUniqueArtWork.ContainsKey)];
+                string matchedKey = pathArray.First(_cacheUniqueArtWork.ContainsKey);
+                UniqueItemSettings uniqueSettings = _cacheUniqueArtWork[matchedKey];
 
                 if (!uniqueSettings.DrawIsCorrupted && item.IsCorrupted)
+                {
                     continue;
+                }
+
+                // Record statistics
+                if (!_statisticsCache.Contains(item.Id))
+                {
+                    _statisticsCache.Add(item.Id);
+                    _itemStatistics.RecordItemFound(matchedKey);
+                }
 
                 if (uniqueSettings.DrawLabelInBox)
-                    countList.Add(uniqueSettings.Label);
+                {
+                    if (string.IsNullOrEmpty(uniqueSettings.Label))
+                    {
+                        countList.Add(item.Entity.RenderName ?? "Unknown Item");
+
+                    }
+                    else
+                    {
+                        countList.Add(uniqueSettings.Label);
+                    }
+
+                }
 
                 if (Settings.SoundNotificationSettings.Enabled && uniqueSettings.PlayValuableSound)
                 {
-                    if (!_soundCache.ContainsKey(item.Entity.Id))
+
+                    if (!_soundCache.ContainsKey(item.Id))
                     {
-                        if (_soundCache.TryAdd(item.Entity.Id, true))
+                        if (_soundCache.TryAdd(item.Id, true))
                         {
-                            if (!_soundFiles.TryGetValue(uniqueSettings.ArtPath, out var soundFilePath))
-                            {
-                                soundFilePath = Path.Join(ConfigDirectory, uniqueSettings.ArtPath);
-                            }
+                            string defaultFile = Path.Join(ConfigDirectory, DefaultWav);
+                            string soundFilePath = _soundFiles.GetValueOrDefault(uniqueSettings.Label, defaultFile);
 
                             if (File.Exists(soundFilePath))
                             {
@@ -333,113 +528,112 @@ namespace UniqueLootHelper
                                 LogError($"UniqueLootHelper: Sound file {soundFilePath} not found for {uniqueSettings.Label}");
                             }
                         }
-
-                        var defaultFile = Path.Join(ConfigDirectory, "default.wav");
-
-                        var fileToPlay = defaultFile;
-
-                        if (File.Exists(fileToPlay))
-                        {
-                            GameController.SoundController.PlaySound(fileToPlay, Settings.SoundNotificationSettings.Volume);
-                        }
-                        else if (fileToPlay == defaultFile)
-                        {
-                            LogError(
-                                $"Unable to find the default sound file ({defaultFile}) to play. Disable the sound notification feature, reload the sound list to let the plugin create it, or create it yourself");
-                        }
                     }
+                }
 
-                }
-                if (uniqueSettings.LineDrawMap && Settings.EnableMapDrawing && GameController.IngameState.IngameUi.Map.LargeMap.IsVisible)
+                if (uniqueSettings.LineDrawMap && Settings.MapDrawingSettings.EnableMapDrawing && GameController.IngameState.IngameUi.Map.LargeMap.IsVisible)
                 {
-                    var itemMapPost = GameController.IngameState.Data.GetGridMapScreenPosition(item.Location);
-                    var playerMapPost = GameController.IngameState.Data.GetGridMapScreenPosition(player.GridPosNum);
+                    Vector2 itemMapPost = GameController.IngameState.Data.GetGridMapScreenPosition(item.Location);
+                    Vector2 playerMapPost = GameController.IngameState.Data.GetGridMapScreenPosition(player.GridPosNum);
                     Graphics.DrawLine(
-                    itemMapPost,
-                    playerMapPost,
-                    Settings.MapLineThickness,
-                    Settings.MapLineColor
-                );
+                        itemMapPost,
+                        playerMapPost,
+                        Settings.MapDrawingSettings.MapLineThickness,
+                        Settings.MapDrawingSettings.MapLineColor
+                    );
                 }
-                if (Settings.WorldMapDrawing && uniqueSettings.LineDrawWorld)
+
+                if (Settings.MapDrawingSettings.WorldMapDrawing && uniqueSettings.LineDrawWorld)
                 {
-                    var itemWorldPos = GameController.IngameState.Data.GetGridScreenPosition(item.Location);
+                    Vector2 itemWorldPos = GameController.IngameState.Data.GetGridScreenPosition(item.Location);
                     Vector2 playerWorldPos = GameController.IngameState.Data.GetGridScreenPosition(player.GridPosNum);
                     Graphics.DrawLine(
-                           playerWorldPos,
-                           itemWorldPos,
-                            Settings.WorldMapLineThickness,
-                            Settings.WorldMapLineColor);
+                        playerWorldPos,
+                        itemWorldPos,
+                        Settings.MapDrawingSettings.WorldMapLineThickness,
+                        Settings.MapDrawingSettings.WorldMapLineColor);
                 }
 
+                RectangleF labelFrame = item.Element.GetClientRect();
 
-                var labelFrame = item.Element.GetClientRect();
-                if (Settings.EnableOutlineLebel && uniqueSettings.DrawLabelOutline)
+                if (Settings.LabelDrawingSettings.EnableOutlineLebel && uniqueSettings.DrawLabelOutline)
                 {
 
-                    Graphics.DrawFrame(labelFrame, Settings.OutlineLabelColor, Settings.LabelFrameThickness);
+                    Graphics.DrawFrame(labelFrame, Settings.LabelDrawingSettings.OutlineLabelColor, Settings.LabelDrawingSettings.LabelFrameThickness);
                 }
-                if (Settings.EnableLabelName && uniqueSettings.DrawLabelName && !item.IsIdentified)
+
+                if (Settings.LabelDrawingSettings.EnableLabelName && uniqueSettings.DrawLabelName && !item.IsIdentified)
                 {
-                    string text = uniqueSettings.Label;
-                    var textSize = Graphics.MeasureText(text);
+                    string text = uniqueSettings.Label ?? item.Entity.RenderName ?? "Unknown Item";
+                    Vector2 textSize = Graphics.MeasureText(text);
                     float scale = Math.Min(labelFrame.Width / textSize.X, (labelFrame.Height - 2) / textSize.Y) - 0.2f;
                     ImGui.SetWindowFontScale(scale);
-                    var newTextSize = ImGui.CalcTextSize(text);
-                    var textPosition = labelFrame.Center.ToVector2Num() - newTextSize / 2;
-                    var rectPosition = new Vector2(textPosition.X, labelFrame.Top + 1);
-                    drawList.AddRectFilled(labelFrame.TopLeft.ToVector2Num(), labelFrame.BottomRight.ToVector2Num(), Settings.BackgroundLabel.Value.ToImgui());
-                    drawList.AddText(textPosition, Settings.LabelTextColor.Value.ToImgui(), text);
+                    Vector2 newTextSize = ImGui.CalcTextSize(text);
+                    Vector2 textPosition = labelFrame.Center.ToVector2Num() - newTextSize / 2;
+                    Vector2 rectPosition = new(textPosition.X, labelFrame.Top + 1);
+                    drawList.AddRectFilled(labelFrame.TopLeft.ToVector2Num(), labelFrame.BottomRight.ToVector2Num(), Settings.LabelDrawingSettings.BackgroundLabel.Value.ToImgui());
+                    drawList.AddText(textPosition, Settings.LabelDrawingSettings.LabelTextColor.Value.ToImgui(), text);
                     ImGui.SetWindowFontScale(1);
                 }
             }
 
             ImGui.End();
 
-            if (Settings.EnableBoxCountDrawing)
+            if (Settings.BoxSettings.EnableBoxCountDrawing)
+            {
                 DrawItemCountInfo(countList);
+            }
         }
-
-
 
         private void DrawItemCountInfo(List<string> countList)
         {
-            if (countList.Count == 0) return;
-            var labelCount = countList.GroupBy(x => x).ToDictionary(group => group.Key, group => group.Count());
-            var posX = Settings.BoxPositionX.Value;
-            var posY = Settings.BoxPositionY.Value;
-            var hight = labelCount.Count * 20 + 20;
-            var rect = new RectangleF(posX, posY, 230, hight);
-            Graphics.DrawBox(rect, Settings.BoxBackgroundColor);
-            if (Settings.BoxOutline.Value == true)
-                Graphics.DrawFrame(rect, Settings.BoxOutlineColor, 2);
+            if (countList.Count == 0)
+            {
+                return;
+            }
+            Dictionary<string, int> labelCount = countList.GroupBy(x => x).ToDictionary(group => group.Key, group => group.Count());
+            float posX = Settings.BoxSettings.BoxPositionX.Value;
+            float posY = Settings.BoxSettings.BoxPositionY.Value;
+            int hight = labelCount.Count * 20 + 20;
+            RectangleF rect = new(posX, posY, 230, hight);
+            Graphics.DrawBox(rect, Settings.BoxSettings.BoxBackgroundColor);
+
+            if (Settings.BoxSettings.BoxOutline.Value)
+            {
+                Graphics.DrawFrame(rect, Settings.BoxSettings.BoxOutlineColor, 2);
+            }
 
             posX += 10;
             posY += 10;
 
-
-            foreach (var item in labelCount)
+            foreach (KeyValuePair<string, int> item in labelCount)
             {
-                Graphics.DrawText($"{item.Key}: {item.Value}", new Vector2(posX, posY), Settings.BoxTextColor);
+                Graphics.DrawText($"{item.Key}: {item.Value}", new Vector2(posX, posY), Settings.BoxSettings.BoxTextColor);
                 posY += 20;
             }
+        }
+        public override void AreaChange(AreaInstance area)
+        {
+            _soundCache.Clear();
+            _statisticsCache.Clear();
+            SaveStatistics();
         }
 
         private List<CustomItemData> GetItemsOnGround(List<CustomItemData> previousValue)
         {
-            var prevDict = previousValue
+            Dictionary<(long?, long?), CustomItemData> prevDict = previousValue
                 .DistinctBy(x => (x.Entity?.Address, x.Element?.Address))
                 .ToDictionary(x => (x.Element?.Address, x.Entity?.Address));
-            var labelsOnGround = GameController.IngameState.IngameUi.ItemsOnGroundLabelElement.VisibleGroundItemLabels;
-            var result = new List<CustomItemData>();
+            List<ItemsOnGroundLabelElement.VisibleGroundItemDescription> labelsOnGround = GameController.IngameState.IngameUi.ItemsOnGroundLabelElement.VisibleGroundItemLabels;
+            List<CustomItemData> result = new();
 
-            foreach (var description in labelsOnGround)
+            foreach (ItemsOnGroundLabelElement.VisibleGroundItemDescription description in labelsOnGround)
             {
-                if (description.Entity.TryGetComponent<WorldItem>(out var worldItem) &&
+                if (description.Entity.TryGetComponent<WorldItem>(out WorldItem worldItem) &&
                     worldItem.ItemEntity is { IsValid: true } groundItemEntity)
                 {
 
-                    var customItem = prevDict.GetValueOrDefault((description.Label?.Address, groundItemEntity.Address));
+                    CustomItemData customItem = prevDict.GetValueOrDefault((description.Label?.Address, groundItemEntity.Address));
 
                     if (customItem == null)
                     {
@@ -450,11 +644,6 @@ namespace UniqueLootHelper
                 }
             }
 
-
-            foreach (var id in _soundCache.Keys.Except(result.Select(x => x.Entity.Id)).ToList())
-            {
-                _soundCache.Remove(id);
-            }
             return result;
         }
     }

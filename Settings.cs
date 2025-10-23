@@ -5,6 +5,8 @@ using ExileCore.Shared.Nodes;
 using ImGuiNET;
 using Newtonsoft.Json;
 using SharpDX;
+using UniqueLootHelper.Managers;
+using Vector4 = System.Numerics.Vector4;
 
 namespace UniqueLootHelper
 {
@@ -18,9 +20,9 @@ namespace UniqueLootHelper
         public MapDrawingSettings MapDrawingSettings { get; set; } = new();
         public ToggleNode UseCorruptedFilter { get; set; } = new(false);
         public SoundNotificationSettings SoundNotificationSettings { get; set; } = new();
+        public ProfilerSettings ProfilerSettings { get; set; } = new();
         public ToggleNode Enable { get; set; } = new(false);
     }
-
 
     [Submenu(CollapsedByDefault = true)]
     public class LabelDrawingSettings
@@ -33,7 +35,17 @@ namespace UniqueLootHelper
         public ToggleNode EnableLabelName { get; set; } = new(true);
         public ColorNode BackgroundLabel { get; set; } = new(Color.White);
         public ColorNode LabelTextColor { get; set; } = new(Color.Red);
+
+        [Menu("Text Outline Enabled", "Draw black outline around text (Diablo/PoE style)")]
+        public ToggleNode TextOutlineEnabled { get; set; } = new(true);
+
+        [Menu("Text Outline Thickness", "Thickness of the text outline")]
+        public RangeNode<float> TextOutlineThickness { get; set; } = new(1.5f, 0.5f, 3.0f);
+
+        [Menu("Text Outline Color", "Color of the text outline (usually black)")]
+        public ColorNode TextOutlineColor { get; set; } = new(new Color(0, 0, 0, 255));
     }
+
     [Submenu(CollapsedByDefault = true)]
     public class MapDrawingSettings
     {
@@ -45,6 +57,7 @@ namespace UniqueLootHelper
         public ColorNode WorldMapLineColor { get; set; } = new(new Color(214, 0, 255, 255));
         public RangeNode<int> MapLineThickness { get; set; } = new(2, 1, 10);
     }
+
     [Submenu(CollapsedByDefault = true)]
     public class BoxSettings
     {
@@ -62,21 +75,50 @@ namespace UniqueLootHelper
     public class SoundNotificationSettings
     {
         public ToggleNode Enabled { get; set; } = new(true);
-        [JsonIgnore]
-        public CustomNode Info { get; set; } = new(() =>
-        {
-            ImGui.Text($"By default, plays {UniqueLootHelperCore.DefaultWav} in the plugin's config directory.\nTo customize sounds per unique, create UniqueName.wav in the same directory");
-        });
-        [JsonIgnore]
-        public ButtonNode OpenConfigDirectory { get; set; } = new ButtonNode();
 
         [JsonIgnore]
-        public ButtonNode ReloadSoundList { get; set; } = new ButtonNode();
+        public CustomNode Info { get; set; } =
+            new(() =>
+            {
+                ImGui.Text(
+                    $"By default, plays {SoundManager.DefaultWavFile} in the plugin's config directory.\nTo customize sounds per unique, create UniqueName.wav in the same directory"
+                );
+            });
+
+        [JsonIgnore]
+        public ButtonNode OpenConfigDirectory { get; set; } = new();
+
+        [JsonIgnore]
+        public ButtonNode ReloadSoundList { get; set; } = new();
 
         [JsonIgnore]
         [Menu(null, "For debugging your alerts")]
         public ButtonNode ResetEntityNotificationFlags { get; set; } = new();
 
         public RangeNode<float> Volume { get; set; } = new(1, 0, 2);
+    }
+
+    [Submenu(CollapsedByDefault = true)]
+    public class ProfilerSettings
+    {
+        [Menu("Enable Profiler", "Enable performance profiling")]
+        public ToggleNode Enabled { get; set; } = new(false);
+
+        [JsonIgnore]
+        [Menu("Show Profiler Window", "Open profiler window to view performance metrics")]
+        public ButtonNode ShowProfilerWindow { get; set; } = new();
+
+        [JsonIgnore]
+        [Menu(null, "Profiler measures: Ground Items Processing, Filtering, Drawing, Statistics")]
+        public CustomNode Info { get; set; } =
+            new(() =>
+            {
+                ImGui.Text("Performance metrics are displayed in a separate window.");
+                ImGui.Text("Lower values (ms) mean better performance.");
+                ImGui.Text("ExileAPI renders at 60 FPS (16.67ms per frame)");
+                ImGui.TextColored(new Vector4(0, 1, 0, 1), "Green: < 10ms (good)");
+                ImGui.TextColored(new Vector4(1, 1, 0, 1), "Yellow: 10-16ms (acceptable)");
+                ImGui.TextColored(new Vector4(1, 0, 0, 1), "Red: > 16ms (bad, drops FPS)");
+            });
     }
 }

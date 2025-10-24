@@ -1,0 +1,252 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace UniqueLootHelper.Managers
+{
+    /// <summary>
+    /// Manages loading and parsing the unique items list from unique_items_output.txt
+    /// </summary>
+    public class UniqueItemsListManager
+    {
+        private const string UniqueItemsFileName = "unique_items_output.txt";
+        private const string GeneratorExecutableName = "UniqueArtGenerate-win-x64.exe";
+
+        private readonly string _uniqueItemsFilePath;
+        private readonly string _generatorExecutablePath;
+        private readonly Action<string> _logMessage;
+        private readonly Action<string> _logError;
+
+        // Changed: Dictionary with itemName as key, artPath as value
+        private Dictionary<string, string> _uniqueItemsList = new();
+        private bool _isRegenerating = false;
+
+        public IReadOnlyDictionary<string, string> UniqueItemsList => _uniqueItemsList;
+        public bool IsRegenerating => _isRegenerating;
+
+        public UniqueItemsListManager(
+            string pluginDirectory,
+            Action<string> logMessage,
+            Action<string> logError
+        )
+        {
+            _uniqueItemsFilePath = Path.Combine(pluginDirectory, UniqueItemsFileName);
+            _generatorExecutablePath = Path.Combine(pluginDirectory, GeneratorExecutableName);
+            _logMessage = logMessage;
+            _logError = logError;
+
+            LoadUniqueItemsList();
+        }
+
+        /// <summary>
+        /// Loads the unique items list from file
+        /// </summary>
+        public void LoadUniqueItemsList()
+        {
+            _uniqueItemsList.Clear();
+
+            if (!File.Exists(_uniqueItemsFilePath))
+            {
+                _logMessage(
+                    $"UniqueLootHelper: Unique items list file not found at {_uniqueItemsFilePath}"
+                );
+                return;
+            }
+
+            try
+            {
+                string[] lines = File.ReadAllLines(_uniqueItemsFilePath);
+                int loadedCount = 0;
+
+                foreach (string line in lines)
+                {
+                    if (string.IsNullOrWhiteSpace(line))
+                    {
+                        continue;
+                    }
+
+                    string[] parts = line.Split(';');
+                    if (parts.Length == 2)
+                    {
+                        string itemName = parts[0].Trim();
+                        string artPath = parts[1].Trim();
+
+                        if (!string.IsNullOrEmpty(itemName) && !string.IsNullOrEmpty(artPath))
+                        {
+                            // Use item name as key to avoid art path duplicates
+                            _uniqueItemsList[itemName] = artPath;
+                            loadedCount++;
+                        }
+                    }
+                }
+
+                _logMessage(
+                    $"UniqueLootHelper: Loaded {loadedCount} unique items from list file"
+                );
+            }
+            catch (Exception ex)
+            {
+                _logError($"UniqueLootHelper: Failed to load unique items list: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Regenerates the unique items list by running the generator executable asynchronously
+        /// </summary>
+        /// <returns>True if the process was started successfully</returns>
+        public bool RegenerateUniqueItemsList()
+        {
+            if (_isRegenerating)
+            {
+                _logMessage("UniqueLootHelper: Regeneration already in progress");
+                return false;
+            }
+
+            if (!File.Exists(_generatorExecutablePath))
+            {
+                _logError(
+                    $"UniqueLootHelper: Generator executable not found at {_generatorExecutablePath}"
+                );
+                return false;
+            }
+
+            try
+            {
+                _isRegenerating = true;
+
+                ProcessStartInfo startInfo =
+                    new()
+                    {
+                        FileName = _generatorExecutablePath,
+                        WorkingDirectory = Path.GetDirectoryName(_generatorExecutablePath),
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    };
+
+                Process process = Process.Start(startInfo);
+
+                if (process != null)
+                {
+                    _logMessage(
+                        "UniqueLootHelper: Started unique items list regeneration process"
+                    );
+
+                    // Run asynchronously without blocking UI
+                    Task.Run(async () =>
+                    {
+                        try
+                        {
+                            // Wait for process to complete with timeout
+                            bool completed = await Task.Run(() => process.WaitForExit(60000)); // 60 second timeout
+
+                            if (completed)
+                            {
+                                _logMessage(
+                                    $"UniqueLootHelper: Regeneration process completed with exit code {process.ExitCode}"
+                                );
+
+                                // Small delay to ensure file is written
+                                await Task.Delay(500);
+
+                                // Reload the list after generation
+                                LoadUniqueItemsList();
+                            }
+                            else
+                            {
+                                _logError(
+                                    "UniqueLootHelper: Regeneration process timed out after 60 seconds"
+                                );
+                                try
+                                {
+                                    process.Kill();
+                                }
+                                catch { }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _logError(
+                                $"UniqueLootHelper: Error waiting for regeneration process: {ex.Message}"
+                            );
+                        }
+                        finally
+                        {
+                            _isRegenerating = false;
+                            process?.Dispose();
+                        }
+                    });
+
+                    return true;
+                }
+
+                _logError("UniqueLootHelper: Failed to start regeneration process");
+                _isRegenerating = false;
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logError(
+                    $"UniqueLootHelper: Failed to regenerate unique items list: {ex.Message}"
+                );
+                _isRegenerating = false;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets a sorted list of unique item names for display
+        /// </summary>
+        public List<string> GetSortedItemNames()
+        {
+            return _uniqueItemsList.Keys.OrderBy(name => name).ToList();
+        }
+
+        /// <summary>
+        /// Gets art path by item name
+        /// </summary>
+        public bool TryGetArtPathByName(string itemName, out string artPath)
+        {
+            return _uniqueItemsList.TryGetValue(itemName, out artPath);
+        }
+
+        /// <summary>
+        /// Gets item name by art path
+        /// </summary>
+        public bool TryGetItemNameByArtPath(string artPath, out string itemName)
+        {
+            foreach (KeyValuePair<string, string> kvp in _uniqueItemsList)
+            {
+                if (kvp.Value.Equals(artPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    itemName = kvp.Key;
+                    return true;
+                }
+            }
+
+            itemName = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Searches for items matching the search term
+        /// </summary>
+        public List<KeyValuePair<string, string>> SearchItems(string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return new List<KeyValuePair<string, string>>();
+            }
+
+            return _uniqueItemsList
+                .Where(kvp =>
+                    kvp.Key.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                    || kvp.Value.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                )
+                .OrderBy(kvp => kvp.Key)
+                .ToList();
+        }
+    }
+}

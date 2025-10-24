@@ -1,0 +1,1033 @@
+﻿Abberath's Horn;Art/2DItems/Weapons/OneHandWeapons/Wands/Wychverge
+Abhorrent Interrogation;Art/2DItems/Armours/Gloves/DecayingGrip
+Abyssus;Art/2DItems/Armours/Helmets/Abyssus
+Acton's Nightmare;Art/2DItems/Maps/musicbox
+Actum;Art/2DItems/Weapons/OneHandWeapons/OneHandAxes/HanlonsRazor
+Admiral's Arrogance;Art/2DItems/Armours/Gloves/HornedOneGloves
+Advancing Fortress;Art/2DItems/Weapons/OneHandWeapons/Claws/Clawshield3
+Aegis Aurora;Art/2DItems/Armours/Shields/ShieldStrIntUnique7unique
+Agnerod East;Art/2DItems/Weapons/TwoHandWeapons/Staves/Staff6unique
+Agnerod North;Art/2DItems/Weapons/TwoHandWeapons/Staves/Staff6unique
+Agnerod South;Art/2DItems/Weapons/TwoHandWeapons/Staves/Staff6unique
+Agnerod West;Art/2DItems/Weapons/TwoHandWeapons/Staves/Staff6unique
+Ahkeli's Meadow;Art/2DItems/Rings/RedComponent2
+Ahkeli's Mountain;Art/2DItems/Rings/RedComponent
+Ahkeli's Valley;Art/2DItems/Rings/RedComponent3
+Ahn's Contempt;Art/2DItems/Armours/Helmets/AhnsContempt
+Ahn's Heritage;Art/2DItems/Armours/Shields/AhnsHeritage
+Ahn's Might;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/AhnsMight
+Ahuana's Bite;Art/2DItems/Quivers/AhuanaQuiver
+Akoya's Gaze;Art/2DItems/Armours/Helmets/AkoyaMask
+Al Dhih;Art/2DItems/Weapons/OneHandWeapons/Claws/Aldhih
+Alberon's Warpath;Art/2DItems/Armours/Boots/Alberonswarpath
+Algor Mortis;Art/2DItems/Armours/Gloves/Tangmazuarmourgloves
+Allelopathy;Art/2DItems/Armours/Gloves/EmbalmersGloves
+Allure;Art/2DItems/Weapons/OneHandWeapons/Claws/Allure
+Alpha's Howl;Art/2DItems/Armours/Helmets/Wolfhead
+Altered Distant Memory;Art/2DItems/Maps/SynthesisColdGuardianMap
+Amanamu's Gaze;Art/2DItems/Jewels/GhastlyEyeUnique
+Ambition;Art/2DItems/Maps/TrialmasterMiddleFragment
+Ambu's Charge;Art/2DItems/Armours/BodyArmours/StrInt3AUnique2
+Ancestral Vision;Art/2DItems/Jewels/PristineConditioning
+Ancient Skull;Art/2DItems/Effects/Hats/ChuhutlusSkull
+Andvarius;Art/2DItems/Rings/Ring4Unique
+Angler's Plait;Art/2DItems/Rings/AnglersPlait
+Annihilation's Approach;Art/2DItems/Armours/Boots/UberSearingExarchBoot
+Apep's Rage;Art/2DItems/Weapons/OneHandWeapons/Wands/ApepsRage
+Apep's Slumber;Art/2DItems/Armours/Shields/ApepsSlumber
+Apep's Supremacy;Art/2DItems/Armours/Shields/ApepsSupremacy
+Apex Mode;Art/2DItems/Jewels/IntensityJewel1
+Arakaali's Fang;Art/2DItems/Weapons/OneHandWeapons/Daggers/FangUnique
+Araku Tiki;Art/2DItems/Amulets/Amulet2Unique
+Arborix;Art/2DItems/Weapons/TwoHandWeapons/Bows/VerdantGuardianBow
+Architect's Hand;Art/2DItems/Armours/Gloves/ArchitectsHand
+Arn's Anguish;Art/2DItems/Belts/AltChargeStr
+Ascent From Flesh;Art/2DItems/Belts/Turncoatsfortune
+Asenath's Gentle Touch;Art/2DItems/Armours/Gloves/AsenathsGentleTouch
+Asenath's Mark;Art/2DItems/Armours/Helmets/HyrrisMark
+Ashcaller;Art/2DItems/Weapons/OneHandWeapons/Wands/Ashwaker
+Ashes of the Stars;Art/2DItems/Amulets/MasterOfGems
+Ashrend;Art/2DItems/Armours/BodyArmours/Ashrend
+Asphyxia's Wrath;Art/2DItems/Quivers/AsphyxiasWrath
+Assailum;Art/2DItems/Armours/Helmets/Tangmazuarmourhelmet
+Astral Projector;Art/2DItems/Rings/AstralProjector
+Astramentis;Art/2DItems/Amulets/Amulet36
+Atziri's Acuity;Art/2DItems/Armours/Gloves/AtzirisAcuity
+Atziri's Disfavour;Art/2DItems/Weapons/TwoHandWeapons/TwoHandAxes/AtzirisDisfavour
+Atziri's Foible;Art/2DItems/Amulets/Quid
+Atziri's Reflection;Art/2DItems/Armours/Shields/ShieldDex5Unique
+Atziri's Reign;Art/2DItems/Jewels/RedCorrupt1
+Atziri's Rule;Art/2DItems/Weapons/TwoHandWeapons/Staves/PortentOfAFalseGod
+Atziri's Splendour;Art/2DItems/Armours/BodyArmours/AtzirisSplendour
+Atziri's Step;Art/2DItems/Armours/Boots/AtzirisStep
+Augmented Distant Memory;Art/2DItems/Maps/SynthesisFireGuardianMap
+Augyre;Art/2DItems/Weapons/OneHandWeapons/Scepters/ElderSceptre
+Aukuna's Will;Art/2DItems/Armours/Gloves/AukunasWill
+Aul's Uprising;Art/2DItems/Amulets/Ahn Artifact
+Aurumvorax;Art/2DItems/Weapons/OneHandWeapons/Rapiers/Aurumvorax
+Auxium;Art/2DItems/Belts/Auxium
+Axiom Perpetuum;Art/2DItems/Weapons/OneHandWeapons/Scepters/AxiomPerpetuum
+Azadi Crest;Art/2DItems/Armours/Shields/AzadiCrest
+Balefire;Art/2DItems/Weapons/OneHandWeapons/Scepters/Baelfire
+Bated Breath;Art/2DItems/Belts/BatedBreath
+Beacon of Madness;Art/2DItems/Armours/Boots/Tangmazuarmourboots
+Bear's Girdle;Art/2DItems/Belts/BearsClutch
+Beauty;Art/2DItems/Maps/TrialmasterLeftFragment
+Belly of the Beast;Art/2DItems/Armours/BodyArmours/bellyofthebeast
+Belt of the Deceiver;Art/2DItems/Belts/BeltOfTheDeciever
+Beltimber Blade;Art/2DItems/Weapons/OneHandWeapons/Daggers/VerdantGuardianSword2
+Berek's Grip;Art/2DItems/Rings/BereksGrip
+Berek's Pass;Art/2DItems/Rings/BereksPass
+Berek's Respite;Art/2DItems/Rings/BereksRespite
+Betrayal's Sting;Art/2DItems/Rings/BetrayalsSting
+Binds of Bloody Vengeance;Art/2DItems/Belts/LashofRetribution
+Bisco's Leash;Art/2DItems/Belts/BiscosLeash
+Bitterbind Point;Art/2DItems/Armours/Shields/MastersFocus
+Bitterdream;Art/2DItems/Weapons/OneHandWeapons/Scepters/scepter8unique2
+Black Sun Crest;Art/2DItems/Armours/Helmets/Blacksuncrest
+Black Zenith;Art/2DItems/Armours/Gloves/EbbAndFlow
+Blackflame;Art/2DItems/Rings/BlackFlameFire
+Blackgleam;Art/2DItems/Quivers/QuiverUnique1
+Blackheart;Art/2DItems/Rings/Ring1Unique
+Blasphemer's Grasp;Art/2DItems/Armours/Gloves/ElderGloves
+Blightwell;Art/2DItems/Amulets/TaintedSprings
+Blood of Corruption;Art/2DItems/Amulets/HeartOfCorruption
+Blood of the Karui;Art/2DItems/Flasks/BloodOfTheKarui
+Blood Price;Art/2DItems/Armours/Helmets/BloodPriceHelmUnique
+Bloodbond;Art/2DItems/Armours/BodyArmours/CommunalFlesh
+Bloodgrip;Art/2DItems/Amulets/BloodAmulet
+Bloodnotch;Art/2DItems/Jewels/IgnorePain
+Bloodseeker;Art/2DItems/Weapons/OneHandWeapons/Claws/Bloodseeker
+Bloodsoaked Medallion;Art/2DItems/Amulets/BloodSoaked_Medallion
+Bones of Ullr;Art/2DItems/Armours/Boots/bootunique
+Bottled Faith;Art/2DItems/Flasks/BottledPurity
+Bound By Destiny;Art/2DItems/Jewels/BoundByDestiny
+Bound Fate;Art/2DItems/Belts/HinekoraBelt
+Brain Rattler;Art/2DItems/Weapons/TwoHandWeapons/TwoHandMaces/BrainScrambler
+Breath of the Council;Art/2DItems/Weapons/OneHandWeapons/Scepters/Plaguebringer
+Brightbeak;Art/2DItems/Weapons/OneHandWeapons/OneHandMaces/OneHandMace5Unique
+Brinerot Flag;Art/2DItems/Armours/Shields/BrinerotFlag
+Brinerot Mark;Art/2DItems/Rings/Brinerot
+Brinerot Whalers;Art/2DItems/Armours/Boots/Reefscourge
+Briskwrap;Art/2DItems/Armours/BodyArmours/Briskwrap
+Broken Faith;Art/2DItems/Armours/Shields/SantonisFaith
+Bronn's Lithe;Art/2DItems/Armours/BodyArmours/Bronnslithe
+Brutal Restraint;Art/2DItems/Jewels/MarakethCivilization
+Brutus' Lead Sprinkler;Art/2DItems/Weapons/OneHandWeapons/OneHandMaces/TheLeadSprinkler
+Bubonic Trail;Art/2DItems/Armours/Boots/AbyssBoots
+Cadigan's Authority;Art/2DItems/Weapons/OneHandWeapons/Scepters/PrimordialCane
+Cadigan's Crown;Art/2DItems/Armours/Helmets/AdaptationHelmetUnique
+Caer Blaidd, Wolfpack's Den;Art/2DItems/Maps/WolfMap
+Calamitous Visions;Art/2DItems/Jewels/LoneMessengerJewel
+Call of the Brotherhood;Art/2DItems/Rings/Brotherhood
+Call of the Void;Art/2DItems/Rings/FrostGlazedEyeRing
+Callinellus Malleus;Art/2DItems/Weapons/OneHandWeapons/OneHandMaces/CallinellusMalleus
+Cameria's Avarice;Art/2DItems/Weapons/OneHandWeapons/OneHandMaces/AmericsMaul
+Cameria's Maul;Art/2DItems/Weapons/OneHandWeapons/OneHandMaces/AmericsMaul
+Cane of Kulemak;Art/2DItems/Weapons/TwoHandWeapons/Staves/CatarinaStaff
+Cane of Unravelling;Art/2DItems/Weapons/TwoHandWeapons/Staves/CaneOfUnravelling
+Carcass Jack;Art/2DItems/Armours/BodyArmours/CarcassJack
+Careful Planning;Art/2DItems/Jewels/INTtoDEX
+Carnage Heart;Art/2DItems/Amulets/Amulet37
+Ceaseless Feast;Art/2DItems/Armours/Gloves/TouchOfRust
+Ceinture of Benevolence;Art/2DItems/Belts/LinkmastersCoil
+Cerberus Limb;Art/2DItems/Weapons/OneHandWeapons/Scepters/Cerebus Limb
+Chain of Endurance;Art/2DItems/Belts/UnhealthyBurden
+Chains of Command;Art/2DItems/Armours/BodyArmours/ChainsOfCommand
+Chains of Emancipation;Art/2DItems/Belts/SlaversBelt
+Chalice of Horrors;Art/2DItems/Armours/Shields/Chaliceofhorrors
+Chernobog's Pillar;Art/2DItems/Armours/Shields/Chernobogspillar
+Cherrubim's Maleficence;Art/2DItems/Armours/BodyArmours/CherrubimsCrave
+Chill of Corruption;Art/2DItems/Jewels/GreenCorrupt2
+Chin Sol;Art/2DItems/Weapons/TwoHandWeapons/Bows/Bow5unique
+Chitus' Apex;Art/2DItems/Armours/Helmets/ChitusApex
+Choir of the Storm;Art/2DItems/Amulets/VoiceOfTheStormUpgrade
+Cinderswallow Urn;Art/2DItems/Flasks/VialofUnlife
+Circle of Anguish;Art/2DItems/Rings/SynthesisFire
+Circle of Fear;Art/2DItems/Rings/SynthesisCold
+Circle of Guilt;Art/2DItems/Rings/SynthesisPhysical2
+Circle of Nostalgia;Art/2DItems/Rings/SynthesisPhysical
+Circle of Regret;Art/2DItems/Rings/SynthesisLightning
+Clayshaper;Art/2DItems/Weapons/OneHandWeapons/OneHandMaces/ClayShaper
+Cloak of Defiance;Art/2DItems/Armours/BodyArmours/CloakOfDefiance
+Cloak of Flame;Art/2DItems/Armours/BodyArmours/BodyInt1Aunique
+Cloak of Tawm'r Isley;Art/2DItems/Armours/BodyArmours/TomOReillyCloak
+Coiling Whisper;Art/2DItems/Rings/CircleofDarkRituals
+Cold Iron Point;Art/2DItems/Weapons/OneHandWeapons/Daggers/ColdIronPoint
+Combat Focus;Art/2DItems/Jewels/ElementalHitCold
+Command of the Pit;Art/2DItems/Armours/Gloves/CommandofthePit
+Contract: Breaking the Unbreakable;Art/2DItems/Currency/Heist/UnbreakableFightContract
+Contract: Death to Darnaw;Art/2DItems/Currency/Heist/AdmiralDarnawFightContract
+Contract: Heart of Glory;Art/2DItems/Currency/Heist/UsurperFightContract
+Contract: The Slaver King;Art/2DItems/Currency/Heist/SlaveMerchantFightContract
+Contract: The Twins;Art/2DItems/Currency/Heist/VoxFamilyFightContract
+Cooperation;Art/2DItems/Maps/TrialmasterRightFragment
+Coralito's Signature;Art/2DItems/Flasks/GorgonsFlask
+Corpsewalker;Art/2DItems/Armours/Boots/DisturbTheDead
+Cortex;Art/2DItems/Maps/SynthesisBossGuardianMap
+Cospri's Malice;Art/2DItems/Weapons/TwoHandWeapons/TwoHandSwords/CosprisMalice
+Cospri's Will;Art/2DItems/Armours/BodyArmours/CosprisWill
+Coward's Chains;Art/2DItems/Belts/Coward's Chains
+Coward's Legacy;Art/2DItems/Belts/Coward's Legacy
+Cowl of the Ceraunophile;Art/2DItems/Armours/Helmets/Supporter1helmetC
+Cowl of the Cryophile;Art/2DItems/Armours/Helmets/Supporter1helmetA
+Cowl of the Thermophile;Art/2DItems/Armours/Helmets/Supporter1helmetB
+Craghead;Art/2DItems/Quivers/QuiverUnique4
+Craiceann's Chitin;Art/2DItems/Armours/Helmets/CrabUniqueHelmet
+Craiceann's Pincers;Art/2DItems/Armours/Gloves/CrabUniqueGloves
+Craiceann's Tracks;Art/2DItems/Armours/Boots/CrabUniqueBoots
+Crest of Desire;Art/2DItems/Armours/Helmets/Magnification
+Crest of Perandus;Art/2DItems/Armours/Shields/ShieldDexUnique5
+Crown of Eyes;Art/2DItems/Armours/Helmets/CrownofEyes
+Crown of the Inward Eye;Art/2DItems/Armours/Helmets/CrownOfTheInwardEye
+Crown of the Pale King;Art/2DItems/Armours/Helmets/CrownofthePaleKing
+Crown of the Tyrant;Art/2DItems/Armours/Helmets/TheImposing Crown
+Crown of Thorns;Art/2DItems/Armours/Helmets/CrownofThorns
+Crystallised Omniscience;Art/2DItems/Amulets/AscendanceAmulet
+Curio of Absorption;Art/2DItems/Amulets/PinnacleFragmentExarch
+Curio of Decay;Art/2DItems/Amulets/PinnacleFragmentElder
+Curio of Potential;Art/2DItems/Amulets/PinnacleFragmentMaven
+Curiosity;Art/2DItems/Maps/TrialmasterBottomFragment
+Curtain Call;Art/2DItems/Armours/Helmets/CurtainCall
+Cybil's Paw;Art/2DItems/Weapons/OneHandWeapons/Claws/CybilsClaw
+Cyclopean Coil;Art/2DItems/Belts/ElderBelt
+Dance of the Offered;Art/2DItems/Armours/Boots/DanceOfTheOffered
+Daresso's Courage;Art/2DItems/Armours/Shields/ShieldStrDexUnique1
+Daresso's Defiance;Art/2DItems/Armours/BodyArmours/DaressosDefiance
+Daresso's Passion;Art/2DItems/Weapons/OneHandWeapons/Rapiers/Daressos
+Daresso's Salute;Art/2DItems/Amulets/CitrineAmuletUnique
+Darkness Enthroned;Art/2DItems/Belts/DarknessEnthroned
+Darkray Vectors;Art/2DItems/Armours/Boots/DarkrayVectors
+Darkscorn;Art/2DItems/Weapons/TwoHandWeapons/Bows/Darkscorn
+Dawnbreaker;Art/2DItems/Armours/Shields/SuperheatedShield
+Dawnstrider;Art/2DItems/Armours/Boots/InfectiousConstruct
+Dead Reckoning;Art/2DItems/Jewels/AdditionalSkeletonMagesModifier
+Death and Taxes;Art/2DItems/Maps/DeathandTaxes
+Death's Door;Art/2DItems/Armours/Boots/Deathsdoor
+Death's Hand;Art/2DItems/Weapons/OneHandWeapons/Scepters/EndOfEra
+Debeon's Dirge;Art/2DItems/Weapons/TwoHandWeapons/TwoHandAxes/StringAxe
+Deerstalker;Art/2DItems/Armours/Boots/BootsDexUnique1
+Defiance of Destiny;Art/2DItems/Amulets/HinekoraAmulet
+Deidbell;Art/2DItems/Armours/Helmets/Deidbell
+Demon Stitcher;Art/2DItems/Armours/Gloves/DemonSticher
+Dendrobate;Art/2DItems/Armours/BodyArmours/Dendrobatis
+Devoto's Devotion;Art/2DItems/Armours/Helmets/HelmetStrDex2unique
+Dialla's Malefaction;Art/2DItems/Armours/BodyArmours/DiallasMalefaction
+Disintegrator;Art/2DItems/Weapons/TwoHandWeapons/Staves/ElderStaff
+Dissolution of the Flesh;Art/2DItems/Jewels/ReservedBloodJewel
+Divinarius;Art/2DItems/Weapons/OneHandWeapons/Daggers/Dagger7unique
+Divination Distillate;Art/2DItems/Flasks/yFlasks17
+Doedre's Damning;Art/2DItems/Rings/Ring3Unique
+Doedre's Elixir;Art/2DItems/Flasks/yFlask4
+Doedre's Scorn;Art/2DItems/Armours/Helmets/DoedresScorn
+Doedre's Skin;Art/2DItems/Armours/BodyArmours/DoedresSkin
+Doedre's Tenure;Art/2DItems/Armours/Gloves/DoedresTenure
+Doedre's Tongue;Art/2DItems/Amulets/DoedresTongue
+Doomsower;Art/2DItems/Weapons/TwoHandWeapons/TwoHandSwords/DoomSower
+Doon Cuebiyari;Art/2DItems/Weapons/OneHandWeapons/OneHandMaces/DoonCuebiyari
+Doppelgänger Guise;Art/2DItems/Armours/BodyArmours/CollectorsGarbDiff
+Doryani's Catalyst;Art/2DItems/Weapons/OneHandWeapons/Scepters/DoryanisCatalyst
+Doryani's Fist;Art/2DItems/Armours/Gloves/DoryanisFist
+Doryani's Invitation;Art/2DItems/Belts/DoryanisInvitation
+Doryani's Machinarium;Art/2DItems/Maps/Doryanis
+Doryani's Prototype;Art/2DItems/Armours/BodyArmours/ShockCloak
+Dreadarc;Art/2DItems/Weapons/OneHandWeapons/OneHandAxes/Dreadarc
+Dream Fragments;Art/2DItems/Rings/Ring6Unique
+Dreamfeather;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/Dreamfeather
+Drillneck;Art/2DItems/Quivers/Drillneck
+Duskdawn;Art/2DItems/Weapons/TwoHandWeapons/Staves/SolarisLunarisStaff
+Dusktoe;Art/2DItems/Armours/Boots/BootsStrDexUnique3
+Dyadian Dawn;Art/2DItems/Belts/MotherDyadus
+Dyadus;Art/2DItems/Weapons/OneHandWeapons/OneHandAxes/Dyadus
+Dying Breath;Art/2DItems/Weapons/TwoHandWeapons/Staves/DyingBreath
+Earendel's Embrace;Art/2DItems/Weapons/OneHandWeapons/Scepters/EarendelsEmbrace
+Eber's Unification;Art/2DItems/Armours/Helmets/PaleCouncilHelmet
+Edge of Madness;Art/2DItems/Weapons/TwoHandWeapons/TwoHandSwords/EdgeOfMadness
+Efficient Training;Art/2DItems/Jewels/INTtoSTR
+Elegant Hubris;Art/2DItems/Jewels/EternalEmpireCivilization
+Elixir of the Unbroken Circle;Art/2DItems/Flasks/WardFlask03
+Emberwake;Art/2DItems/Rings/Ring10
+Emperor's Cunning;Art/2DItems/Jewels/Cunning
+Emperor's Mastery;Art/2DItems/Jewels/Mastery
+Emperor's Might;Art/2DItems/Jewels/Might
+Emperor's Vigilance;Art/2DItems/Armours/Shields/HighPriestShield
+Emperor's Wit;Art/2DItems/Jewels/Wit
+Empire's Grasp;Art/2DItems/Armours/Gloves/Hither
+Energised Armour;Art/2DItems/Jewels/RedJewel5
+Enmity's Embrace;Art/2DItems/Rings/EnmitysEmbrace
+Entropic Devastation;Art/2DItems/Armours/Gloves/UberShaperGloves
+Ephemeral Edge;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/OneHandSword8Unique
+Esh's Mirror;Art/2DItems/Armours/Shields/EshsMirror
+Esh's Visage;Art/2DItems/Armours/Shields/EshsMirrorUpgraded
+Essence Worm;Art/2DItems/Rings/EssenceWorm
+Essentia Sanguis;Art/2DItems/Weapons/OneHandWeapons/Claws/Claw5Unique2
+Eternal Damnation;Art/2DItems/Amulets/AnwensAmulet
+Ewar's Mirage;Art/2DItems/Weapons/OneHandWeapons/Rapiers/EwarsMirage
+Expedition's End;Art/2DItems/Armours/BodyArmours/AdmiralsJacket
+Extractor Mentis;Art/2DItems/Amulets/ExtractorMentis
+Eye of Chayula;Art/2DItems/Amulets/Amulet7Unique
+Eye of Innocence;Art/2DItems/Amulets/EyeOfInnocence
+Eye of Malice;Art/2DItems/Armours/Helmets/EyeOfDesire
+Eyes of the Greatwolf;Art/2DItems/Amulets/RigwaldsTalisman
+Ezomyte Peak;Art/2DItems/Armours/Helmets/EzomytePeak
+Facebreaker;Art/2DItems/Armours/Gloves/GlovesDexIntUnique1
+Faithguard;Art/2DItems/Armours/Helmets/SpiritHelmetUnique
+Faminebind;Art/2DItems/Belts/Faminebind
+Farrul's Bite;Art/2DItems/Armours/Helmets/TigerHelmet
+Farrul's Chase;Art/2DItems/Armours/Boots/TigerBoots
+Farrul's Fur;Art/2DItems/Armours/BodyArmours/TigerBodyArmour
+Fate of the Vaal;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/FateOfTheVaal
+Fated End;Art/2DItems/Rings/ForbiddenSeal
+Feastbind;Art/2DItems/Belts/Feastbind
+Femurs of the Saints;Art/2DItems/Weapons/TwoHandWeapons/Staves/FemursoftheSaints
+Fencoil;Art/2DItems/Weapons/TwoHandWeapons/Staves/Staff1unique
+Fenumus' Shroud;Art/2DItems/Armours/BodyArmours/SpiderArmourBody
+Fenumus' Spinnerets;Art/2DItems/Armours/Boots/SpiderArmourBoots
+Fenumus' Toxins;Art/2DItems/Armours/Helmets/SpiderArmourHelmet
+Fenumus' Weave;Art/2DItems/Armours/Gloves/SpiderArmour Gloves
+Fidelitas' Spike;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/FidelitasSpike
+Firesong;Art/2DItems/Jewels/RedJewel7
+Flamesight;Art/2DItems/Armours/Helmets/ExplorersVisionFire
+Flesh and Spirit;Art/2DItems/Armours/Gloves/FleshAndSpirit
+Flesh-Eater;Art/2DItems/Weapons/OneHandWeapons/OneHandMaces/OneHandMace6Unique
+Fleshcrafter;Art/2DItems/Armours/BodyArmours/EssenceGifter
+Fluid Motion;Art/2DItems/Jewels/STRtoDEX
+Font of Thunder;Art/2DItems/Armours/Shields/FontOfThunder
+Forbidden Flame;Art/2DItems/Jewels/PuzzlePieceJewel_CleansingFire
+Forbidden Flesh;Art/2DItems/Jewels/PuzzlePieceJewel_GreatTangle
+Forbidden Shako;Art/2DItems/Armours/Helmets/TheEpiphany
+Fortress Covenant;Art/2DItems/Jewels/BlueJewel4
+Foxshade;Art/2DItems/Armours/BodyArmours/Foxshade
+Fractal Thoughts;Art/2DItems/Armours/Helmets/Fractalthoughts
+Fragility;Art/2DItems/Jewels/RedCorrupt6
+Frostbreath;Art/2DItems/Weapons/OneHandWeapons/OneHandMaces/FrostBreath
+Galesight;Art/2DItems/Armours/Helmets/ExplorersVisionCold
+Gamblesprint;Art/2DItems/Armours/Boots/UltimatumBoots
+Gang's Momentum;Art/2DItems/Armours/Boots/GangsBoots
+Garb of the Ephemeral;Art/2DItems/Armours/BodyArmours/TheTemplarsRobes
+Garukhan's Flight;Art/2DItems/Armours/Boots/TwoTonedBootsALT
+Geofri's Crest;Art/2DItems/Armours/Helmets/GeofrisCrest
+Geofri's Sanctuary;Art/2DItems/Armours/BodyArmours/GeofriSanctuary
+Ghostwrithe;Art/2DItems/Armours/BodyArmours/Ghostweave
+Giantsbane;Art/2DItems/Armours/Gloves/Deathforge
+Gifts from Above;Art/2DItems/Rings/DiamondRingUnique
+Glimpse of Chaos;Art/2DItems/Armours/Helmets/VaalCorruptionHelmet
+Gloomfang;Art/2DItems/Amulets/ShadowRay
+Glorious Vanity;Art/2DItems/Jewels/VaalCivilization
+Gluttony;Art/2DItems/Belts/Gluttony
+Goblinedge;Art/2DItems/Weapons/OneHandWeapons/Daggers/GoblinEdge
+Goldwyrm;Art/2DItems/Armours/Boots/BootsDexUnique2
+Gorebreaker;Art/2DItems/Weapons/OneHandWeapons/OneHandMaces/OneHandMace3Unique
+Goredrill;Art/2DItems/Weapons/OneHandWeapons/Daggers/Goredrill
+Gorgon's Gaze;Art/2DItems/Armours/Helmets/PillarsOfArun
+Grace of the Goddess;Art/2DItems/Weapons/OneHandWeapons/Wands/UberMavenWand
+Grand Spectrum;Art/2DItems/Jewels/RedGrandSpectrum
+Grasping Nightshade;Art/2DItems/Flasks/UniqueSporebloom
+Grattus Signet;Art/2DItems/Rings/GrattusRing
+Graven's Secret;Art/2DItems/Belts/AltChargeInt
+Great Old One's Tentacles;Art/2DItems/Armours/Gloves/ImpaleGloves
+Great Old One's Ward;Art/2DItems/Armours/Shields/GreatOldOnesWard
+Grelwood Shank;Art/2DItems/Weapons/OneHandWeapons/Daggers/VerdantGuardianSword1
+Grip of the Council;Art/2DItems/Armours/Gloves/GlovesInt3Unique2
+Gruthkul's Pelt;Art/2DItems/Armours/BodyArmours/WilefangsPelt
+Hale Negator;Art/2DItems/Armours/Helmets/HaleNegator
+Hall of Grandmasters;Art/2DItems/Maps/HallOfGrandmasters
+Hallowed Ground;Art/2DItems/Maps/HallowedGround
+Hand of Heresy;Art/2DItems/Armours/Gloves/HandofHeresy
+Hand of the Fervent;Art/2DItems/Armours/Gloves/GripofSacrifice
+Hand of Thought and Motion;Art/2DItems/Weapons/OneHandWeapons/Claws/ThoughtMotion1
+Hand of Wisdom and Action;Art/2DItems/Weapons/OneHandWeapons/Claws/ThoughtMotion2
+Hands of the High Templar;Art/2DItems/Armours/Gloves/HandsOfTheHighTemplar
+Hateforge;Art/2DItems/Armours/Gloves/VaalRageGloves
+Headhunter;Art/2DItems/Belts/Headhunter
+Heartbreaker;Art/2DItems/Weapons/OneHandWeapons/Daggers/Heartbreaker
+Hegemony's Era;Art/2DItems/Weapons/TwoHandWeapons/Staves/HegemonysEra
+Heretic's Veil;Art/2DItems/Armours/Helmets/FaceOfDivinity
+Hezmana's Bloodlust;Art/2DItems/Weapons/TwoHandWeapons/TwoHandAxes/HezmanasBloodlust
+Hidden Potential;Art/2DItems/Jewels/unique17
+Hiltless;Art/2DItems/Weapons/TwoHandWeapons/TwoHandSwords/Hiltless
+Hinekora's Sight;Art/2DItems/Amulets/HinekorasSight
+Honoured Alliance;Art/2DItems/Rings/HinekoraRing
+Honourhome;Art/2DItems/Armours/Helmets/Honourhome
+Hopeshredder;Art/2DItems/Weapons/TwoHandWeapons/Bows/ElderBow
+Howlcrack;Art/2DItems/Armours/Helmets/Howlcrack
+Hrimnor's Hymn;Art/2DItems/Weapons/TwoHandWeapons/TwoHandMaces/TwoHandMace6Unique
+Hrimnor's Resolve;Art/2DItems/Armours/Helmets/HrimnorsResolve
+Hrimsorrow;Art/2DItems/Armours/Gloves/Hrimsorrow
+Hyaon's Fury;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/HyaonsFury
+Hyperboreus;Art/2DItems/Belts/Betrayal_Unique_Transport_Belt
+Hyrri's Bite;Art/2DItems/Quivers/HryyisBite
+Hyrri's Ire;Art/2DItems/Armours/BodyArmours/BodyDex3CUnique
+Hyrri's Truth;Art/2DItems/Amulets/SynthesisAccuracyAmulet
+Icefang Orbit;Art/2DItems/Rings/IcefangOrbit
+Icetomb;Art/2DItems/Armours/BodyArmours/Icetomb
+Ichimonji;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/BladeOfVastri
+Ikiaho's Promise;Art/2DItems/Amulets/IkiahoAmulet
+Immortal Flesh;Art/2DItems/Belts/ImmortalFlesh
+Immutable Force;Art/2DItems/Jewels/RedJewel2
+Impossible Escape;Art/2DItems/Jewels/MindborePearl
+Impresence;Art/2DItems/Amulets/ElderCold
+Incandescent Heart;Art/2DItems/Armours/BodyArmours/Illuminatis
+Indigon;Art/2DItems/Armours/Helmets/UberElderHelmet
+Inertia;Art/2DItems/Jewels/DEXtoSTR
+Inextricable Fate;Art/2DItems/Armours/Boots/VinegraspBootsUnique
+Infernal Mantle;Art/2DItems/Armours/BodyArmours/Infernalmantle
+Infractem;Art/2DItems/Weapons/TwoHandWeapons/Bows/Infractem
+Infused Beachhead;Art/2DItems/Maps/HarbingerUber
+Innsbury Edge;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/ElderSword
+Inpulsa's Broken Heart;Art/2DItems/Armours/BodyArmours/OnShocked
+Intuitive Leap;Art/2DItems/Jewels/unique6
+Invictus Solaris;Art/2DItems/Armours/Shields/Invictus
+Inya's Epiphany;Art/2DItems/Armours/Boots/PaleCouncilBoots
+Ixchel's Temptation;Art/2DItems/Rings/AltBreach
+Jack, the Axe;Art/2DItems/Weapons/OneHandWeapons/OneHandAxes/Jacktheaxe
+Jaws of Agony;Art/2DItems/Armours/Shields/BearTrapShield2
+Jorrhast's Blacksteel;Art/2DItems/Weapons/TwoHandWeapons/TwoHandMaces/JorrhastsBlacksteel
+Kahuturoa's Certainty;Art/2DItems/Armours/Boots/KahuturoaBoots
+Kalandra's Touch;Art/2DItems/Rings/MirrorRing
+Kalisa's Grace;Art/2DItems/Armours/Gloves/KalisasGrace
+Kaltenhalt;Art/2DItems/Armours/Shields/ShieldDexUnique6
+Kaom's Binding;Art/2DItems/Belts/KaomBelt
+Kaom's Command;Art/2DItems/Armours/Helmets/KaomsMask
+Kaom's Heart;Art/2DItems/Armours/BodyArmours/BodyStr3CUnique
+Kaom's Primacy;Art/2DItems/Weapons/TwoHandWeapons/TwoHandAxes/TwoHandAxe11Unique
+Kaom's Sign;Art/2DItems/Rings/Ring2Unique
+Kaom's Spirit;Art/2DItems/Armours/Gloves/KaomsSpirit
+Karui Ward;Art/2DItems/Amulets/Amulet4Unique
+Kiara's Determination;Art/2DItems/Flasks/KiarasDetermination
+Kikazaru;Art/2DItems/Rings/Kikazaru
+Kiloava's Bluster;Art/2DItems/Armours/Shields/KiloavaShield
+Kingmaker;Art/2DItems/Weapons/TwoHandWeapons/TwoHandAxes/Alexaxeandheartbreaker
+Kingsguard;Art/2DItems/Armours/BodyArmours/Kingsguard
+Kintsugi;Art/2DItems/Armours/BodyArmours/Kintsugi
+Kitava's Feast;Art/2DItems/Weapons/TwoHandWeapons/TwoHandAxes/KitavasHunger
+Kitava's Teachings;Art/2DItems/Jewels/DiscipleOfKitavaJewel
+Kitava's Thirst;Art/2DItems/Armours/Helmets/KitavasThirst
+Kondo's Pride;Art/2DItems/Weapons/TwoHandWeapons/TwoHandSwords/KondosPride
+Kongming's Stratagem;Art/2DItems/Armours/Shields/KongmingsStratagem
+Kongor's Undying Rage;Art/2DItems/Weapons/TwoHandWeapons/TwoHandMaces/KongorsUndyingRage
+Kurgal's Gaze;Art/2DItems/Jewels/HypnoticEyeUnique
+Lakishu's Blade;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/OneHandSword5Unique
+Last Resort;Art/2DItems/Weapons/OneHandWeapons/Claws/NerasLastResort
+Lavianga's Spirit;Art/2DItems/Flasks/LaviangasOil
+Lavianga's Wisdom;Art/2DItems/Weapons/OneHandWeapons/OneHandMaces/OneHandMace3a
+Law of the Wilds;Art/2DItems/Weapons/OneHandWeapons/Claws/WolfClaw
+Le Heup of All;Art/2DItems/Rings/Leheupofall
+Leadership's Price;Art/2DItems/Amulets/KuraisMastery
+Leash of Oblation;Art/2DItems/Belts/LeashOfOblation
+Leer Cast;Art/2DItems/Armours/Helmets/HelmetDexInt9x
+Legacy of Fury;Art/2DItems/Armours/Boots/ScorchedEarth
+Legacy of the Rose;Art/2DItems/Weapons/TwoHandWeapons/Staves/WhisperingNebula
+Leper's Alms;Art/2DItems/Armours/Shields/LepersAlms
+Lethal Pride;Art/2DItems/Jewels/KaruiCivilization
+Lifesprig;Art/2DItems/Weapons/OneHandWeapons/Wands/LifeSprig
+Light of Lunaris;Art/2DItems/Armours/Shields/Lunaris
+Lightbane Raiment;Art/2DItems/Armours/BodyArmours/Lightbanerainment
+Lightning Coil;Art/2DItems/Armours/BodyArmours/LightningCoil
+Lightpoacher;Art/2DItems/Armours/Helmets/AbyssHelmet
+Limbsplit;Art/2DItems/Weapons/TwoHandWeapons/TwoHandAxes/TwoHandAxe_spare
+Lioneye's Fall;Art/2DItems/Jewels/LioneyesFall
+Lioneye's Glare;Art/2DItems/Weapons/TwoHandWeapons/Bows/Bow8unique
+Lioneye's Paws;Art/2DItems/Armours/Boots/LioneyesPaws
+Lioneye's Remorse;Art/2DItems/Armours/Shields/ShieldStrUnique6
+Lochtonial Caress;Art/2DItems/Armours/Gloves/LochtonialCaress
+Loreweave;Art/2DItems/Armours/BodyArmours/Loreweave
+Lori's Lantern;Art/2DItems/Rings/LorisLantern
+Lycosidae;Art/2DItems/Armours/Shields/Lycosidae
+Maata's Teaching;Art/2DItems/Weapons/OneHandWeapons/Scepters/MaataSceptre
+Machina Mitts;Art/2DItems/Armours/Gloves/85479
+Maelström of Chaos;Art/2DItems/Maps/MaelstromofChaos
+Mageblood;Art/2DItems/Belts/InjectorBelt
+Magna Eclipsis;Art/2DItems/Armours/Shields/MagnisEclipsis
+Mahuxotl's Machination;Art/2DItems/Armours/Shields/MahuxotlShield
+Malachai's Artifice;Art/2DItems/Rings/MalachaisArtifice
+Malachai's Loop;Art/2DItems/Armours/Shields/MalachaiLoop
+Malachai's Mark;Art/2DItems/Armours/Gloves/MalachaisMark
+Malachai's Simula;Art/2DItems/Armours/Helmets/MalachaisSimula
+Malachai's Vision;Art/2DItems/Armours/Helmets/MalachaisVision
+Maligaro's Lens;Art/2DItems/Armours/Shields/MaligarosLens
+Maligaro's Restraint;Art/2DItems/Belts/MaligarosRestraint
+Maligaro's Virtuosity;Art/2DItems/Armours/Gloves/MaligarosVirtousity
+Maloney's Mechanism;Art/2DItems/Quivers/TriggerQuiverBase
+Maloney's Nightfall;Art/2DItems/Quivers/MaloneysNightfall
+Manastorm;Art/2DItems/Armours/Shields/Manastorm
+Mao Kun;Art/2DItems/Maps/FairgravesMap01
+March of the Legion;Art/2DItems/Armours/Boots/AuraBoots
+Mark of Submission;Art/2DItems/Rings/RedBrandRing
+Mark of the Doubting Knight;Art/2DItems/Weapons/OneHandWeapons/Daggers/DoubtingKnight
+Mark of the Elder;Art/2DItems/Rings/UberElderRing
+Mark of the Red Covenant;Art/2DItems/Armours/Helmets/PhantasmlaFlame
+Mark of the Shaper;Art/2DItems/Rings/UberShaperRing
+Marohi Erqi;Art/2DItems/Weapons/TwoHandWeapons/TwoHandMaces/TwoHandMace2unique2
+Martyr of Innocence;Art/2DItems/Weapons/TwoHandWeapons/Staves/MartyrInnocence
+Marylene's Fallacy;Art/2DItems/Amulets/MarylenesFallacy
+Mask of the Spirit Drinker;Art/2DItems/Armours/Helmets/MaskoftheSpiritDrinker
+Mask of the Stitched Demon;Art/2DItems/Armours/Helmets/MaskoftheStitchedDemon
+Mask of the Tribunal;Art/2DItems/Armours/Helmets/HelmetOfDominance2
+Matua Tupuna;Art/2DItems/Armours/Shields/Matuatupuna
+Maw of Conquest;Art/2DItems/Armours/Helmets/MawOfConquest
+Maw of Mischief;Art/2DItems/Armours/Helmets/MawOfMischief
+Medved's Challenge;Art/2DItems/Armours/Gloves/AdaptationGlovesUnique
+Megalomaniac;Art/2DItems/Jewels/UniqueJewelBase2
+Meginord's Girdle;Art/2DItems/Belts/Belt7Unique
+Meginord's Vise;Art/2DItems/Armours/Gloves/GlovesStr5
+Melding of the Flesh;Art/2DItems/Jewels/EntangledElementsJewel
+Memory Vault;Art/2DItems/Armours/Helmets/ElderGuardian
+Mercenary's Lot;Art/2DItems/Armours/Gloves/StrikeTrue
+Midnight Bargain;Art/2DItems/Weapons/OneHandWeapons/Wands/WandUnique3
+Might of the Meek;Art/2DItems/Jewels/PotencyOfTheUnremarkable
+Mightflay;Art/2DItems/Weapons/OneHandWeapons/Daggers/Dagger2unique
+Militant Faith;Art/2DItems/Jewels/TemplarCivilization
+Mind of the Council;Art/2DItems/Armours/Helmets/ThunderingWhispers
+Mindspiral;Art/2DItems/Armours/Helmets/Mindspiral
+Mistwall;Art/2DItems/Armours/Shields/Mistwall
+Mjölner;Art/2DItems/Weapons/OneHandWeapons/OneHandMaces/Mjolner
+Mokou's Embrace;Art/2DItems/Rings/MokousEmbrace
+Mon'tregul's Grasp;Art/2DItems/Weapons/OneHandWeapons/Scepters/MontregulsGrasp
+Moonbender's Wing;Art/2DItems/Weapons/OneHandWeapons/OneHandAxes/MoonbendersWing
+Moonsorrow;Art/2DItems/Weapons/OneHandWeapons/Wands/WandUnique2
+Mother's Embrace;Art/2DItems/Belts/MothersEmbrace
+Mutewind Pennant;Art/2DItems/Armours/Shields/MutewindPennant
+Mutewind Seal;Art/2DItems/Rings/Mutewind
+Mutewind Whispersteps;Art/2DItems/Armours/Boots/Targemtabi
+Mystic Refractor;Art/2DItems/Weapons/OneHandWeapons/Wands/WandofBlasting
+Nadir Mode;Art/2DItems/Jewels/IntensityJewel2
+Nametaker;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/AfflictionSword
+Natural Affinity;Art/2DItems/Jewels/NaturesPatienceJewel
+Natural Hierarchy;Art/2DItems/Amulets/TalismanUnique2
+Nebulis;Art/2DItems/Weapons/OneHandWeapons/Scepters/SceptreOfMemories
+Nebuloch;Art/2DItems/Weapons/OneHandWeapons/OneHandMaces/ElderMace
+Nevalius Inheritance;Art/2DItems/Belts/NevaliusBelt
+Ngamahu's Flame;Art/2DItems/Weapons/TwoHandWeapons/TwoHandMaces/RiriTeNgamahu
+Ngamahu's Sign;Art/2DItems/Rings/NgamahusSign
+Night's Hold;Art/2DItems/Amulets/SocketedTalisman
+Nightgrip;Art/2DItems/Armours/Gloves/SpiritGlovesUnique
+Nimis;Art/2DItems/Rings/UberEaterofWorlds
+Nomic's Storm;Art/2DItems/Armours/Boots/NomicsStorm
+Null and Void;Art/2DItems/Armours/Gloves/NullAndVoid
+Null's Inclination;Art/2DItems/Weapons/TwoHandWeapons/Bows/NullBow
+Nuro's Harp;Art/2DItems/Weapons/TwoHandWeapons/Bows/NurosPurifyingHarp
+Nycta's Lantern;Art/2DItems/Weapons/OneHandWeapons/Scepters/Lychnuslyaei
+Oba's Cursed Trove;Art/2DItems/Maps/oba
+Obliteration;Art/2DItems/Weapons/OneHandWeapons/Wands/Maledict
+Obscurantis;Art/2DItems/Armours/Helmets/Obscurantis
+Offering to the Serpent;Art/2DItems/Armours/Gloves/GripOfTheCobra
+Olesya's Delight;Art/2DItems/Belts/AltChargeDex
+Olmec's Sanctum;Art/2DItems/Maps/olmec
+Olroth's Charge;Art/2DItems/Armours/Boots/AdaptationBootsUnique
+Olroth's Resolve;Art/2DItems/Flasks/WardFlask02
+Omeyocan;Art/2DItems/Armours/Boots/Omeyocan
+Ondar's Clasp;Art/2DItems/Armours/Gloves/OndarsClasp
+One With Nothing;Art/2DItems/Jewels/DragonStyleJewel
+Oni-Goroshi;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/TheGoddessUnleashed
+Orbala's Stand;Art/2DItems/Armours/Boots/RuggedStepBoots
+Oriath's End;Art/2DItems/Flasks/UberSirusFlask
+Original Sin;Art/2DItems/Rings/SanctumSpecialUniqueRing
+Ornament of the East;Art/2DItems/Weapons/OneHandWeapons/Claws/OrnamentOfTheEast
+Oro's Sacrifice;Art/2DItems/Weapons/TwoHandWeapons/TwoHandSwords/OrosSacrifice
+Oskarm;Art/2DItems/Armours/Gloves/ZenoGloves
+Pacifism;Art/2DItems/Jewels/GreenCorrupt6
+Painseeker;Art/2DItems/Armours/Gloves/GripOfUnmaking
+Paradoxica;Art/2DItems/Weapons/OneHandWeapons/Rapiers/AssassinationUnique2
+Perandus Blazon;Art/2DItems/Belts/BuckledBeltUnique2
+Perandus Signet;Art/2DItems/Rings/LadyRing
+Perepiteia;Art/2DItems/Armours/Shields/LightningShield
+Perfidy;Art/2DItems/Armours/BodyArmours/Tangmazuarmourbodyarmour
+Perquil's Toe;Art/2DItems/Amulets/PerquilsToe
+Perseverance;Art/2DItems/Belts/Perserverance
+Pillar of the Caged God;Art/2DItems/Weapons/TwoHandWeapons/Staves/PillaroftheCagedGod
+Pillars of Arun;Art/2DItems/Maps/PillarsOfVastiri
+Piscator's Vigil;Art/2DItems/Weapons/OneHandWeapons/Wands/PiscatorsVigil
+Pledge of Hands;Art/2DItems/Weapons/TwoHandWeapons/Staves/PledgeofHands
+Plume of Pursuit;Art/2DItems/Armours/Helmets/RavensCrown
+Polaric Devastation;Art/2DItems/Rings/AshAndFrost
+Poorjoy's Asylum;Art/2DItems/Maps/PoorjoysAsylum
+Praxis;Art/2DItems/Rings/Praxis
+Precursor's Emblem;Art/2DItems/Rings/CombinedRedRing
+Presence of Chayula;Art/2DItems/Amulets/PresenceOfChayula
+Primordial Eminence;Art/2DItems/Jewels/GolemArctic
+Primordial Harmony;Art/2DItems/Jewels/GolemTempest
+Primordial Might;Art/2DItems/Jewels/GolemInfernal
+Prism Guardian;Art/2DItems/Armours/Shields/TheCorundum
+Prismatic Eclipse;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/PrismaticEclipse
+Prismweave;Art/2DItems/Belts/Prismweave
+Profane Proxy;Art/2DItems/Rings/SkitterbotRing
+Prospero's Protection;Art/2DItems/Rings/ShieldBand
+Pure Talent;Art/2DItems/Jewels/PureTalent
+Putembo's Meadow;Art/2DItems/Rings/BlueComponent2
+Putembo's Mountain;Art/2DItems/Rings/BlueComponent
+Putembo's Valley;Art/2DItems/Rings/BlueComponent3
+Pyre;Art/2DItems/Rings/Cherufe
+Pyroshock Clasp;Art/2DItems/Belts/PyroshockClasp
+Qotra's Regulator;Art/2DItems/Armours/Shields/AgonyOfDecay
+Queen of the Forest;Art/2DItems/Armours/BodyArmours/QueenoftheForest
+Queen's Decree;Art/2DItems/Weapons/TwoHandWeapons/TwoHandSwords/TwoHandSwordUnique3
+Quickening Covenant;Art/2DItems/Jewels/unique10
+Rain of Splinters;Art/2DItems/Jewels/RedKarui
+Rainbowstride;Art/2DItems/Armours/Boots/rainbowstride
+Rakiata's Dance;Art/2DItems/Weapons/TwoHandWeapons/TwoHandSwords/RakiataSword
+Ralakesh's Impatience;Art/2DItems/Armours/Boots/RalakeshsImpatience
+Rashkaldor's Patience;Art/2DItems/Amulets/RashkaldorsPatience
+Rat's Nest;Art/2DItems/Armours/Helmets/RatsNest
+Rathpith Globe;Art/2DItems/Armours/Shields/ShieldInt6unique
+Rational Doctrine;Art/2DItems/Jewels/UberCortexJewel
+Ravenous Passion;Art/2DItems/Armours/Helmets/UberEaterofWorldsHelmet
+Razor of the Seventh Sun;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/RazorOfTheSeventhSun
+Reach of the Council;Art/2DItems/Weapons/TwoHandWeapons/Bows/BowOfTheCouncil
+Realmshaper;Art/2DItems/Weapons/TwoHandWeapons/Staves/Staff5unique
+Reaper's Pursuit;Art/2DItems/Weapons/TwoHandWeapons/TwoHandAxes/TwoHandAxeUnique1
+Rearguard;Art/2DItems/Quivers/Rearguard
+Rebuke of the Vaal;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/OneHandSword7Unique
+Reckless Defence;Art/2DItems/Jewels/RecklessDefense
+Redbeak;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/OneHandSword1Unique
+Redblade Band;Art/2DItems/Rings/Redblade
+Redblade Banner;Art/2DItems/Armours/Shields/RedbladeBanner
+Redblade Tramplers;Art/2DItems/Armours/Boots/Rumblestep
+Reefbane;Art/2DItems/Weapons/TwoHandWeapons/FishingRods/Reefbane
+Relentless Fury;Art/2DItems/Weapons/OneHandWeapons/OneHandAxes/RelentlessFury
+Relic of the Pact;Art/2DItems/Weapons/OneHandWeapons/Wands/IpochotlWand
+Repentance;Art/2DItems/Armours/Gloves/Repentance
+Replica Advancing Fortress;Art/2DItems/Weapons/OneHandWeapons/Claws/Clawshield3
+Replica Alberon's Warpath;Art/2DItems/Armours/Boots/Alberonswarpath
+Replica Allelopathy;Art/2DItems/Armours/Gloves/EmbalmersGloves
+Replica Allure;Art/2DItems/Weapons/OneHandWeapons/Claws/Allure
+Replica Alpha's Howl;Art/2DItems/Armours/Helmets/Wolfhead
+Replica Ambu's Charge;Art/2DItems/Armours/BodyArmours/StrInt3AUnique2
+Replica Atziri's Acuity;Art/2DItems/Armours/Gloves/AtzirisAcuity
+Replica Atziri's Foible;Art/2DItems/Amulets/Quid
+Replica Bated Breath;Art/2DItems/Belts/BatedBreath
+Replica Bitterdream;Art/2DItems/Weapons/OneHandWeapons/Scepters/scepter8unique2
+Replica Blood Thorn;Art/2DItems/Weapons/TwoHandWeapons/Staves/TheBloodThorn
+Replica Bones of Ullr;Art/2DItems/Armours/Boots/bootunique
+Replica Cortex;Art/2DItems/Maps/SynthesisBossGuardianMap
+Replica Covenant;Art/2DItems/Armours/BodyArmours/Embrace
+Replica Doedre's Damning;Art/2DItems/Rings/Ring3Unique
+Replica Dragonfang's Flight;Art/2DItems/Amulets/Malachai's BrillianceAmulet
+Replica Dreamfeather;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/Dreamfeather
+Replica Duskdawn;Art/2DItems/Weapons/TwoHandWeapons/Staves/SolarisLunarisStaff
+Replica Earendel's Embrace;Art/2DItems/Weapons/OneHandWeapons/Scepters/EarendelsEmbrace
+Replica Emberwake;Art/2DItems/Rings/Ring10
+Replica Eternity Shroud;Art/2DItems/Armours/BodyArmours/MantleOfDismantling
+Replica Farrul's Fur;Art/2DItems/Armours/BodyArmours/TigerBodyArmour
+Replica Fencoil;Art/2DItems/Weapons/TwoHandWeapons/Staves/Staff1unique
+Replica Fragility;Art/2DItems/Jewels/RedCorrupt6
+Replica Frostbreath;Art/2DItems/Weapons/OneHandWeapons/OneHandMaces/FrostBreath
+Replica Grip of the Council;Art/2DItems/Armours/Gloves/GlovesInt3Unique2
+Replica Harvest;Art/2DItems/Weapons/TwoHandWeapons/TwoHandAxes/TheExtractor
+Replica Headhunter;Art/2DItems/Belts/Headhunter
+Replica Heartbreaker;Art/2DItems/Weapons/OneHandWeapons/Daggers/Heartbreaker
+Replica Hyrri's Ire;Art/2DItems/Armours/BodyArmours/BodyDex3CUnique
+Replica Hyrri's Truth;Art/2DItems/Amulets/SynthesisAccuracyAmulet
+Replica Infractem;Art/2DItems/Weapons/TwoHandWeapons/Bows/Infractem
+Replica Innsbury Edge;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/ElderSword
+Replica Inya's Epiphany;Art/2DItems/Armours/Boots/PaleCouncilBoots
+Replica Kalisa's Grace;Art/2DItems/Armours/Gloves/KalisasGrace
+Replica Kaom's Heart;Art/2DItems/Armours/BodyArmours/BodyStr3CUnique
+Replica Karui Ward;Art/2DItems/Amulets/Amulet4Unique
+Replica Kongor's Undying Rage;Art/2DItems/Weapons/TwoHandWeapons/TwoHandMaces/KongorsUndyingRage
+Replica Last Resort;Art/2DItems/Weapons/OneHandWeapons/Claws/NerasLastResort
+Replica Lavianga's Spirit;Art/2DItems/Flasks/LaviangasOil
+Replica Leer Cast;Art/2DItems/Armours/Helmets/HelmetDexInt9x
+Replica Lioneye's Paws;Art/2DItems/Armours/Boots/LioneyesPaws
+Replica Loreweave;Art/2DItems/Armours/BodyArmours/Loreweave
+Replica Malachai's Artifice;Art/2DItems/Rings/MalachaisArtifice
+Replica Maloney's Mechanism;Art/2DItems/Quivers/TriggerQuiverBase
+Replica Midnight Bargain;Art/2DItems/Weapons/OneHandWeapons/Wands/WandUnique3
+Replica Mistwall;Art/2DItems/Armours/Shields/Mistwall
+Replica Nebulis;Art/2DItems/Weapons/OneHandWeapons/Scepters/SceptreOfMemories
+Replica Oro's Sacrifice;Art/2DItems/Weapons/TwoHandWeapons/TwoHandSwords/OrosSacrifice
+Replica Paradoxica;Art/2DItems/Weapons/OneHandWeapons/Rapiers/AssassinationUnique2
+Replica Perfect Form;Art/2DItems/Armours/BodyArmours/ThePerfectForm
+Replica Pillars of Arun;Art/2DItems/Maps/PillarsOfVastiri
+Replica Poorjoy's Asylum;Art/2DItems/Maps/PoorjoysAsylum
+Replica Powerlessness;Art/2DItems/Jewels/BlueCorrupt6
+Replica Primordial Might;Art/2DItems/Jewels/GolemInfernal
+Replica Prismweave;Art/2DItems/Belts/Prismweave
+Replica Reckless Defence;Art/2DItems/Jewels/RecklessDefense
+Replica Restless Ward;Art/2DItems/Armours/BodyArmours/TheRestlessWard
+Replica Rumi's Concoction;Art/2DItems/Flasks/BlockFlask
+Replica Shroud of the Lightless;Art/2DItems/Armours/BodyArmours/AbyssBody
+Replica Siegebreaker;Art/2DItems/Belts/85482
+Replica Sorrow of the Divine;Art/2DItems/Flasks/SorrowOfTheDivine
+Replica Soul Strike;Art/2DItems/Quivers/Soulstrike
+Replica Soul Tether;Art/2DItems/Belts/SoulTether
+Replica Stampede;Art/2DItems/Armours/Boots/Supporter1bootA
+Replica Tasalio's Sign;Art/2DItems/Rings/TasaliosSign
+Replica Tempestuous Steel;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/TempestuousSteel
+Replica Three-step Assault;Art/2DItems/Armours/Boots/ThreeStepAssault
+Replica Tukohama's Fortress;Art/2DItems/Armours/Shields/TukohamasFortress
+Replica Tulfall;Art/2DItems/Weapons/OneHandWeapons/Wands/TulbornUpgraded
+Replica Twyzel;Art/2DItems/Weapons/OneHandWeapons/Wands/Wand1Unique
+Replica Ungil's Gauche;Art/2DItems/Weapons/OneHandWeapons/Daggers/Dagger3unique
+Replica Veil of the Night;Art/2DItems/Armours/Helmets/VeilOfTheNight
+Replica Victario's Charity;Art/2DItems/Armours/Shields/VictarosCharity
+Replica Voideye;Art/2DItems/Rings/unused4
+Replica Voidwalker;Art/2DItems/Armours/Boots/CrossingTheVoid
+Replica Volkuur's Guidance;Art/2DItems/Armours/Gloves/PaleCouncilGloves
+Replica Windripper;Art/2DItems/Weapons/TwoHandWeapons/Bows/Eagle
+Replica Wings of Entropy;Art/2DItems/Weapons/OneHandWeapons/OneHandAxes/Entropywings
+Replica Winterheart;Art/2DItems/Amulets/WinterHeartALT
+Replica Witchfire Brew;Art/2DItems/Flasks/WitchFireBrew
+Retaliation Charm;Art/2DItems/Amulets/SharedUnsight
+Rewritten Distant Memory;Art/2DItems/Maps/SynthesisGolemGuardianMap
+Rigwald's Charge;Art/2DItems/Weapons/TwoHandWeapons/TwoHandSwords/TwoHandSword5Unique
+Rigwald's Command;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/RigwarlSword
+Rigwald's Crest;Art/2DItems/Rings/RigwaldsCrest
+Rigwald's Curse;Art/2DItems/Amulets/UniqueDireClawTalisman
+Rigwald's Quills;Art/2DItems/Quivers/RigwaldsQuills
+Rigwald's Savagery;Art/2DItems/Weapons/OneHandWeapons/OneHandAxes/RigwarlAxe
+Rime Gaze;Art/2DItems/Armours/Helmets/HelmetDexIntUnique1
+Rise of the Phoenix;Art/2DItems/Armours/Shields/Riseofthephoenix
+Romira's Banquet;Art/2DItems/Rings/RomirasBanquet
+Rotblood Promise;Art/2DItems/Rings/CursedEye
+Ryslatha's Coil;Art/2DItems/Belts/RyuslathasClutches
+Sacrificial Heart;Art/2DItems/Amulets/Sacrificial_Heart
+Sadima's Touch;Art/2DItems/Armours/Gloves/SadimasTouch
+Saemus' Gift;Art/2DItems/Quivers/SeamusGift
+Saffell's Frame;Art/2DItems/Armours/Shields/ShieldStrIntUnique6
+Sandstorm Visage;Art/2DItems/Armours/Helmets/AnwensTiara
+Saqawal's Flock;Art/2DItems/Armours/Helmets/AvianHelmet
+Saqawal's Nest;Art/2DItems/Armours/BodyArmours/AvianBodyArmour
+Saqawal's Talons;Art/2DItems/Armours/Boots/AvianBoots
+Saqawal's Winds;Art/2DItems/Armours/Gloves/AvianGloves
+Scaeva;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/Scaeva
+Scold's Bridle;Art/2DItems/Armours/Helmets/ScoldsBridle
+Scornflux;Art/2DItems/Armours/Boots/MistySteps
+Scorpion's Call;Art/2DItems/Quivers/BloodSandQuiver
+Seething Fury;Art/2DItems/Jewels/SpectralThrowThreshold
+Self-Flagellation;Art/2DItems/Jewels/GreenCorrupt5
+Sentari's Answer;Art/2DItems/Armours/Shields/SantarisAnswer
+Servant of Decay;Art/2DItems/Armours/BodyArmours/Deepcaller
+Seven Teachings;Art/2DItems/Armours/BodyArmours/SevenTeachings
+Severed in Sleep;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/EternalSleep1
+Shackles of the Wretched;Art/2DItems/Armours/Gloves/RecallingtheWretched
+Shade of Solaris;Art/2DItems/Weapons/OneHandWeapons/Wands/SolarisWand
+Shadows and Dust;Art/2DItems/Armours/Gloves/ShadowsAndDust
+Shadowstitch;Art/2DItems/Armours/BodyArmours/ShadowStitch
+Shaper's Seed;Art/2DItems/Amulets/ShapersSeed
+Shaper's Touch;Art/2DItems/Armours/Gloves/ShapersGloves
+Shattershard;Art/2DItems/Armours/Shields/EverglassBarrier
+Shavronne's Pace;Art/2DItems/Armours/Boots/ShavronnesPace
+Shavronne's Wrappings;Art/2DItems/Armours/BodyArmours/BodyInt1CUnique
+Shimmeron;Art/2DItems/Weapons/OneHandWeapons/Wands/ElderWand
+Shiversting;Art/2DItems/Weapons/TwoHandWeapons/TwoHandSwords/TwoHandSword6Unique
+Shroud of the Lightless;Art/2DItems/Armours/BodyArmours/AbyssBody
+Sibyl's Lament;Art/2DItems/Rings/SibylsLament
+Sidhebreath;Art/2DItems/Amulets/Amulet1Unique
+Siegebreaker;Art/2DItems/Belts/85482
+Sign of the Sin Eater;Art/2DItems/Weapons/OneHandWeapons/Scepters/ScepterOfSuffering
+Silverbranch;Art/2DItems/Weapons/TwoHandWeapons/Bows/Bow1Unique
+Sin Trek;Art/2DItems/Armours/Boots/SinTrek
+Sin's Rebirth;Art/2DItems/Flasks/Sin
+Singularity;Art/2DItems/Weapons/OneHandWeapons/Scepters/Gloomeye
+Sinvicta's Mettle;Art/2DItems/Weapons/TwoHandWeapons/TwoHandAxes/SinvictasMettle
+Sire of Shards;Art/2DItems/Weapons/TwoHandWeapons/Staves/Radience
+Skin of the Lords;Art/2DItems/Armours/BodyArmours/MyriadGraspGrand
+Skin of the Loyal;Art/2DItems/Armours/BodyArmours/MyriadGrasp
+Skirmish;Art/2DItems/Quivers/TheSkirmish
+Skullhead;Art/2DItems/Armours/Helmets/Skullhead
+Skyforth;Art/2DItems/Armours/Boots/Skyforth
+Slavedriver's Hand;Art/2DItems/Armours/Gloves/SlavedriversHand
+Slitherpinch;Art/2DItems/Armours/Gloves/Slitherpinch
+Slivertongue;Art/2DItems/Weapons/TwoHandWeapons/Bows/SilverTongue
+Snakebite;Art/2DItems/Armours/Gloves/frenzygloves
+Snakepit;Art/2DItems/Rings/Serpentseed
+Solaris Lorica;Art/2DItems/Armours/BodyArmours/tornfleshofgods
+Solstice Vigil;Art/2DItems/Amulets/ShapersPresence
+Song of the Sirens;Art/2DItems/Weapons/TwoHandWeapons/FishingRods/UniqueFishingRod1
+Soul Ascension;Art/2DItems/Armours/Gloves/SoulAscension
+Soul Catcher;Art/2DItems/Flasks/SoulCatcher
+Soul Mantle;Art/2DItems/Armours/BodyArmours/SoulMantle
+Soul Ripper;Art/2DItems/Flasks/SoulRipper
+Soul Strike;Art/2DItems/Quivers/Soulstrike
+Soul Taker;Art/2DItems/Weapons/OneHandWeapons/OneHandAxes/Alexaxe
+Soul Tether;Art/2DItems/Belts/SoulTether
+Soulbound;Art/2DItems/Rings/BondedLife
+Soulthirst;Art/2DItems/Belts/Soulthirst
+Soulwrest;Art/2DItems/Weapons/TwoHandWeapons/Staves/TopDownStaveIcon
+Southbound;Art/2DItems/Armours/Gloves/Northbound
+Speaker's Wreath;Art/2DItems/Armours/Helmets/MinionHelmet
+Spinehail;Art/2DItems/Quivers/Spinehail
+Split Personality;Art/2DItems/Jewels/UniqueJewelBase1
+Sporeguard;Art/2DItems/Armours/BodyArmours/Supporter1bodyA
+Springleaf;Art/2DItems/Armours/Shields/ShieldStrIntUnique2
+Squirming Terror;Art/2DItems/Rings/WrithingLoop
+Star of Wraeclast;Art/2DItems/Amulets/DirgeOfVictory
+Starcaller;Art/2DItems/Weapons/TwoHandWeapons/TwoHandAxes/Starfell
+Starforge;Art/2DItems/Weapons/TwoHandWeapons/TwoHandSwords/Starforge
+Starkonja's Head;Art/2DItems/Armours/Helmets/Furryheadofstarkonja
+Starlight Chalice;Art/2DItems/Flasks/AdaptationFlask02
+Stasis Prison;Art/2DItems/Armours/BodyArmours/ChronomancerArmour
+Steelworm;Art/2DItems/Quivers/ShardQuiver
+Steppan Eard;Art/2DItems/Armours/Boots/Assedaisfervor
+Stone of Lazhwar;Art/2DItems/Amulets/Amulet5Unique
+Storm Prison;Art/2DItems/Weapons/OneHandWeapons/Wands/StormPrison
+Storm Secret;Art/2DItems/Rings/ThunderLoop
+Storm's Gift;Art/2DItems/Armours/Gloves/StormGloves
+Stormcharger;Art/2DItems/Armours/Boots/Stormcharger
+Stormfire;Art/2DItems/Rings/StormFire
+Stormseeker;Art/2DItems/Armours/Gloves/StormseekerGloves
+Stormshroud;Art/2DItems/Jewels/GreenJewel2
+Story of the Vaal;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/StoryOfTheVaal
+Stranglegasp;Art/2DItems/Amulets/GiftOfGloph
+String of Servitude;Art/2DItems/Belts/String_of_Servitude
+Sublime Vision;Art/2DItems/Jewels/SublimeVision
+Sudden Dawn;Art/2DItems/Armours/Helmets/SoullessElegance
+Sunblast;Art/2DItems/Belts/Belt8
+Sundance;Art/2DItems/Armours/Boots/Sundance
+Survivor's Guilt;Art/2DItems/Belts/ImbalancedCord
+Svalinn;Art/2DItems/Armours/Shields/LayeredBarrierShield
+Tainted Pact;Art/2DItems/Amulets/TaintedPact
+Taproot;Art/2DItems/Weapons/OneHandWeapons/Daggers/MarrowGasher
+Taryn's Shiver;Art/2DItems/Weapons/TwoHandWeapons/Staves/Tarynsshiver
+Tasalio's Sign;Art/2DItems/Rings/TasaliosSign
+Tavukai;Art/2DItems/Amulets/Tavukai
+Tawhoa's Felling;Art/2DItems/Weapons/TwoHandWeapons/TwoHandMaces/JadeMarohiErqiHammer
+Tear of Purity;Art/2DItems/Amulets/TearOfPurity
+Tecrod's Gaze;Art/2DItems/Jewels/MurderousEyeUnique
+Tempered Flesh;Art/2DItems/Jewels/TemperedRed
+Tempered Mind;Art/2DItems/Jewels/TemperedBlue
+Tempered Spirit;Art/2DItems/Jewels/TemperedGreen
+Temptation Step;Art/2DItems/Armours/Boots/AtaitolBoots
+Terminus Est;Art/2DItems/Weapons/TwoHandWeapons/TwoHandSwords/TwoHandSwordUnique2
+That Which Was Taken;Art/2DItems/Jewels/AfflictionJewel
+The Admiral;Art/2DItems/Armours/BodyArmours/HeartoftheElements
+The Adorned;Art/2DItems/Jewels/TrialmasterJew
+The Anima Stone;Art/2DItems/Jewels/GolemChaos
+The Annihilating Light;Art/2DItems/Weapons/TwoHandWeapons/Staves/IntrepidusDolorem
+The Anticipation;Art/2DItems/Armours/Shields/Longing1
+The Anvil;Art/2DItems/Amulets/Anvil
+The Apostate;Art/2DItems/Armours/BodyArmours/UberCortexArmour
+The Arkhon's Tools;Art/2DItems/Belts/TinkerersTools
+The Aylardex;Art/2DItems/Amulets/Xedralyas
+The Balance of Terror;Art/2DItems/Jewels/unique19
+The Baron;Art/2DItems/Armours/Helmets/TheBaron
+The Beachhead;Art/2DItems/Maps/HarbingerRed
+The Beast Fur Shawl;Art/2DItems/Armours/BodyArmours/BeastFurShawl
+The Black Cane;Art/2DItems/Weapons/OneHandWeapons/Scepters/TheBlackCane
+The Blood Dance;Art/2DItems/Armours/Boots/GoreFrenzy
+The Blood of Innocence;Art/2DItems/Relics/CoreRelicUnique1x2
+The Blood Reaper;Art/2DItems/Weapons/TwoHandWeapons/TwoHandAxes/TwoHandAxeUnique2
+The Blood Thorn;Art/2DItems/Weapons/TwoHandWeapons/Staves/TheBloodThorn
+The Blue Dream;Art/2DItems/Jewels/TheBlueDream
+The Blue Nightmare;Art/2DItems/Jewels/TheBlueDreamUpgrade
+The Brine Crown;Art/2DItems/Armours/Helmets/TheBrineCrown
+The Bringer of Rain;Art/2DItems/Armours/Helmets/TheBringerofRain
+The Broken Crown;Art/2DItems/Armours/Helmets/BrokenCrown
+The Burden of Shadows;Art/2DItems/Weapons/TwoHandWeapons/Staves/VoodooKingStaff
+The Burden of Truth;Art/2DItems/Belts/SirusBelt
+The Celestial Brace;Art/2DItems/Armours/Gloves/UberSearingExarchGloves
+The Chains of Castigation;Art/2DItems/Relics/CoreRelicUnique1x3
+The Coming Calamity;Art/2DItems/Armours/BodyArmours/SpiritHarness
+The Covenant;Art/2DItems/Armours/BodyArmours/Embrace
+The Coward's Trial;Art/2DItems/Maps/UndeadSiege
+The Crimson Storm;Art/2DItems/Weapons/TwoHandWeapons/Bows/FortificationsUnique
+The Dancing Dervish;Art/2DItems/Weapons/TwoHandWeapons/TwoHandSwords/Rhysblade
+The Dark Monarch;Art/2DItems/Armours/Helmets/TheDarkMonarch
+The Dark Seer;Art/2DItems/Weapons/OneHandWeapons/Scepters/VoidGaze
+The Deep One's Hide;Art/2DItems/Armours/Shields/Chitinhull
+The Devourer of Minds;Art/2DItems/Armours/Helmets/UberElderHelm
+The Devouring Diadem;Art/2DItems/Armours/Helmets/TheDevouringDiadem
+The Druggery;Art/2DItems/Belts/TheDruggery
+The Embalmer;Art/2DItems/Armours/Gloves/Allelopathy
+The Enmity Divine;Art/2DItems/Weapons/TwoHandWeapons/Staves/Rage Staff
+The Ephemeral Bond;Art/2DItems/Amulets/Charge Amplifier
+The Eternal Apple;Art/2DItems/Armours/Shields/TheEternalApple
+The Eternity Shroud;Art/2DItems/Armours/BodyArmours/MantleOfDismantling
+The Felbog Fang;Art/2DItems/Amulets/SabertoothsPendant
+The Flawed Refuge;Art/2DItems/Armours/Shields/AfflictionShield
+The Fledgling;Art/2DItems/Armours/Helmets/ExtremeFocus
+The Flow Untethered;Art/2DItems/Belts/HarbingerBelt
+The Fourth Vow;Art/2DItems/Armours/BodyArmours/ClericsSanctuary
+The Fracturing Spinner;Art/2DItems/Quivers/HarbingerQuiver
+The Front Line;Art/2DItems/Jewels/Veteran'sAwarenessJewel
+The Fulcrum;Art/2DItems/Weapons/TwoHandWeapons/Staves/ElementalHarmony
+The Ghastly Theatre;Art/2DItems/Armours/Shields/SmokeAndMirrors
+The Gilded Chalice;Art/2DItems/Relics/RelicUnique1x3
+The Gluttonous Tide;Art/2DItems/Weapons/TwoHandWeapons/Bows/FrenziedTentacles
+The Goddess Bound;Art/2DItems/Weapons/OneHandWeapons/Rapiers/UniqueRapier6
+The Goddess Scorned;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/TheGoddessscorned
+The Golden Rule;Art/2DItems/Jewels/TheGoldenRule
+The Green Dream;Art/2DItems/Jewels/TheGreenDream
+The Green Nightmare;Art/2DItems/Jewels/TheGreenDreamUpgrade
+The Grey Spire;Art/2DItems/Weapons/TwoHandWeapons/Staves/TheGreySpire
+The Gull;Art/2DItems/Armours/Helmets/TheGull
+The Halcyon;Art/2DItems/Amulets/GlacierCacoon
+The Hand of Phrecia;Art/2DItems/Armours/Gloves/PhreciaGloves
+The Harvest;Art/2DItems/Weapons/TwoHandWeapons/TwoHandAxes/TheExtractor
+The Hateful Accuser;Art/2DItems/Rings/RitualPhantasmRing
+The Hidden Blade;Art/2DItems/Weapons/OneHandWeapons/Daggers/SecretBlade
+The Highwayman;Art/2DItems/Rings/BanditRing
+The Hour of Divinity;Art/2DItems/Relics/RelicUnique1x2
+The Hungry Loop;Art/2DItems/Rings/TheHungryLoop
+The Ignomon;Art/2DItems/Amulets/Amulet6Unique
+The Immortal Will;Art/2DItems/Armours/Shields/HarbingerShieldUpgraded
+The Interrogation;Art/2DItems/Jewels/SecretsOfAgonyJewel
+The Iron Mass;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/SkeletonSword
+The Ivory Tower;Art/2DItems/Armours/BodyArmours/TheIvoryTower
+The Jinxed Juju;Art/2DItems/Amulets/JujusSoul
+The Light of Meaning;Art/2DItems/Jewels/AfflictionJewel
+The Living Blade;Art/2DItems/Weapons/TwoHandWeapons/TwoHandSwords/GreeneyesSword
+The Magnate;Art/2DItems/Belts/BuckledBeltUnique
+The Oppressor;Art/2DItems/Armours/Shields/TheSuppressor
+The Overflowing Chalice;Art/2DItems/Flasks/OverflowingChalice
+The Pandemonius;Art/2DItems/Amulets/GlacierCacoonUpgrade
+The Pariah;Art/2DItems/Rings/ThePariah
+The Perandus Pact;Art/2DItems/Jewels/PerandusJewel
+The Perfect Form;Art/2DItems/Armours/BodyArmours/ThePerfectForm
+The Poet's Pen;Art/2DItems/Weapons/OneHandWeapons/Wands/PoetsPen
+The Primordial Chain;Art/2DItems/Amulets/ThePrimordialChain
+The Princess;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/OneHandSword3Unique
+The Putrid Cloister;Art/2DItems/Maps/PutridCloister
+The Queen's Hunger;Art/2DItems/Armours/BodyArmours/TheQueensHunger
+The Queller of Minds;Art/2DItems/Rings/RitualSilenceRing
+The Rat Cage;Art/2DItems/Armours/BodyArmours/TheRatCage
+The Red Dream;Art/2DItems/Jewels/TheRedDream
+The Red Nightmare;Art/2DItems/Jewels/TheRedDreamUpgrade
+The Restless Ward;Art/2DItems/Armours/BodyArmours/TheRestlessWard
+The Retch;Art/2DItems/Belts/TheRetch
+The Rippling Thoughts;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/HarbingerLeagueSword
+The Saviour;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/MirageBlade
+The Scales of Justice;Art/2DItems/Armours/Shields/GoddessScales
+The Searing Touch;Art/2DItems/Weapons/TwoHandWeapons/Staves/Staff4unique
+The Second Sacrament;Art/2DItems/Relics/RelicUnique1x4
+The Selfish Shepherd;Art/2DItems/Rings/RitualLifedrainRing
+The Shattered Divinity;Art/2DItems/Quivers/HarbingerQuiverUpgraded
+The Siege;Art/2DItems/Jewels/KineticismJewel
+The Snowblind Grace;Art/2DItems/Armours/BodyArmours/TheSnowblindGrace
+The Sorrow of the Divine;Art/2DItems/Flasks/SorrowOfTheDivine
+The Squire;Art/2DItems/Armours/Shields/CaspirosResonance
+The Stampede;Art/2DItems/Armours/Boots/Supporter1bootA
+The Stormheart;Art/2DItems/Weapons/TwoHandWeapons/Staves/Staff8uniqueX
+The Supreme Truth;Art/2DItems/Weapons/OneHandWeapons/Scepters/Thesupremetruth
+The Surging Thoughts;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/HarbingerSwordUpgraded
+The Surrender;Art/2DItems/Armours/Shields/Longing2
+The Tempest Rising;Art/2DItems/Armours/Boots/UberSirusBoots
+The Tempest's Binding;Art/2DItems/Armours/Helmets/ChillShockHarbingerMask
+The Tempest's Liberation;Art/2DItems/Armours/Helmets/HarbingerHelmUpgraded
+The Tempestuous Steel;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/TempestuousSteel
+The Three Dragons;Art/2DItems/Armours/Helmets/ThreeDragons
+The Tides of Time;Art/2DItems/Belts/UberShaperBelt
+The Torrent's Reclamation;Art/2DItems/Belts/HarbingerBeltUpgraded
+The Trickster's Smile;Art/2DItems/Armours/Helmets/AzmeriHelmet
+The Twilight Temple;Art/2DItems/Maps/Celestial
+The Unshattered Will;Art/2DItems/Armours/Shields/Channeling Shield
+The Untouched Soul;Art/2DItems/Amulets/StringOfRings
+The Utmost;Art/2DItems/Amulets/PinnacleAmulet
+The Vertex;Art/2DItems/Armours/Helmets/TheVertex
+The Vinktar Square;Art/2DItems/Maps/TheVinktarSquare
+The Warden's Brand;Art/2DItems/Rings/TheWardensBand
+The Wasp Nest;Art/2DItems/Weapons/OneHandWeapons/Claws/Leviathanivory
+The Whispering Ice;Art/2DItems/Weapons/TwoHandWeapons/Staves/Staff8unique
+The Winds of Fate;Art/2DItems/Weapons/TwoHandWeapons/Staves/AnwensStaff
+The Wise Oak;Art/2DItems/Flasks/TheWiseOak
+The Writhing Jar;Art/2DItems/Flasks/WrithingJar
+The Yielding Mortality;Art/2DItems/Weapons/TwoHandWeapons/Staves/HarbingerStaffUpgraded
+Thief's Torment;Art/2DItems/Rings/ThiefsTorment
+Thousand Ribbons;Art/2DItems/Armours/BodyArmours/Thousandribbons
+Thousand Teeth Temu;Art/2DItems/Armours/Shields/ShieldDexUnique1
+Thread of Hope;Art/2DItems/Jewels/ConnectedJewel
+Three-step Assault;Art/2DItems/Armours/Boots/ThreeStepAssault
+Thrillsteel;Art/2DItems/Armours/Helmets/HelmofWar
+Thunderfist;Art/2DItems/Armours/Gloves/thunderclaw
+Thundersight;Art/2DItems/Armours/Helmets/ExplorersVisionLightning
+Tidebreaker;Art/2DItems/Weapons/TwoHandWeapons/TwoHandMaces/Tidebreaker
+Tinkerskin;Art/2DItems/Armours/BodyArmours/TrapperArmour
+Titucius' Span;Art/2DItems/Armours/Shields/ShieldStrUnique7
+Torchoak Step;Art/2DItems/Armours/Boots/85483
+Touch of Anguish;Art/2DItems/Weapons/OneHandWeapons/Claws/TouchOfAnguish
+Transcendent Flesh;Art/2DItems/Jewels/TranscendentRed
+Transcendent Mind;Art/2DItems/Jewels/TranscendentBlue
+Transcendent Spirit;Art/2DItems/Jewels/TranscendentGreen
+Tremor Rod;Art/2DItems/Weapons/TwoHandWeapons/Staves/MineStaff
+Triad Grip;Art/2DItems/Armours/Gloves/MinionConversionGloves
+Triumvirate Authority;Art/2DItems/Rings/VaalUnsetRing
+Trolltimber Spire;Art/2DItems/Armours/Shields/ShieldStrUnique3
+Tukohama's Fortress;Art/2DItems/Armours/Shields/TukohamasFortress
+Tulborn;Art/2DItems/Weapons/OneHandWeapons/Wands/Tulborn
+Tulfall;Art/2DItems/Weapons/OneHandWeapons/Wands/TulbornUpgraded
+Twisted Distant Memory;Art/2DItems/Maps/SynthesisLightningGuardianMap
+Ulaman's Gaze;Art/2DItems/Jewels/SearchingEyeUnique
+Umbilicus Immortalis;Art/2DItems/Belts/UmbilicusImmortalis
+Unending Hunger;Art/2DItems/Jewels/SpectreJewel
+Ungil's Gauche;Art/2DItems/Weapons/OneHandWeapons/Daggers/Dagger3unique
+United in Dream;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/EternalSleep2
+Unnatural Instinct;Art/2DItems/Jewels/UnnaturalInstinct
+Unyielding Flame;Art/2DItems/Armours/Shields/DamnatioAeterna
+Uul-Netol's Embrace;Art/2DItems/Weapons/TwoHandWeapons/TwoHandAxes/UulNetolsKissUpgraded
+Uul-Netol's Kiss;Art/2DItems/Weapons/TwoHandWeapons/TwoHandAxes/UulNetolsKiss
+Uul-Netol's Vow;Art/2DItems/Amulets/GiftofUulNetol
+Uzaza's Meadow;Art/2DItems/Rings/GreenComponent2
+Uzaza's Mountain;Art/2DItems/Rings/GreenComponent
+Uzaza's Valley;Art/2DItems/Rings/GreenComponent3
+Valako's Sign;Art/2DItems/Rings/ValakosSign
+Varunastra;Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/Varunastra
+Vaults of Atziri;Art/2DItems/Maps/UniqueMap1
+Veil of the Night;Art/2DItems/Armours/Helmets/VeilOfTheNight
+Venarius' Astrolabe;Art/2DItems/Amulets/VenariusAstrolabe
+Venopuncture;Art/2DItems/Rings/Bloodfreeze
+Ventor's Gamble;Art/2DItems/Rings/DieOfDestiny
+Veruso's Ambition;Art/2DItems/Armours/Boots/VersusoBoots
+Veruso's Battering Rams;Art/2DItems/Armours/Gloves/VerusosBatteringRams
+Victario's Charity;Art/2DItems/Armours/Shields/VictarosCharity
+Victario's Influence;Art/2DItems/Armours/BodyArmours/VictariosJacket
+Viridi's Veil;Art/2DItems/Armours/Helmets/ConstrictingCrown
+Vis Mortis;Art/2DItems/Armours/BodyArmours/VisMortis
+Vivinsect;Art/2DItems/Rings/BetrayalExperimentationRing
+Vix Lunaris;Art/2DItems/Armours/Shields/ShieldStrDexUnique4
+Vixen's Entrapment;Art/2DItems/Armours/Gloves/VixensEntrapment
+Voice of the Storm;Art/2DItems/Amulets/VoiceOfTheStorm
+Voices;Art/2DItems/Jewels/UniqueJewelBase3
+Void Battery;Art/2DItems/Weapons/OneHandWeapons/Wands/VoidBattery
+Voidbringer;Art/2DItems/Armours/Gloves/Hellbringer
+Voideye;Art/2DItems/Rings/unused4
+Voidfletcher;Art/2DItems/Quivers/EldarQuiver
+Voidhome;Art/2DItems/Weapons/TwoHandWeapons/TwoHandMaces/Voidhome
+Voidwalker;Art/2DItems/Armours/Boots/CrossingTheVoid
+Volkuur's Guidance;Art/2DItems/Armours/Gloves/PaleCouncilGloves
+Voll's Protector;Art/2DItems/Armours/BodyArmours/StrInt3AUnique
+Voll's Vision;Art/2DItems/Armours/Helmets/VollsVision
+Voltaxic Rift;Art/2DItems/Weapons/TwoHandWeapons/Bows/Voidshaft
+Vorana's March;Art/2DItems/Armours/Boots/SpiritBootsUnique
+Vorana's Preparation;Art/2DItems/Flasks/AdaptationFlask03
+Vulconus;Art/2DItems/Weapons/OneHandWeapons/Daggers/Vulconus
+Wake of Destruction;Art/2DItems/Armours/Boots/WakeOfDestruction
+Wanderlust;Art/2DItems/Armours/Boots/Wanderlust
+Warrior's Legacy;Art/2DItems/Rings/WarriorsLegacy
+Warrior's Tale;Art/2DItems/Jewels/HinekoraJewel
+Watcher's Eye;Art/2DItems/Jewels/ElderJewel
+Whakawairua Tuahu;Art/2DItems/Maps/UniqueMapEye
+Wheel of the Stormsail;Art/2DItems/Armours/Shields/Wheelofthestormsail
+Whispers of Infinity;Art/2DItems/Amulets/WhispersofInfinity
+Wideswing;Art/2DItems/Weapons/TwoHandWeapons/TwoHandAxes/Wideswing
+Wildslash;Art/2DItems/Weapons/OneHandWeapons/Claws/Wildslash
+Willclash;Art/2DItems/Armours/Helmets/MindBlockMask
+Willowgift;Art/2DItems/Amulets/StarlightMark
+Wilma's Requital;Art/2DItems/Armours/Helmets/WilmasRequital
+Windripper;Art/2DItems/Weapons/TwoHandWeapons/Bows/Eagle
+Winds of Change;Art/2DItems/Armours/Gloves/GlovesStr6
+Wine of the Prophet;Art/2DItems/Flasks/BottledFutures
+Wings of Entropy;Art/2DItems/Weapons/OneHandWeapons/OneHandAxes/Entropywings
+Winterheart;Art/2DItems/Amulets/WinterHeartALT
+Winterweave;Art/2DItems/Rings/BloodBoil
+Witchbane;Art/2DItems/Jewels/unique13
+Witchfire Brew;Art/2DItems/Flasks/WitchFireBrew
+Witchhunter's Judgment;Art/2DItems/Weapons/TwoHandWeapons/Staves/BrandDetonateStaff
+Wondertrap;Art/2DItems/Armours/Boots/Wondertrap
+Wraithlord;Art/2DItems/Armours/Helmets/Wraithlord
+Wreath of Phrecia;Art/2DItems/Armours/Helmets/Wreath_of_Phrecia
+Wurm's Molt;Art/2DItems/Belts/Belt6Unique
+Xirgil's Crank;Art/2DItems/Weapons/TwoHandWeapons/Staves/Staff7unique
+Xoph's Blood;Art/2DItems/Amulets/YphethakksHeartUpgrade
+Xoph's Heart;Art/2DItems/Amulets/YphethakksHeart
+Xoph's Inception;Art/2DItems/Weapons/TwoHandWeapons/Bows/BloodPerigree
+Xoph's Nurture;Art/2DItems/Weapons/TwoHandWeapons/Bows/BloodPerigreeBREACH
+Yaomac's Accord;Art/2DItems/Weapons/OneHandWeapons/Scepters/OnatzliSceptre
+Ylfeban's Trickery;Art/2DItems/Armours/Helmets/Ylfeban
+Ynda's Stand;Art/2DItems/Belts/KalguuranWardBelt
+Yoke of Suffering;Art/2DItems/Amulets/YokeOfSuffering
+Yriel's Fostering;Art/2DItems/Armours/BodyArmours/PaleCouncilArmour
+Zahndethus' Cassock;Art/2DItems/Armours/BodyArmours/Zahndethuscassock
+Zeel's Amplifier;Art/2DItems/Armours/Shields/ZealsAmplifier
+Zerphi's Heart;Art/2DItems/Amulets/ZerphisHeart
+Zerphi's Last Breath;Art/2DItems/Flasks/ZerphisLastBreath

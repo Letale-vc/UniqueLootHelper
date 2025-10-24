@@ -62,9 +62,24 @@ namespace UniqueLootHelper.Managers
             try
             {
                 string json = File.ReadAllText(_artFilePath);
-                Dictionary<string, UniqueItemSettings> uniqueArtItemList = 
+                Dictionary<string, UniqueItemSettings> loadedItems = 
                     JsonConvert.DeserializeObject<Dictionary<string, UniqueItemSettings>>(json);
-                return uniqueArtItemList ?? [];
+                
+                if (loadedItems == null || loadedItems.Count == 0)
+                {
+                    return [];
+                }
+
+                // Normalize all paths to have .dds extension
+                var normalizedItems = new Dictionary<string, UniqueItemSettings>();
+                
+                foreach (var kvp in loadedItems)
+                {
+                    string normalizedPath = kvp.Key.Replace(".dds", "") + ".dds";
+                    normalizedItems[normalizedPath] = kvp.Value;
+                }
+
+                return normalizedItems;
             }
             catch (Exception ex)
             {
@@ -114,11 +129,14 @@ namespace UniqueLootHelper.Managers
                 return false;
             }
 
-            bool isUpdate = _cacheUniqueArtWork.ContainsKey(artPath);
-            _cacheUniqueArtWork[artPath] = settings;
+            // Always ensure the path has .dds extension
+            string normalizedPath = artPath.Replace(".dds", "") + ".dds";
+
+            bool isUpdate = _cacheUniqueArtWork.ContainsKey(normalizedPath);
+            _cacheUniqueArtWork[normalizedPath] = settings;
 
             string action = isUpdate ? "Updated" : "Added";
-            _logMessage($"UniqueLootHelper: {action} {artPath} in unique list");
+            _logMessage($"UniqueLootHelper: {action} {normalizedPath} in unique list");
             return true;
         }
 
@@ -127,9 +145,12 @@ namespace UniqueLootHelper.Managers
         /// </summary>
         public bool RemoveUniqueItem(string artPath)
         {
-            if (_cacheUniqueArtWork.Remove(artPath))
+            // Normalize to .dds path
+            string normalizedPath = artPath.Replace(".dds", "") + ".dds";
+
+            if (_cacheUniqueArtWork.Remove(normalizedPath))
             {
-                _logMessage($"UniqueLootHelper: Removed {artPath} from unique list");
+                _logMessage($"UniqueLootHelper: Removed {normalizedPath} from unique list");
                 return true;
             }
             return false;
@@ -140,15 +161,13 @@ namespace UniqueLootHelper.Managers
         /// </summary>
         public bool TryGetUniqueSettings(string resourcePath, out UniqueItemSettings settings, out string matchedKey)
         {
-            string[] pathArray = [resourcePath, resourcePath + ".dds", resourcePath.Replace(".dds", "")];
-
-            foreach (string path in pathArray)
+            // Try with .dds extension (normalized)
+            string normalizedPath = resourcePath.Replace(".dds", "") + ".dds";
+            
+            if (_cacheUniqueArtWork.TryGetValue(normalizedPath, out settings))
             {
-                if (_cacheUniqueArtWork.TryGetValue(path, out settings))
-                {
-                    matchedKey = path;
-                    return true;
-                }
+                matchedKey = normalizedPath;
+                return true;
             }
 
             settings = null;

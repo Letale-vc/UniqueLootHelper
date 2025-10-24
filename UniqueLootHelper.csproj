@@ -44,5 +44,12 @@
         <None Include="Microsoft.Extensions.ObjectPool.dll">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <!-- Copy unique items generator executable and data file -->
+        <None Include="UniqueArtGenerate-win-x64.exe">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="unique_items_output.txt">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 </Project>

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Windows.Forms;
-using ExileCore;
+﻿using ExileCore;
 using ExileCore.PoEMemory;
 using ExileCore.PoEMemory.Components;
 using ExileCore.PoEMemory.Elements;
@@ -11,6 +6,12 @@ using ExileCore.PoEMemory.MemoryObjects;
 using ExileCore.Shared.Cache;
 using ImGuiNET;
 using Microsoft.Extensions.ObjectPool;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Numerics;
+using System.Windows.Forms;
 using UniqueLootHelper.Managers;
 using Vector2 = System.Numerics.Vector2;
 
@@ -50,7 +51,13 @@ namespace UniqueLootHelper
         private bool _showStatisticsWindow;
         private SoundManager _soundManager;
         private StatisticsManager _statisticsManager;
+        private UniqueItemsListManager _uniqueItemsListManager;
         private UniqueItemSettings _tempUniqueItemSettings = new();
+
+        // UI state for item selection
+        private string _searchTerm = string.Empty;
+        private string _selectedItemName = string.Empty;
+        private bool _usePresetMode = false;
 
         public UniqueLootHelperCore()
         {
@@ -100,6 +107,11 @@ namespace UniqueLootHelper
             );
             _itemDrawingManager = new ItemDrawingManager(() => Graphics, () => Settings);
             _importExportService = new ImportExportService(LogMessage, LogError);
+            _uniqueItemsListManager = new UniqueItemsListManager(
+                DirectoryFullName,
+                LogMessage,
+                LogError
+            );
 
             // Setup event handlers
             Settings.SoundNotificationSettings.ResetEntityNotificationFlags.OnPressed += () =>
@@ -147,9 +159,27 @@ namespace UniqueLootHelper
             {
                 _showStatisticsWindow = !_showStatisticsWindow;
             }
+            ImGui.SameLine();
+
+            // Show regeneration status
+            if (_uniqueItemsListManager.IsRegenerating)
+            {
+                ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(0.5f, 0.5f, 0.5f, 1.0f));
+                ImGui.Button("Regenerating...");
+                ImGui.PopStyleColor();
+            }
+            else
+            {
+                if (ImGui.Button("Regenerate Unique Items List"))
+                {
+                    _uniqueItemsListManager.RegenerateUniqueItemsList();
+                }
+            }
+
             ImGui.Spacing();
             ImGui.Separator();
             ImGui.Spacing();
+
             ImGui.InputText("Import/export##ImportExportText", ref _importExportText, 10240);
             if (ImGui.Button("Import##ImportState"))
             {
@@ -160,25 +190,38 @@ namespace UniqueLootHelper
             {
                 Export();
             }
+
             ImGui.Dummy(new Vector2(0, 20));
             base.DrawSettings();
+
             ImGui.Spacing();
             ImGui.Separator();
             ImGui.Spacing();
             ImGui.Spacing();
+
             ImGui.Text("Add new unique to list");
-            ImGui.InputText(
-                "Unique art path",
-                ref _tempUniqueItemSettings.ArtPath,
-                1024,
-                ImGuiInputTextFlags.EnterReturnsTrue
-            );
-            ImGui.InputText(
-                "Unique label",
-                ref _tempUniqueItemSettings.Label,
-                1024,
-                ImGuiInputTextFlags.EnterReturnsTrue
-            );
+
+            // Mode toggle
+            if (ImGui.Checkbox("Use Preset Item", ref _usePresetMode))
+            {
+                _tempUniqueItemSettings = new UniqueItemSettings();
+                _selectedItemName = string.Empty;
+            }
+
+            ImGui.Spacing();
+
+            if (_usePresetMode)
+            {
+                DrawPresetItemSelection();
+            }
+            else
+            {
+                DrawCustomItemInput();
+            }
+
+            ImGui.Spacing();
+
+            // Common settings
             ImGui.Checkbox("Draw line on map", ref _tempUniqueItemSettings.LineDrawMap);
             ImGui.SameLine();
             ImGui.Checkbox("Draw line on world", ref _tempUniqueItemSettings.LineDrawWorld);
@@ -203,6 +246,8 @@ namespace UniqueLootHelper
                 )
                 {
                     _tempUniqueItemSettings = new UniqueItemSettings();
+                    _selectedItemName = string.Empty;
+                    _searchTerm = string.Empty;
                 }
             }
 
@@ -210,6 +255,7 @@ namespace UniqueLootHelper
             ImGui.Separator();
             ImGui.Spacing();
             ImGui.Text("Uniques list:");
+
             foreach (
                 KeyValuePair<
                     string,
@@ -222,6 +268,7 @@ namespace UniqueLootHelper
                 if (ImGui.Button($"Edit##{uniqueArtItem.Key}"))
                 {
                     _tempUniqueItemSettings = uniqueArtItem.Value;
+                    _usePresetMode = false;
                     LogMessage($"UniqueLootHelper: Editing {uniqueArtItem.Key} from unique list");
                 }
 
@@ -232,6 +279,111 @@ namespace UniqueLootHelper
                     _configurationManager.RemoveUniqueItem(uniqueArtItem.Key);
                 }
             }
+        }
+
+        private void DrawPresetItemSelection()
+        {
+            ImGui.Text("Search for unique item:");
+            if (ImGui.InputText("##SearchUniqueItem", ref _searchTerm, 256))
+            {
+                _selectedItemName = string.Empty;
+            }
+
+            ImGui.Spacing();
+
+            // Show regeneration status
+            if (_uniqueItemsListManager.IsRegenerating)
+            {
+                ImGui.TextColored(
+                    new Vector4(1.0f, 1.0f, 0.0f, 1.0f),
+                    "Regenerating unique items list, please wait..."
+                );
+                ImGui.Spacing();
+            }
+
+            List<KeyValuePair<string, string>> searchResults;
+
+            if (string.IsNullOrWhiteSpace(_searchTerm))
+            {
+                // Show all items if no search term
+                searchResults = _uniqueItemsListManager.UniqueItemsList
+                    .Take(50)
+                    .OrderBy(x => x.Key)
+                    .ToList();
+                ImGui.TextColored(
+                    new Vector4(0.7f, 0.7f, 0.7f, 1.0f),
+                    $"Showing first 50 of {_uniqueItemsListManager.UniqueItemsList.Count} items..."
+                );
+            }
+            else
+            {
+                searchResults = _uniqueItemsListManager.SearchItems(_searchTerm);
+                ImGui.TextColored(
+                    new Vector4(0.7f, 0.7f, 0.7f, 1.0f),
+                    $"Found {searchResults.Count} matching items"
+                );
+            }
+
+            ImGui.Spacing();
+
+            if (
+                ImGui.BeginChild(
+                    "##UniqueItemsList",
+                    new Vector2(0, 200),
+                    ImGuiChildFlags.Border,
+                    ImGuiWindowFlags.None
+                )
+            )
+            {
+                foreach (KeyValuePair<string, string> item in searchResults)
+                {
+                    // item.Key is itemName, item.Value is artPath
+                    bool isSelected = _selectedItemName == item.Key;
+                    if (ImGui.Selectable($"{item.Key}##{item.Value}", isSelected))
+                    {
+                        _selectedItemName = item.Key;
+                        _tempUniqueItemSettings.ArtPath = item.Value;
+                        _tempUniqueItemSettings.Label = item.Key;
+                    }
+                }
+
+                ImGui.EndChild();
+            }
+
+            ImGui.Spacing();
+
+            if (!string.IsNullOrEmpty(_selectedItemName))
+            {
+                ImGui.TextColored(
+                    new Vector4(0.0f, 1.0f, 0.0f, 1.0f),
+                    $"Selected: {_selectedItemName}"
+                );
+                ImGui.Text($"Art Path: {_tempUniqueItemSettings.ArtPath}");
+            }
+
+            ImGui.Spacing();
+            ImGui.InputText(
+                "Custom Label (optional)",
+                ref _tempUniqueItemSettings.Label,
+                1024,
+                ImGuiInputTextFlags.EnterReturnsTrue
+            );
+        }
+
+        private void DrawCustomItemInput()
+        {
+            ImGui.InputText(
+                "Unique art path",
+                ref _tempUniqueItemSettings.ArtPath,
+                1024,
+                ImGuiInputTextFlags.EnterReturnsTrue
+            );
+            ImGui.InputText(
+                "Unique label",
+                ref _tempUniqueItemSettings.Label,
+                1024,
+                ImGuiInputTextFlags.EnterReturnsTrue
+            );
         }
 
         private void DrawStatisticsWindow()
@@ -470,11 +622,13 @@ namespace UniqueLootHelper
 
                 foreach (CustomItemData item in groundItems)
                 {
-                    // Optimization: Direct dictionary lookup instead of TryGetUniqueSettings
+                    // Normalize resource path to .dds for lookup
                     string resourcePath = item.ResourcePath;
+                    string normalizedPath = resourcePath.Replace(".dds", "") + ".dds";
+
                     if (
                         !uniqueArtWork.TryGetValue(
-                            resourcePath,
+                            normalizedPath,
                             out UniqueItemSettings uniqueSettings
                         )
                     )
@@ -487,8 +641,8 @@ namespace UniqueLootHelper
                         continue;
                     }
 
-                    // Use resourcePath as matchedKey since we found it in dictionary
-                    string matchedKey = resourcePath;
+                    // Use normalizedPath as matchedKey
+                    string matchedKey = normalizedPath;
 
                     // Profile: Statistics recording
                     if (Settings.ProfilerSettings.Enabled)

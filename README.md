@@ -7,6 +7,8 @@ Highlights Labels of specified Unique Items via their Icon Model File.
 ## 🎯 Features
 
 - **Visual Highlighting** - Highlight unique items on the ground by their art path (icon)
+- **Preset Item Selection** - Choose from 1000+ predefined unique items with searchable list
+- **Custom Items** - Manual entry for custom art paths still supported
 - **Sound Notifications** - Play custom sounds when valuable items are found
 - **Statistics Tracking** - Track how many times each item has been found
 - **Map & World Lines** - Draw lines from player to items on map and in world
@@ -25,12 +27,25 @@ Highlights Labels of specified Unique Items via their Icon Model File.
 
 ### Adding Unique Items
 
+#### Using Preset Items (Recommended)
+
+1. Open plugin settings
+2. Check "Use Preset Item" checkbox
+3. Type in the search box to find your item (e.g., "Headhunter")
+4. Select the item from the list
+5. (Optional) Customize the label
+6. Configure display options
+7. Click "Add Unique"
+
+#### Using Custom Art Path
+
 1. Hover over an item in-game
 2. Press `F7` to copy the art path to clipboard
 3. Open plugin settings
-4. Paste the art path in "Unique art path" field
-5. Set a label name
-6. Configure display options:
+4. Leave "Use Preset Item" unchecked
+5. Paste the art path in "Unique art path" field
+6. Set a label name
+7. Configure display options:
     - Draw line on map
     - Draw line on world
     - Draw outline
@@ -38,7 +53,11 @@ Highlights Labels of specified Unique Items via their Icon Model File.
     - Draw label in box
     - Draw is corrupted
     - Play valuable sound
-7. Click "Add Unique"
+8. Click "Add Unique"
+
+### Regenerating Unique Items List
+
+Click "Regenerate Unique Items List" button to update the predefined items list. The plugin will run `UniqueArtGenerate-win-x64.exe` (included with the plugin) to generate an updated list.
 
 ### Sound Notifications
 

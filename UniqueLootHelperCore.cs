@@ -180,16 +180,47 @@ namespace UniqueLootHelper
             ImGui.Separator();
             ImGui.Spacing();
 
-            ImGui.InputText("Import/export##ImportExportText", ref _importExportText, 100000);
-            if (ImGui.Button("Import##ImportState"))
+            ImGui.Text("Import/Export Configuration:");
+            ImGui.InputText("##ImportExportText", ref _importExportText, 100000);
+            if (ImGui.Button("Paste from Clipboard##PasteImport"))
             {
-                Import();
+                try
+                {
+                    string clipboardText = Clipboard.GetClipboardText();
+                    if (!string.IsNullOrEmpty(clipboardText))
+                    {
+                        _importExportText = clipboardText;
+                        LogMessage("UniqueLootHelper: Pasted text from clipboard");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogError($"UniqueLootHelper: Failed to paste from clipboard: {ex.Message}");
+                }
+            }
+            ImGui.SameLine();
+            if (ImGui.Button("Import (Merge)##ImportMerge"))
+            {
+                Import(merge: true);
+            }
+            ImGui.SameLine();
+            if (ImGui.Button("Import (Replace)##ImportReplace"))
+            {
+                Import(merge: false);
             }
             ImGui.SameLine();
             if (ImGui.Button("Export##ExportState"))
             {
                 Export();
             }
+            ImGui.SameLine();
+            if (ImGui.Button("Clear##ClearImportExport"))
+            {
+                _importExportText = string.Empty;
+            }
+
+            ImGui.TextColored(new Vector4(0.7f, 0.7f, 0.7f, 1.0f),
+                "Merge: Add to existing items | Replace: Clear all and import");
 
             ImGui.Dummy(new Vector2(0, 20));
             base.DrawSettings();
@@ -506,14 +537,23 @@ namespace UniqueLootHelper
             Profiler.ShowProfilerWindow(ref _showProfilerWindow);
         }
 
-        private void Import()
+        private void Import(bool merge)
         {
             Dictionary<string, UniqueItemSettings> imported = _importExportService.Import(
                 _importExportText
             );
             if (imported != null && _importExportService.ValidateConfiguration(imported))
             {
-                _configurationManager.MergeConfiguration(imported);
+                if (merge)
+                {
+                    _configurationManager.MergeConfiguration(imported);
+                    LogMessage($"UniqueLootHelper: Merged {imported.Count} items with existing configuration");
+                }
+                else
+                {
+                    _configurationManager.ReplaceConfiguration(imported);
+                    LogMessage($"UniqueLootHelper: Replaced configuration with {imported.Count} items");
+                }
             }
         }
 
@@ -522,6 +562,17 @@ namespace UniqueLootHelper
             _importExportText = _importExportService.Export(
                 _configurationManager.GetAllConfigurations()
             );
+
+            // Also copy to system clipboard for convenience
+            try
+            {
+                Clipboard.SetClipboardText(_importExportText);
+                LogMessage("UniqueLootHelper: Configuration exported and copied to clipboard");
+            }
+            catch (Exception ex)
+            {
+                LogError($"UniqueLootHelper: Failed to copy to clipboard: {ex.Message}");
+            }
         }
 
         public override void Render()

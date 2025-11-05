@@ -203,6 +203,28 @@ namespace UniqueLootHelper.Managers
         }
 
         /// <summary>
+        /// Replaces all configuration with imported configuration
+        /// </summary>
+        public void ReplaceConfiguration(Dictionary<string, UniqueItemSettings> importedConfig)
+        {
+            if (importedConfig == null)
+            {
+                _logError("UniqueLootHelper: Cannot replace with null configuration");
+                return;
+            }
+
+            int oldCount = _cacheUniqueArtWork.Count;
+            _cacheUniqueArtWork.Clear();
+
+            foreach (var kvp in importedConfig)
+            {
+                _cacheUniqueArtWork[kvp.Key] = kvp.Value;
+            }
+
+            _logMessage($"UniqueLootHelper: Replaced {oldCount} items with {importedConfig.Count} unique items");
+        }
+
+        /// <summary>
         /// Gets all unique artwork configurations
         /// </summary>
         public Dictionary<string, UniqueItemSettings> GetAllConfigurations()

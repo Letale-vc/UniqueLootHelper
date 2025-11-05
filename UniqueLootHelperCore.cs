@@ -180,7 +180,7 @@ namespace UniqueLootHelper
             ImGui.Separator();
             ImGui.Spacing();
 
-            ImGui.InputText("Import/export##ImportExportText", ref _importExportText, 10240);
+            ImGui.InputText("Import/export##ImportExportText", ref _importExportText, 100000);
             if (ImGui.Button("Import##ImportState"))
             {
                 Import();

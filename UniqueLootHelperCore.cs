@@ -596,13 +596,13 @@ namespace UniqueLootHelper
 
                 if (Input.IsKeyDown(Keys.F7))
                 {
-                    HoverItemIcon hoverItem =
+                    var hoverItem =
                         GameController.Game.IngameState.UIHover.AsObject<HoverItemIcon>();
                     if (hoverItem == null)
                     {
                         return;
                     }
-                    RenderItem renderItem = hoverItem.Item.GetComponent<RenderItem>();
+                    var renderItem = hoverItem.Item.GetComponent<RenderItem>();
                     if (renderItem == null)
                     {
                         return;
@@ -611,13 +611,13 @@ namespace UniqueLootHelper
                     LogMessage($"UniqueLootHelper: Copied {renderItem.ResourcePath} to clipboard");
                 }
 
-                IngameUIElements inGameUi = GameController.Game.IngameState.IngameUi;
+                var inGameUi = GameController.Game.IngameState.IngameUi;
 
                 // Optimization: avoid Any() with predicate - use direct iteration to avoid delegate allocation
                 if (!Settings.IgnoreFullscreenPanels)
                 {
-                    bool hasVisiblePanel = false;
-                    foreach (Element panel in inGameUi.FullscreenPanels)
+                    var hasVisiblePanel = false;
+                    foreach (var panel in inGameUi.FullscreenPanels)
                     {
                         if (panel.IsVisible)
                         {
@@ -641,7 +641,7 @@ namespace UniqueLootHelper
                     _profilerUI.Stop();
                 }
 
-                Entity player = GameController?.Player;
+                var player = GameController?.Player;
                 ImGui.Begin(
                     "lmao",
                     ImGuiWindowFlags.NoDecoration
@@ -657,7 +657,7 @@ namespace UniqueLootHelper
                     _profilerGetItems.Restart();
                 }
 
-                List<CustomItemData> groundItems = _groundItems.Value;
+                var groundItems = _groundItems.Value;
 
                 if (Settings.ProfilerSettings.Enabled)
                 {
@@ -666,21 +666,45 @@ namespace UniqueLootHelper
                 }
 
                 List<string> countList = new(groundItems.Count / 2);
+                var currentItemIds = new HashSet<uint>(groundItems.Count);
 
                 // Optimization: Cache dictionary reference to avoid repeated property access
-                IReadOnlyDictionary<string, UniqueItemSettings> uniqueArtWork =
+                var uniqueArtWork =
                     _configurationManager.UniqueArtWork;
 
-                foreach (CustomItemData item in groundItems)
+                var drawMapLines =
+                    Settings.MapDrawingSettings.EnableMapDrawing
+                    && GameController.IngameState.IngameUi.Map.LargeMap.IsVisible;
+                bool drawWorldLines = Settings.MapDrawingSettings.WorldMapDrawing;
+                var playerMapPos = Vector2.Zero;
+                var playerWorldPos = Vector2.Zero;
+                if (drawMapLines)
                 {
-                    // Normalize resource path to .dds for lookup
-                    string resourcePath = item.ResourcePath;
-                    string normalizedPath = resourcePath.Replace(".dds", "") + ".dds";
+                    playerMapPos =
+                        GameController.IngameState.Data.GetGridMapScreenPosition(
+                            player.GridPosNum
+                        );
+                }
+                if (drawWorldLines)
+                {
+                    playerWorldPos =
+                        GameController.IngameState.Data.GetGridScreenPosition(player.GridPosNum);
+                }
+
+                foreach (var item in groundItems)
+                {
+                    currentItemIds.Add(item.Id);
+
+                    var normalizedPath = item.NormalizedResourcePath;
+                    if (string.IsNullOrEmpty(normalizedPath))
+                    {
+                        continue;
+                    }
 
                     if (
                         !uniqueArtWork.TryGetValue(
                             normalizedPath,
-                            out UniqueItemSettings uniqueSettings
+                            out var uniqueSettings
                         )
                     )
                     {
@@ -693,7 +717,7 @@ namespace UniqueLootHelper
                     }
 
                     // Use normalizedPath as matchedKey
-                    string matchedKey = normalizedPath;
+                    var matchedKey = normalizedPath;
 
                     // Profile: Statistics recording
                     if (Settings.ProfilerSettings.Enabled)
@@ -710,7 +734,7 @@ namespace UniqueLootHelper
 
                     if (uniqueSettings.DrawLabelInBox)
                     {
-                        string label = string.IsNullOrEmpty(uniqueSettings.Label)
+                        var label = string.IsNullOrEmpty(uniqueSettings.Label)
                             ? item.Entity.RenderName ?? "Unknown Item"
                             : uniqueSettings.Label;
                         countList.Add(label);
@@ -734,29 +758,17 @@ namespace UniqueLootHelper
                         _profilerDrawing.Start();
                     }
 
-                    if (
-                        uniqueSettings.LineDrawMap
-                        && Settings.MapDrawingSettings.EnableMapDrawing
-                        && GameController.IngameState.IngameUi.Map.LargeMap.IsVisible
-                    )
+                    if (uniqueSettings.LineDrawMap && drawMapLines)
                     {
-                        Vector2 itemMapPos =
+                        var itemMapPos =
                             GameController.IngameState.Data.GetGridMapScreenPosition(item.Location);
-                        Vector2 playerMapPos =
-                            GameController.IngameState.Data.GetGridMapScreenPosition(
-                                player.GridPosNum
-                            );
                         _itemDrawingManager.DrawMapLine(itemMapPos, playerMapPos);
                     }
 
-                    if (Settings.MapDrawingSettings.WorldMapDrawing && uniqueSettings.LineDrawWorld)
+                    if (drawWorldLines && uniqueSettings.LineDrawWorld)
                     {
-                        Vector2 itemWorldPos =
+                        var itemWorldPos =
                             GameController.IngameState.Data.GetGridScreenPosition(item.Location);
-                        Vector2 playerWorldPos =
-                            GameController.IngameState.Data.GetGridScreenPosition(
-                                player.GridPosNum
-                            );
                         _itemDrawingManager.DrawWorldLine(itemWorldPos, playerWorldPos);
                     }
 
@@ -764,7 +776,7 @@ namespace UniqueLootHelper
 
                     if (!item.IsIdentified)
                     {
-                        string labelText =
+                        var labelText =
                             uniqueSettings.Label ?? item.Entity.RenderName ?? "Unknown Item";
                         _itemDrawingManager.DrawLabelName(
                             item.Element,
@@ -779,6 +791,10 @@ namespace UniqueLootHelper
                         _profilerDrawing.Stop();
                     }
                 }
+
+                // Cleanup caches using the IDs we saw this frame
+                _soundManager.CleanupCache(currentItemIds);
+                _statisticsManager.CleanupCache(currentItemIds);
 
                 if (Settings.ProfilerSettings.Enabled)
                 {
@@ -875,16 +891,19 @@ namespace UniqueLootHelper
                 // Try to reuse existing item data
                 if (prevDict != null)
                 {
-                    prevDict.TryGetValue(
-                        (description.Label?.Address, groundItemEntity.Address),
-                        out customItem
-                    );
+                    (long?, long?) key = (description.Label?.Address, groundItemEntity.Address);
+                    if (prevDict.TryGetValue(key, out customItem))
+                    {
+                        // Mark as used so we can return only unused entries
+                        prevDict.Remove(key);
+                    }
                 }
 
                 // Create new item if not found in cache
                 if (customItem == null)
                 {
-                    customItem = new CustomItemData(
+                    customItem = _itemDataPool.Get();
+                    customItem.Initialize(
                         groundItemEntity,
                         description.Label,
                         description.Entity.GridPosNum
@@ -892,6 +911,15 @@ namespace UniqueLootHelper
                 }
 
                 result.Add(customItem);
+            }
+
+            // Return unused pooled items from the previous frame
+            if (prevDict != null && prevDict.Count > 0)
+            {
+                foreach (CustomItemData stale in prevDict.Values)
+                {
+                    _itemDataPool.Return(stale);
+                }
             }
 
             return result;

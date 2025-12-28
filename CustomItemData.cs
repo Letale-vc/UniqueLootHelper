@@ -1,4 +1,5 @@
-﻿using ExileCore.PoEMemory;
+﻿using System;
+using ExileCore.PoEMemory;
 using ExileCore.PoEMemory.Components;
 using ExileCore.PoEMemory.MemoryObjects;
 using SharpDX;
@@ -31,6 +32,7 @@ namespace UniqueLootHelper
         public bool IsCorrupted { get; set; }
         public bool IsIdentified { get; set; }
         public string ResourcePath { get; set; } = string.Empty;
+        public string NormalizedResourcePath { get; private set; } = string.Empty;
         public RectangleF ClientRect { get; set; }
         public Vector2 Location { get; set; }
 
@@ -53,6 +55,8 @@ namespace UniqueLootHelper
                 ResourcePath = string.Empty;
             }
 
+            NormalizedResourcePath = NormalizeResourcePath(ResourcePath);
+
             if (entity.TryGetComponent(out Base @base))
             {
                 IsCorrupted = @base.isCorrupted;
@@ -72,6 +76,16 @@ namespace UniqueLootHelper
             }
         }
 
+        private static string NormalizeResourcePath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                return string.Empty;
+            }
+
+            return path.Replace(".dds", string.Empty, StringComparison.OrdinalIgnoreCase) + ".dds";
+        }
+
         /// <summary>
         ///     Reset method for object pool - clears all properties before returning to pool
         /// </summary>
@@ -83,6 +97,7 @@ namespace UniqueLootHelper
             IsCorrupted = false;
             IsIdentified = false;
             ResourcePath = string.Empty;
+            NormalizedResourcePath = string.Empty;
             ClientRect = RectangleF.Empty;
             Location = Vector2.Zero;
         }

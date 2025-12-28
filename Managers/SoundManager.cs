@@ -17,7 +17,7 @@ namespace UniqueLootHelper.Managers
         private readonly Action<string> _logError;
         private readonly Action<string> _logMessage;
         private readonly Func<string, float, bool> _playSound;
-        private readonly Dictionary<uint, bool> _soundCache = [];
+        private readonly Dictionary<long, bool> _soundCache = [];
         private Dictionary<string, string> _soundFiles = [];
 
         public SoundManager(
@@ -45,14 +45,9 @@ namespace UniqueLootHelper.Managers
             {
                 try
                 {
-                    using Stream stream = Assembly
-                        .GetExecutingAssembly()
-                        .GetManifestResourceStream(DefaultWavFile);
+                    using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(DefaultWavFile);
                     using FileStream file = File.OpenWrite(defaultFilePath);
-                    if (stream != null)
-                    {
-                        stream.CopyTo(file);
-                    }
+                    stream?.CopyTo(file);
                 }
                 catch (Exception ex)
                 {
@@ -100,7 +95,7 @@ namespace UniqueLootHelper.Managers
         /// <param name="label">The label/name of the item (used to find custom sound file)</param>
         /// <param name="volume">The volume to play at</param>
         /// <returns>True if sound was played, false if already cached or failed</returns>
-        public bool TryPlaySound(uint itemId, string label, float volume)
+        public bool TryPlaySound(long itemId, string label, float volume)
         {
             if (_soundCache.ContainsKey(itemId))
             {
@@ -142,7 +137,7 @@ namespace UniqueLootHelper.Managers
         ///     Removes items from cache that are no longer on the ground
         /// </summary>
         /// <param name="currentItemIds">IDs of items currently on the ground</param>
-        public void CleanupCache(IEnumerable<uint> currentItemIds)
+        public void CleanupCache(IEnumerable<long> currentItemIds)
         {
             // Optimization: accept HashSet directly, avoid creating intermediate collection
             if (_soundCache.Count == 0)

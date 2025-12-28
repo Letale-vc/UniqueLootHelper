@@ -18,7 +18,7 @@ namespace UniqueLootHelper.Managers
         /// <summary>
         ///     Draws outline around an item label if enabled
         /// </summary>
-        public void DrawLabelOutline(dynamic element, UniqueItemSettings uniqueSettings)
+        public void DrawLabelOutline(RectangleF rect, UniqueItemSettings uniqueSettings)
         {
             Settings settings = getSettings();
             if (
@@ -29,10 +29,9 @@ namespace UniqueLootHelper.Managers
                 return;
             }
 
-            RectangleF labelFrame = element.GetClientRect();
             getGraphics()
                 .DrawFrame(
-                    labelFrame,
+                    rect,
                     settings.LabelDrawingSettings.OutlineLabelColor,
                     settings.LabelDrawingSettings.LabelFrameThickness
                 );
@@ -42,7 +41,7 @@ namespace UniqueLootHelper.Managers
         ///     Draws label name on unidentified items if enabled
         /// </summary>
         public void DrawLabelName(
-            dynamic element,
+            RectangleF rect,
             string labelText,
             bool isIdentified,
             UniqueItemSettings uniqueSettings
@@ -58,10 +57,8 @@ namespace UniqueLootHelper.Managers
                 return;
             }
 
-            RectangleF labelFrame = element.GetClientRect();
-
             // Validate label frame size to prevent huge text
-            if (labelFrame.Width <= 0 || labelFrame.Height <= 0 || labelFrame.Width > 500 || labelFrame.Height > 100)
+            if (rect.Width <= 0 || rect.Height <= 0 || rect.Width > 500 || rect.Height > 100)
             {
                 return;
             }
@@ -69,8 +66,8 @@ namespace UniqueLootHelper.Managers
             Vector2 textSize = _textCache.GetOrMeasure(getGraphics(), labelText);
 
             // Calculate scale with safety bounds
-            float scaleX = labelFrame.Width / textSize.X;
-            float scaleY = (labelFrame.Height - 2) / textSize.Y;
+            float scaleX = rect.Width / textSize.X;
+            float scaleY = (rect.Height - 2) / textSize.Y;
             float scale = Math.Min(scaleX, scaleY) - 0.2f;
 
             // Clamp scale to reasonable values (0.3 to 2.0)
@@ -83,14 +80,14 @@ namespace UniqueLootHelper.Managers
             {
                 ImGui.SetWindowFontScale(scale);
                 Vector2 newTextSize = ImGui.CalcTextSize(labelText);
-                Vector2 textPosition = labelFrame.Center.ToVector2Num() - newTextSize / 2;
+                Vector2 textPosition = rect.Center.ToVector2Num() - newTextSize / 2;
 
                 ImDrawListPtr drawList = ImGui.GetBackgroundDrawList();
 
                 // Draw background
                 drawList.AddRectFilled(
-                    labelFrame.TopLeft.ToVector2Num(),
-                    labelFrame.BottomRight.ToVector2Num(),
+                    rect.TopLeft.ToVector2Num(),
+                    rect.BottomRight.ToVector2Num(),
                     settings.LabelDrawingSettings.BackgroundLabel.Value.ToImgui()
                 );
 

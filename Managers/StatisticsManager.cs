@@ -12,7 +12,7 @@ namespace UniqueLootHelper.Managers
     {
         private readonly Action<string> _logError;
         private readonly Action<string> _logMessage;
-        private readonly HashSet<uint> _statisticsCache = [];
+        private readonly HashSet<long> _statisticsCache = [];
         private readonly string _statisticsFilePath;
 
         public StatisticsManager(
@@ -82,7 +82,7 @@ namespace UniqueLootHelper.Managers
         /// <param name="itemId">The unique ID of the item entity</param>
         /// <param name="itemKey">The art path key for the item</param>
         /// <returns>True if the item was newly recorded, false if already cached</returns>
-        public bool TryRecordItemFound(uint itemId, string itemKey)
+        public bool TryRecordItemFound(long itemId, string itemKey)
         {
             if (_statisticsCache.Contains(itemId))
             {
@@ -125,7 +125,7 @@ namespace UniqueLootHelper.Managers
         ///     Removes items from cache that are no longer on the ground
         /// </summary>
         /// <param name="currentItemIds">IDs of items currently on the ground</param>
-        public void CleanupCache(HashSet<uint> currentItemIds)
+        public void CleanupCache(HashSet<long> currentItemIds)
         {
             // Optimization: accept HashSet directly, avoid creating intermediate collection
             if (_statisticsCache.Count == 0)

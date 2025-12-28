@@ -19,25 +19,15 @@ namespace UniqueLootHelper.Managers
         private readonly string _generatorExecutablePath;
         private readonly Action<string> _logMessage;
         private readonly Action<string> _logError;
-
-        // Changed: Dictionary with itemName as key, artPath as value
-        private Dictionary<string, string> _uniqueItemsList = new();
-        private bool _isRegenerating = false;
-
+        private readonly Dictionary<string, string> _uniqueItemsList = [];
         public IReadOnlyDictionary<string, string> UniqueItemsList => _uniqueItemsList;
-        public bool IsRegenerating => _isRegenerating;
-
-        public UniqueItemsListManager(
-            string pluginDirectory,
-            Action<string> logMessage,
-            Action<string> logError
-        )
+        public bool IsRegenerating { get; private set; } = false;
+        public UniqueItemsListManager(string pluginDirectory, Action<string> logMessage, Action<string> logError)
         {
             _uniqueItemsFilePath = Path.Combine(pluginDirectory, UniqueItemsFileName);
             _generatorExecutablePath = Path.Combine(pluginDirectory, GeneratorExecutableName);
             _logMessage = logMessage;
             _logError = logError;
-
             LoadUniqueItemsList();
         }
 
@@ -58,29 +48,18 @@ namespace UniqueLootHelper.Managers
 
             try
             {
-                string[] lines = File.ReadAllLines(_uniqueItemsFilePath);
                 int loadedCount = 0;
-
-                foreach (string line in lines)
+                foreach (var line in File.ReadLines(_uniqueItemsFilePath))
                 {
-                    if (string.IsNullOrWhiteSpace(line))
-                    {
-                        continue;
-                    }
-
-                    string[] parts = line.Split(';');
-                    if (parts.Length == 2)
-                    {
-                        string itemName = parts[0].Trim();
-                        string artPath = parts[1].Trim();
-
-                        if (!string.IsNullOrEmpty(itemName) && !string.IsNullOrEmpty(artPath))
-                        {
-                            // Use item name as key to avoid art path duplicates
-                            _uniqueItemsList[itemName] = artPath;
-                            loadedCount++;
-                        }
-                    }
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+                    var span = line.AsSpan();
+                    int separatorIndex = span.IndexOf(';');
+                    if (separatorIndex == -1) continue;
+                    var nameSpan = span[..separatorIndex].Trim();
+                    var artPathSpan = span[(separatorIndex + 1)..].Trim();
+                    if (nameSpan.IsEmpty || artPathSpan.IsEmpty) continue;
+                    _uniqueItemsList[nameSpan.ToString()] = artPathSpan.ToString();
+                    loadedCount++;
                 }
 
                 _logMessage(
@@ -99,7 +78,7 @@ namespace UniqueLootHelper.Managers
         /// <returns>True if the process was started successfully</returns>
         public bool RegenerateUniqueItemsList()
         {
-            if (_isRegenerating)
+            if (IsRegenerating)
             {
                 _logMessage("UniqueLootHelper: Regeneration already in progress");
                 return false;
@@ -115,83 +94,83 @@ namespace UniqueLootHelper.Managers
 
             try
             {
-                _isRegenerating = true;
+                IsRegenerating = true;
 
                 ProcessStartInfo startInfo =
                     new()
                     {
                         FileName = _generatorExecutablePath,
                         WorkingDirectory = Path.GetDirectoryName(_generatorExecutablePath),
-                        UseShellExecute = false,
+                        UseShellExecute = true,
                         CreateNoWindow = true
                     };
 
-                Process process = Process.Start(startInfo);
+                var process = Process.Start(startInfo);
 
-                if (process != null)
+                if (process == null)
                 {
-                    _logMessage(
+                    _logError("UniqueLootHelper: Failed to start regeneration process");
+                    IsRegenerating = false;
+                    return false;
+                }
+
+                _logMessage(
                         "UniqueLootHelper: Started unique items list regeneration process"
                     );
 
-                    // Run asynchronously without blocking UI
-                    Task.Run(async () =>
+                // Run asynchronously without blocking UI
+                Task.Run(async () =>
+                {
+                    try
                     {
-                        try
+                        // Wait for process to complete with timeout
+                        bool completed = await Task.Run(() => process.WaitForExit(60000)); // 60 second timeout
+
+                        if (completed)
                         {
-                            // Wait for process to complete with timeout
-                            bool completed = await Task.Run(() => process.WaitForExit(60000)); // 60 second timeout
+                            _logMessage(
+                                $"UniqueLootHelper: Regeneration process completed with exit code {process.ExitCode}"
+                            );
 
-                            if (completed)
-                            {
-                                _logMessage(
-                                    $"UniqueLootHelper: Regeneration process completed with exit code {process.ExitCode}"
-                                );
+                            // Small delay to ensure file is written
+                            await Task.Delay(500);
 
-                                // Small delay to ensure file is written
-                                await Task.Delay(500);
-
-                                // Reload the list after generation
-                                LoadUniqueItemsList();
-                            }
-                            else
-                            {
-                                _logError(
-                                    "UniqueLootHelper: Regeneration process timed out after 60 seconds"
-                                );
-                                try
-                                {
-                                    process.Kill();
-                                }
-                                catch { }
-                            }
+                            // Reload the list after generation
+                            LoadUniqueItemsList();
                         }
-                        catch (Exception ex)
+                        else
                         {
                             _logError(
-                                $"UniqueLootHelper: Error waiting for regeneration process: {ex.Message}"
+                                "UniqueLootHelper: Regeneration process timed out after 60 seconds"
                             );
+                            try
+                            {
+                                process.Kill();
+                            }
+                            catch { }
                         }
-                        finally
-                        {
-                            _isRegenerating = false;
-                            process?.Dispose();
-                        }
-                    });
+                    }
+                    catch (Exception ex)
+                    {
+                        _logError(
+                            $"UniqueLootHelper: Error waiting for regeneration process: {ex.Message}"
+                        );
+                    }
+                    finally
+                    {
+                        IsRegenerating = false;
+                        process.Dispose();
+                    }
+                });
 
-                    return true;
-                }
-
-                _logError("UniqueLootHelper: Failed to start regeneration process");
-                _isRegenerating = false;
-                return false;
+                return true;
             }
             catch (Exception ex)
             {
                 _logError(
                     $"UniqueLootHelper: Failed to regenerate unique items list: {ex.Message}"
                 );
-                _isRegenerating = false;
+                IsRegenerating = false;
                 return false;
             }
         }
@@ -207,7 +186,7 @@ namespace UniqueLootHelper.Managers
         /// <summary>
         /// Gets art path by item name
         /// </summary>
-        public bool TryGetArtPathByName(string itemName, out string artPath)
+        public bool TryGetArtPathByName(string itemName, out string? artPath)
         {
             return _uniqueItemsList.TryGetValue(itemName, out artPath);
         }
@@ -215,7 +194,7 @@ namespace UniqueLootHelper.Managers
         /// <summary>
         /// Gets item name by art path
         /// </summary>
-        public bool TryGetItemNameByArtPath(string artPath, out string itemName)
+        public bool TryGetItemNameByArtPath(string artPath, out string? itemName)
         {
             foreach (KeyValuePair<string, string> kvp in _uniqueItemsList)
             {
@@ -235,18 +214,14 @@ namespace UniqueLootHelper.Managers
         /// </summary>
         public List<KeyValuePair<string, string>> SearchItems(string searchTerm)
         {
-            if (string.IsNullOrWhiteSpace(searchTerm))
-            {
-                return new List<KeyValuePair<string, string>>();
-            }
-
-            return _uniqueItemsList
+            return string.IsNullOrWhiteSpace(searchTerm)
+                ? []
+                : [.. _uniqueItemsList
                 .Where(kvp =>
                     kvp.Key.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
                     || kvp.Value.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
                 )
-                .OrderBy(kvp => kvp.Key)
-                .ToList();
+                .OrderBy(kvp => kvp.Key)];
         }
     }
 }

@@ -13,21 +13,37 @@ namespace UniqueLootHelper
     /// </summary>
     public class CustomItemData
     {
-        /// <summary>
-        ///     Default constructor for Object Pool
-        /// </summary>
-        public CustomItemData() { }
-
+        public CustomItemData()
+        {
+            Entity = new();
+            WorldItem = new();
+            Element = new();
+            Location = new();
+            ResourcePath = string.Empty;
+            NormalizedResourcePath = string.Empty;
+            IsCorrupted = false;
+            IsIdentified = false;
+            ClientRect = RectangleF.Empty;
+        }
         /// <summary>
         ///     Constructor with parameters for compatibility
         /// </summary>
-        public CustomItemData(Entity entity, Element element, Vector2 location)
+        public CustomItemData(WorldItem worldItem, Element element, Vector2 location, RectangleF clientRect)
         {
-            Initialize(entity, element, location);
+            var entity = worldItem.ItemEntity;
+            Entity = entity;
+            WorldItem = worldItem;
+            Element = element;
+            Location = location;
+            ResourcePath = entity.TryGetComponent(out RenderItem renderItem) ? renderItem.ResourcePath : string.Empty;
+            NormalizedResourcePath = NormalizeResourcePath(ResourcePath);
+            IsCorrupted = entity.TryGetComponent(out Base @base) && @base.isCorrupted;
+            IsIdentified = entity.TryGetComponent(out Mods mods) && mods.Identified;
+            ClientRect = clientRect;
         }
 
-        public uint Id { get; set; }
         public Element Element { get; set; }
+        public WorldItem WorldItem { get; set; }
         public Entity Entity { get; set; }
         public bool IsCorrupted { get; set; }
         public bool IsIdentified { get; set; }
@@ -39,51 +55,23 @@ namespace UniqueLootHelper
         /// <summary>
         ///     Initialize method for object pool - sets all properties from entity data
         /// </summary>
-        public void Initialize(Entity entity, Element element, Vector2 location)
+        public void Initialize(WorldItem worldItem, Element element, Vector2 location, RectangleF clientRect)
         {
-            Id = entity.Id;
+            var entity = worldItem.ItemEntity;
             Entity = entity;
+            WorldItem = worldItem;
             Element = element;
             Location = location;
-
-            if (entity.TryGetComponent(out RenderItem renderItem))
-            {
-                ResourcePath = renderItem.ResourcePath;
-            }
-            else
-            {
-                ResourcePath = string.Empty;
-            }
-
+            ResourcePath = entity.TryGetComponent(out RenderItem renderItem) ? renderItem.ResourcePath : string.Empty;
             NormalizedResourcePath = NormalizeResourcePath(ResourcePath);
-
-            if (entity.TryGetComponent(out Base @base))
-            {
-                IsCorrupted = @base.isCorrupted;
-            }
-            else
-            {
-                IsCorrupted = false;
-            }
-
-            if (entity.TryGetComponent(out Mods mods))
-            {
-                IsIdentified = mods.Identified;
-            }
-            else
-            {
-                IsIdentified = false;
-            }
+            IsCorrupted = entity.TryGetComponent(out Base @base) && @base.isCorrupted;
+            IsIdentified = entity.TryGetComponent(out Mods mods) && mods.Identified;
+            ClientRect = clientRect;
         }
 
         private static string NormalizeResourcePath(string path)
         {
-            if (string.IsNullOrEmpty(path))
-            {
-                return string.Empty;
-            }
-
-            return path.Replace(".dds", string.Empty, StringComparison.OrdinalIgnoreCase) + ".dds";
+            return string.IsNullOrEmpty(path) ? string.Empty : path.Replace(".dds", string.Empty, StringComparison.OrdinalIgnoreCase) + ".dds";
         }
 
         /// <summary>
@@ -91,9 +79,8 @@ namespace UniqueLootHelper
         /// </summary>
         public void Reset()
         {
-            Entity = null;
-            Element = null;
-            Id = 0;
+            Entity = new();
+            Element = new();
             IsCorrupted = false;
             IsIdentified = false;
             ResourcePath = string.Empty;

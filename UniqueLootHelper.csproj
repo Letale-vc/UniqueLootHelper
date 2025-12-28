@@ -6,6 +6,7 @@
         <PlatformTarget>x64</PlatformTarget>
         <LangVersion>latest</LangVersion>
         <DebugType>embedded</DebugType>
+        <Nullable>enable</Nullable>
         <PathMap>$(MSBuildProjectDirectory)=$(MSBuildProjectName)</PathMap>
         <EmbedAllSources>true</EmbedAllSources>
         <!--Don't bother setting anything to do with the output path, HUD will do it for you if you put the source code inside Plugins/Source-->

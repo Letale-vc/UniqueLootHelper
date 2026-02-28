@@ -1,10 +1,10 @@
-﻿using System.Windows.Forms;
-using ExileCore.Shared.Attributes;
+﻿using ExileCore.Shared.Attributes;
 using ExileCore.Shared.Interfaces;
 using ExileCore.Shared.Nodes;
 using ImGuiNET;
 using Newtonsoft.Json;
 using SharpDX;
+using System.Windows.Forms;
 using UniqueLootHelper.Managers;
 using Vector4 = System.Numerics.Vector4;
 

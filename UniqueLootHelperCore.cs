@@ -3,7 +3,6 @@ using ExileCore.PoEMemory.Components;
 using ExileCore.PoEMemory.Elements;
 using ExileCore.Shared.Cache;
 using ImGuiNET;
-using Microsoft.Extensions.ObjectPool;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -31,7 +30,6 @@ public class UniqueItemSettings
 public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
 {
     private readonly CachedValue<List<CustomItemData>> _groundItems;
-    private readonly ObjectPool<CustomItemData> _itemDataPool;
     private readonly Stopwatch _profilerDrawing;
     private readonly Stopwatch _profilerFiltering;
 
@@ -48,7 +46,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
     private bool _showProfilerWindow;
     private bool _showStatisticsWindow;
     private SoundManager _soundManager;
-    private StatisticsManager _statisticsManager;
     private UniqueItemsListManager _uniqueItemsListManager;
     private UniqueItemSettings _tempUniqueItemSettings = new();
 
@@ -57,14 +54,11 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
     private string _selectedItemName = string.Empty;
     private bool _usePresetMode = false;
     private readonly List<CustomItemData> _result = [];
-    private readonly Dictionary<long, CustomItemData> _prevDict = [];
-    private readonly List<string> _countList = new(128);
-    private readonly HashSet<long> _currentItemIds = new(128);
+    private readonly Dictionary<(long, long), CustomItemData> _prevDict = [];
+    private readonly List<string> _countList = [];
+    private readonly HashSet<(long, long)> _currentItemIds = [];
     public UniqueLootHelperCore()
     {
-        // Initialize object pool
-        DefaultObjectPoolProvider poolProvider = new();
-        _itemDataPool = poolProvider.Create(new CustomItemDataPoolPolicy());
 
         _groundItems = new FrameCache<List<CustomItemData>>(
             CacheUtils.RememberLastValue(GetItemsOnGround, new List<CustomItemData>())
@@ -83,19 +77,8 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
     {
         Name = "UniqueLootHelper";
 
-        // Warm-up object pool: pre-create 20 objects
-        List<CustomItemData> warmUpItems = new(20);
-        for (int i = 0; i < 20; i++)
-        {
-            warmUpItems.Add(_itemDataPool.Get());
-        }
-        foreach (CustomItemData item in warmUpItems)
-        {
-            _itemDataPool.Return(item);
-        }
         // Initialize managers
         _configurationManager = new ConfigurationManager(ConfigDirectory, LogMessage, LogError);
-        _statisticsManager = new StatisticsManager(ConfigDirectory, LogMessage, LogError);
         _soundManager = new SoundManager(
             ConfigDirectory,
             LogMessage,
@@ -138,14 +121,12 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
     public override void OnUnload()
     {
         _configurationManager.SaveUniqueArtToFile();
-        _statisticsManager.SaveStatistics();
         base.OnUnload();
     }
 
     public override void OnClose()
     {
         _configurationManager.SaveUniqueArtToFile();
-        _statisticsManager.SaveStatistics();
         base.OnClose();
     }
 
@@ -155,11 +136,7 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
         {
             Process.Start("explorer.exe", ConfigDirectory);
         }
-        ImGui.SameLine();
-        if (ImGui.Button("Show Statistics"))
-        {
-            _showStatisticsWindow = !_showStatisticsWindow;
-        }
+
         ImGui.SameLine();
 
         // Show regeneration status
@@ -418,116 +395,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
         );
     }
 
-    private void DrawStatisticsWindow()
-    {
-        if (!_showStatisticsWindow)
-        {
-            return;
-        }
-
-        ImGui.SetNextWindowSize(new Vector2(900, 450), ImGuiCond.FirstUseEver);
-        if (ImGui.Begin("Unique Items Statistics", ref _showStatisticsWindow))
-        {
-            ImGui.Text(
-                $"Session Start: {_statisticsManager.Statistics.SessionStartTime:yyyy-MM-dd HH:mm:ss}"
-            );
-            ImGui.Text(
-                $"Total Items Found This Session: {_statisticsManager.TotalItemsFoundInSession}"
-            );
-            ImGui.Text(
-                $"Session Duration: {DateTime.Now - _statisticsManager.Statistics.SessionStartTime:hh\\:mm\\:ss}"
-            );
-
-            if (ImGui.Button("Reset Session Statistics"))
-            {
-                _statisticsManager.ResetSessionStatistics();
-            }
-            ImGui.SameLine();
-            if (ImGui.Button("Reset All Statistics"))
-            {
-                _statisticsManager.ResetAllStatistics();
-            }
-            ImGui.SameLine();
-            if (ImGui.Button("Save Statistics"))
-            {
-                _statisticsManager.SaveStatistics();
-            }
-
-            ImGui.Separator();
-            ImGui.Spacing();
-
-            if (
-                ImGui.BeginTable(
-                    "StatisticsTable",
-                    6,
-                    ImGuiTableFlags.Borders
-                        | ImGuiTableFlags.RowBg
-                        | ImGuiTableFlags.Resizable
-                        | ImGuiTableFlags.Sortable
-                        | ImGuiTableFlags.ScrollY
-                )
-            )
-            {
-                ImGui.TableSetupColumn("Label", ImGuiTableColumnFlags.WidthFixed, 200);
-                ImGui.TableSetupColumn("ArtPath", ImGuiTableColumnFlags.WidthStretch);
-                ImGui.TableSetupColumn("Total Found", ImGuiTableColumnFlags.WidthFixed, 100);
-                ImGui.TableSetupColumn("This Session", ImGuiTableColumnFlags.WidthFixed, 100);
-                ImGui.TableSetupColumn(
-                    "First Discovery",
-                    ImGuiTableColumnFlags.WidthFixed,
-                    140
-                );
-                ImGui.TableSetupColumn("Last Discovery", ImGuiTableColumnFlags.WidthFixed, 140);
-                ImGui.TableHeadersRow();
-
-                // Optimization: avoid ToList() - iterate directly over IEnumerable
-                IOrderedEnumerable<KeyValuePair<string, ItemStatisticsEntry>> sortedStats =
-                    _statisticsManager.Statistics.Statistics.OrderByDescending(x =>
-                        x.Value.TotalFound
-                    );
-
-                foreach (KeyValuePair<string, ItemStatisticsEntry> stat in sortedStats)
-                {
-                    string artPath = stat.Key;
-                    string label =
-                        _configurationManager.UniqueArtWork.TryGetValue(
-                            artPath,
-                            out UniqueItemSettings settings
-                        ) && !string.IsNullOrEmpty(settings.Label)
-                            ? settings.Label
-                            : "N/A";
-
-                    ImGui.TableNextRow();
-
-                    ImGui.TableNextColumn();
-                    ImGui.Text(label);
-
-                    ImGui.TableNextColumn();
-                    ImGui.Text(artPath);
-
-                    ImGui.TableNextColumn();
-                    ImGui.Text(stat.Value.TotalFound.ToString());
-
-                    ImGui.TableNextColumn();
-                    ImGui.Text(stat.Value.FoundInCurrentSession.ToString());
-
-                    ImGui.TableNextColumn();
-                    ImGui.Text(
-                        stat.Value.FirstDiscoveryTime?.ToString("yyyy-MM-dd HH:mm") ?? "N/A"
-                    );
-
-                    ImGui.TableNextColumn();
-                    ImGui.Text(
-                        stat.Value.LastDiscoveryTime?.ToString("yyyy-MM-dd HH:mm") ?? "N/A"
-                    );
-                }
-
-                ImGui.EndTable();
-            }
-        }
-        ImGui.End();
-    }
-
     private void DrawProfilerWindow()
     {
         if (!Settings.ProfilerSettings.Enabled)
@@ -540,7 +407,7 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
 
     private void Import(bool merge)
     {
-        Dictionary<string, UniqueItemSettings> imported = _importExportService.Import(
+        Dictionary<string, UniqueItemSettings>? imported = _importExportService.Import(
             _importExportText
         );
         if (imported != null && _importExportService.ValidateConfiguration(imported))
@@ -595,7 +462,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
                 _profilerUI.Restart();
             }
 
-            DrawStatisticsWindow();
             DrawProfilerWindow();
 
             if (Input.IsKeyDown(Keys.F7))
@@ -646,6 +512,7 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
             }
 
             var player = GameController?.Player;
+            if (player is null) return;
             ImGui.Begin(
                 "lmao",
                 ImGuiWindowFlags.NoDecoration
@@ -699,7 +566,7 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
 
             foreach (var item in groundItems)
             {
-                _currentItemIds.Add(item.WorldItem.Address);
+                _currentItemIds.Add((item.WorldItem.Address, item.Element.Address));
 
                 var normalizedPath = item.NormalizedResourcePath;
                 if (string.IsNullOrEmpty(normalizedPath)) continue;
@@ -725,8 +592,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
                     _profilerStatistics.Start();
                 }
 
-                _statisticsManager.TryRecordItemFound(item.WorldItem.Address, matchedKey);
-
                 if (Settings.ProfilerSettings.Enabled)
                 {
                     _profilerStatistics.Stop();
@@ -746,7 +611,7 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
                 )
                 {
                     _soundManager.TryPlaySound(
-                        item.WorldItem.Address,
+                        (item.WorldItem.Address, item.Element.Address),
                         uniqueSettings.Label,
                         Settings.SoundNotificationSettings.Volume
                     );
@@ -798,7 +663,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
 
             // Cleanup caches using the IDs we saw this frame
             _soundManager.CleanupCache(_currentItemIds);
-            _statisticsManager.CleanupCache(_currentItemIds);
 
             if (Settings.ProfilerSettings.Enabled)
             {
@@ -845,8 +709,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
     public override void AreaChange(AreaInstance area)
     {
         _soundManager.ClearCache();
-        _statisticsManager.ClearSessionCache();
-        _statisticsManager.SaveStatistics();
     }
     private List<CustomItemData> GetItemsOnGround(List<CustomItemData> previousValue)
     {
@@ -864,11 +726,7 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
         {
             if (item.Element != null && item.Entity != null)
             {
-                _prevDict[item.WorldItem.Address] = item;
-            }
-            else
-            {
-                _itemDataPool.Return(item);
+                _prevDict[(item.WorldItem.Address, item.Element.Address)] = item;
             }
         }
 
@@ -880,7 +738,8 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
             var groundItemEntity = worldItem.ItemEntity;
             if (groundItemEntity == null || !groundItemEntity.IsValid) continue;
 
-            var key = worldItem.Address;
+            var key = (worldItem.Address, description.Label.Address);
+            LogMessage($"UniqueLootHelper: Processing item on ground - Address: {worldItem.Address}, label address: {description.Label.Address}");
 
             if (_prevDict.TryGetValue(key, out var cachedItem))
             {
@@ -889,18 +748,16 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
             }
             else
             {
-                var newItem = _itemDataPool.Get();
-                newItem.Initialize(worldItem, description.Label, description.Entity.GridPosNum, description.ClientRect);
-                _result.Add(newItem);
+                _result.Add(new(worldItem, description.Label, description.Entity.GridPosNum, description.ClientRect));
             }
 
         }
 
         foreach (var unusedItem in _prevDict.Values)
         {
-            _itemDataPool.Return(unusedItem);
+            _soundManager.ClearCacheEntry((unusedItem.WorldItem.Address, unusedItem.Element.Address));
         }
+
         return _result;
     }
 }
-

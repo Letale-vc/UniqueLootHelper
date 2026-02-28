@@ -1,8 +1,8 @@
-﻿using System;
-using ExileCore.PoEMemory;
+﻿using ExileCore.PoEMemory;
 using ExileCore.PoEMemory.Components;
 using ExileCore.PoEMemory.MemoryObjects;
 using SharpDX;
+using System;
 using Vector2 = System.Numerics.Vector2;
 
 namespace UniqueLootHelper
@@ -19,6 +19,7 @@ namespace UniqueLootHelper
             WorldItem = new();
             Element = new();
             Location = new();
+            GlobalKey = (WorldItem.Address, Entity.Address);
             ResourcePath = string.Empty;
             NormalizedResourcePath = string.Empty;
             IsCorrupted = false;
@@ -31,6 +32,7 @@ namespace UniqueLootHelper
         public CustomItemData(WorldItem worldItem, Element element, Vector2 location, RectangleF clientRect)
         {
             var entity = worldItem.ItemEntity;
+            GlobalKey = (worldItem.Address, entity.Address);
             Entity = entity;
             WorldItem = worldItem;
             Element = element;
@@ -42,6 +44,7 @@ namespace UniqueLootHelper
             ClientRect = clientRect;
         }
 
+        public (long, long) GlobalKey { get; set; }
         public Element Element { get; set; }
         public WorldItem WorldItem { get; set; }
         public Entity Entity { get; set; }
@@ -57,7 +60,9 @@ namespace UniqueLootHelper
         /// </summary>
         public void Initialize(WorldItem worldItem, Element element, Vector2 location, RectangleF clientRect)
         {
+
             var entity = worldItem.ItemEntity;
+            GlobalKey = (WorldItem.Address, entity.Address);
             Entity = entity;
             WorldItem = worldItem;
             Element = element;

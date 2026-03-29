@@ -34,12 +34,8 @@
     <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <!-- Copy Microsoft.Extensions.ObjectPool.dll to output directory -->
-    <!-- Copy unique items generator executable and data file -->
-    <None Include="UniqueArtGenerate-win-x64.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="unique_items_output.txt">
+    <!-- Copy UniqueItemsInfo.json to output directory -->
+    <None Include="UniqueItemsInfo.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

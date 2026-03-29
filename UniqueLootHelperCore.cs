@@ -14,6 +14,8 @@ using Vector2 = System.Numerics.Vector2;
 
 namespace UniqueLootHelper;
 
+public record UniqueItemInfo(string Name, string Art, string Tier, string Base, string Grouping, string League);
+
 public class UniqueItemSettings
 {
     public string ArtPath = "",
@@ -35,7 +37,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
 
     // Profiler fields
     private readonly Stopwatch _profilerGetItems;
-    private readonly Stopwatch _profilerStatistics;
     private readonly Stopwatch _profilerTotal;
     private readonly Stopwatch _profilerUI;
 
@@ -44,13 +45,13 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
     private string _importExportText = string.Empty;
     private ItemDrawingManager _itemDrawingManager;
     private bool _showProfilerWindow;
-    private bool _showStatisticsWindow;
     private SoundManager _soundManager;
     private UniqueItemsListManager _uniqueItemsListManager;
     private UniqueItemSettings _tempUniqueItemSettings = new();
 
     // UI state for item selection
     private string _searchTerm = string.Empty;
+    private string _uniqueListSearchTerm = string.Empty;
     private string _selectedItemName = string.Empty;
     private bool _usePresetMode = false;
     private readonly List<CustomItemData> _result = [];
@@ -68,7 +69,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
         _profilerGetItems = new Stopwatch();
         _profilerFiltering = new Stopwatch();
         _profilerDrawing = new Stopwatch();
-        _profilerStatistics = new Stopwatch();
         _profilerTotal = new Stopwatch();
         _profilerUI = new Stopwatch();
     }
@@ -135,23 +135,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
         if (ImGui.Button("Open Config Folder"))
         {
             Process.Start("explorer.exe", ConfigDirectory);
-        }
-
-        ImGui.SameLine();
-
-        // Show regeneration status
-        if (_uniqueItemsListManager.IsRegenerating)
-        {
-            ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(0.5f, 0.5f, 0.5f, 1.0f));
-            ImGui.Button("Regenerating...");
-            ImGui.PopStyleColor();
-        }
-        else
-        {
-            if (ImGui.Button("Regenerate Unique Items List"))
-            {
-                _uniqueItemsListManager.RegenerateUniqueItemsList();
-            }
         }
 
         ImGui.Spacing();
@@ -265,112 +248,191 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
         ImGui.Spacing();
         ImGui.Text("Uniques list:");
 
-        foreach (
-            KeyValuePair<
-                string,
-                UniqueItemSettings
-            > uniqueArtItem in _configurationManager.UniqueArtWork
-        )
+        // Search bar for uniques list
+        ImGui.InputTextWithHint("##SearchUniquesList", "Search in list...", ref _uniqueListSearchTerm, 256);
+
+        // Filter items based on search term
+        IEnumerable<KeyValuePair<string, UniqueItemSettings>> filteredItems = _configurationManager.UniqueArtWork;
+
+        if (!string.IsNullOrWhiteSpace(_uniqueListSearchTerm))
         {
-            ImGui.Text($"{uniqueArtItem.Key} - {uniqueArtItem.Value.Label}");
-            ImGui.SameLine();
-            if (ImGui.Button($"Edit##{uniqueArtItem.Key}"))
+            string searchLower = _uniqueListSearchTerm.ToLowerInvariant();
+            filteredItems = filteredItems.Where(item =>
+                item.Key.ToLowerInvariant().Contains(searchLower) ||
+                (item.Value.Label ?? "").ToLowerInvariant().Contains(searchLower)
+            );
+        }
+
+        var itemsList = filteredItems.ToList();
+        ImGui.TextColored(
+            new Vector4(0.7f, 0.7f, 0.7f, 1.0f),
+            $"Showing {itemsList.Count} of {_configurationManager.UniqueArtWork.Count} items"
+        );
+
+        ImGui.Spacing();
+
+        // Display as table
+        if (ImGui.BeginTable("##UniquesTable", 4,
+            ImGuiTableFlags.Borders |
+            ImGuiTableFlags.RowBg |
+            ImGuiTableFlags.ScrollY |
+            ImGuiTableFlags.Resizable,
+            new Vector2(0, 400)))
+        {
+            // Setup columns
+            ImGui.TableSetupColumn("Art Path", ImGuiTableColumnFlags.WidthStretch);
+            ImGui.TableSetupColumn("Label", ImGuiTableColumnFlags.WidthStretch);
+            ImGui.TableSetupColumn("Edit", ImGuiTableColumnFlags.WidthFixed, 60);
+            ImGui.TableSetupColumn("Delete", ImGuiTableColumnFlags.WidthFixed, 60);
+            ImGui.TableSetupScrollFreeze(0, 1);
+            ImGui.TableHeadersRow();
+
+            // Display rows
+            foreach (KeyValuePair<string, UniqueItemSettings> uniqueArtItem in itemsList)
             {
-                _tempUniqueItemSettings = uniqueArtItem.Value;
-                _usePresetMode = false;
-                LogMessage($"UniqueLootHelper: Editing {uniqueArtItem.Key} from unique list");
+                ImGui.TableNextRow();
+
+                // Art Path column
+                ImGui.TableNextColumn();
+                ImGui.TextWrapped(uniqueArtItem.Key);
+
+                // Label column
+                ImGui.TableNextColumn();
+                ImGui.TextWrapped(uniqueArtItem.Value.Label ?? "");
+
+                // Edit button column
+                ImGui.TableNextColumn();
+                if (ImGui.Button($"Edit##{uniqueArtItem.Key}"))
+                {
+                    _tempUniqueItemSettings = uniqueArtItem.Value;
+                    _usePresetMode = false;
+                    LogMessage($"UniqueLootHelper: Editing {uniqueArtItem.Key} from unique list");
+                }
+
+                // Delete button column
+                ImGui.TableNextColumn();
+                if (ImGui.Button($"Delete##{uniqueArtItem.Key}"))
+                {
+                    _configurationManager.RemoveUniqueItem(uniqueArtItem.Key);
+                }
             }
 
-            ImGui.SameLine();
-
-            if (ImGui.Button($"Delete##{uniqueArtItem.Key}"))
-            {
-                _configurationManager.RemoveUniqueItem(uniqueArtItem.Key);
-            }
+            ImGui.EndTable();
         }
     }
 
     private void DrawPresetItemSelection()
     {
-        ImGui.Text("Search for unique item:");
-        if (ImGui.InputText("##SearchUniqueItem", ref _searchTerm, 256))
-        {
-            _selectedItemName = string.Empty;
-        }
+        ImGui.Text("Search for unique item (regex supported):");
+        ImGui.InputText("##SearchUniqueItem", ref _searchTerm, 256);
 
         ImGui.Spacing();
 
-        // Show regeneration status
-        if (_uniqueItemsListManager.IsRegenerating)
+        if (!string.IsNullOrWhiteSpace(_searchTerm))
         {
-            ImGui.TextColored(
-                new Vector4(1.0f, 1.0f, 0.0f, 1.0f),
-                "Regenerating unique items list, please wait..."
-            );
-            ImGui.Spacing();
-        }
+            List<UniqueItemInfo> searchResults = _uniqueItemsListManager.SearchItems(_searchTerm);
 
-        List<KeyValuePair<string, string>> searchResults;
-
-        if (string.IsNullOrWhiteSpace(_searchTerm))
-        {
-            // Show all items if no search term
-            searchResults = _uniqueItemsListManager.UniqueItemsList
-                .Take(50)
-                .OrderBy(x => x.Key)
-                .ToList();
             ImGui.TextColored(
                 new Vector4(0.7f, 0.7f, 0.7f, 1.0f),
-                $"Showing first 50 of {_uniqueItemsListManager.UniqueItemsList.Count} items..."
+                searchResults.Count == 0
+                    ? "No matching items found"
+                    : $"Found {searchResults.Count} matching items (max 50 shown)"
             );
+
+            ImGui.Spacing();
+
+            // Display as table
+            if (ImGui.BeginTable("##SearchTable", 7,
+                ImGuiTableFlags.Borders |
+                ImGuiTableFlags.RowBg |
+                ImGuiTableFlags.ScrollY |
+                ImGuiTableFlags.Resizable,
+                new Vector2(0, 400)))
+            {
+                // Setup columns
+                ImGui.TableSetupColumn("Tier", ImGuiTableColumnFlags.WidthFixed, 50);
+                ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthStretch);
+                ImGui.TableSetupColumn("Base", ImGuiTableColumnFlags.WidthStretch);
+                ImGui.TableSetupColumn("Grouping", ImGuiTableColumnFlags.WidthFixed, 100);
+                ImGui.TableSetupColumn("League", ImGuiTableColumnFlags.WidthFixed, 100);
+                ImGui.TableSetupColumn("CountInBase", ImGuiTableColumnFlags.WidthFixed, 100);
+                ImGui.TableSetupColumn("Action", ImGuiTableColumnFlags.WidthFixed, 80);
+                ImGui.TableSetupScrollFreeze(0, 1);
+                ImGui.TableHeadersRow();
+
+                // Display rows
+                foreach (UniqueItemInfo item in searchResults)
+                {
+                    bool isAlreadyAdded = _configurationManager.UniqueArtWork.ContainsKey(item.Art);
+
+                    ImGui.TableNextRow();
+
+                    // Tier column
+                    ImGui.TableNextColumn();
+                    ImGui.Text(item.Tier ?? "");
+
+                    // Name column
+                    ImGui.TableNextColumn();
+                    ImGui.TextWrapped(item.Name ?? "");
+
+                    // Base column
+                    ImGui.TableNextColumn();
+                    ImGui.TextWrapped(item.Base ?? "");
+
+                    // Grouping column
+                    ImGui.TableNextColumn();
+                    ImGui.Text(item.Grouping ?? "");
+
+                    // League column
+                    ImGui.TableNextColumn();
+                    ImGui.Text(item.League ?? "");
+
+                    // CountInBase column
+                    ImGui.TableNextColumn();
+                    _uniqueItemsListManager.BaseCounts.TryGetValue(item.Base ?? "", out int countInBase);
+                    ImGui.Text(countInBase.ToString());
+
+                    // Action column
+                    ImGui.TableNextColumn();
+                    if (isAlreadyAdded)
+                    {
+                        ImGui.TextDisabled("Added");
+                    }
+                    else
+                    {
+                        if (ImGui.Button($"Add##{item.Art}"))
+                        {
+                            _tempUniqueItemSettings.ArtPath = item.Art;
+                            _tempUniqueItemSettings.Label = item.Name;
+                            _selectedItemName = item.Name;
+                        }
+                    }
+                }
+
+                ImGui.EndTable();
+            }
         }
         else
         {
-            searchResults = _uniqueItemsListManager.SearchItems(_searchTerm);
             ImGui.TextColored(
                 new Vector4(0.7f, 0.7f, 0.7f, 1.0f),
-                $"Found {searchResults.Count} matching items"
+                "Enter search term to find unique items..."
             );
-        }
-
-        ImGui.Spacing();
-
-        if (
-            ImGui.BeginChild(
-                "##UniqueItemsList",
-                new Vector2(0, 200),
-                ImGuiChildFlags.Border,
-                ImGuiWindowFlags.None
-            )
-        )
-        {
-            foreach (KeyValuePair<string, string> item in searchResults)
-            {
-                // item.Key is itemName, item.Value is artPath
-                bool isSelected = _selectedItemName == item.Key;
-                if (ImGui.Selectable($"{item.Key}##{item.Value}", isSelected))
-                {
-                    _selectedItemName = item.Key;
-                    _tempUniqueItemSettings.ArtPath = item.Value;
-                    _tempUniqueItemSettings.Label = item.Key;
-                }
-            }
-
-            ImGui.EndChild();
         }
 
         ImGui.Spacing();
 
         if (!string.IsNullOrEmpty(_selectedItemName))
         {
+            ImGui.Separator();
             ImGui.TextColored(
                 new Vector4(0.0f, 1.0f, 0.0f, 1.0f),
                 $"Selected: {_selectedItemName}"
             );
             ImGui.Text($"Art Path: {_tempUniqueItemSettings.ArtPath}");
+            ImGui.Spacing();
         }
 
-        ImGui.Spacing();
         ImGui.InputText(
             "Custom Label (optional)",
             ref _tempUniqueItemSettings.Label,
@@ -583,19 +645,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
                 }
 
                 var rect = !item.ClientRect.IsEmpty ? item.ClientRect : item.Element.GetClientRect();
-                // Use normalizedPath as matchedKey
-                var matchedKey = normalizedPath;
-
-                // Profile: Statistics recording
-                if (Settings.ProfilerSettings.Enabled)
-                {
-                    _profilerStatistics.Start();
-                }
-
-                if (Settings.ProfilerSettings.Enabled)
-                {
-                    _profilerStatistics.Stop();
-                }
 
                 if (uniqueSettings.DrawLabelInBox)
                 {
@@ -686,7 +735,7 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
                     _profilerGetItems,
                     _profilerFiltering,
                     _profilerDrawing,
-                    _profilerStatistics,
+                    null, // statistics (not tracked)
                     _profilerUI,
                     _profilerTotal
                 );
@@ -695,7 +744,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
                 _profilerGetItems.Reset();
                 _profilerFiltering.Reset();
                 _profilerDrawing.Reset();
-                _profilerStatistics.Reset();
                 _profilerUI.Reset();
                 _profilerTotal.Reset();
             }
@@ -739,7 +787,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
             if (groundItemEntity == null || !groundItemEntity.IsValid) continue;
 
             var key = (worldItem.Address, description.Label.Address);
-            LogMessage($"UniqueLootHelper: Processing item on ground - Address: {worldItem.Address}, label address: {description.Label.Address}");
 
             if (_prevDict.TryGetValue(key, out var cachedItem))
             {

@@ -22,6 +22,7 @@ Highlights Labels of specified Unique Items via their Icon Model File.
 1. Clone or download this repository into your ExileCore `Plugins/Source` folder
 2. Rebuild the solution or let ExileCore compile it automatically
 3. Enable the plugin in ExileCore settings
+4. The plugin requires `UniqueItemsInfo.json` file (included) which contains the preset unique items list
 
 ## 🔧 Configuration
 
@@ -55,10 +56,6 @@ Highlights Labels of specified Unique Items via their Icon Model File.
     - Play valuable sound
 8. Click "Add Unique"
 
-### Regenerating Unique Items List
-
-Click "Regenerate Unique Items List" button to update the predefined items list. The plugin will run `UniqueArtGenerate-win-x64.exe` (included with the plugin) to generate an updated list.
-
 ### Sound Notifications
 
 Place `.wav` files in the plugin's config directory:
@@ -84,3 +81,25 @@ Headhunter.wav - Will play when Headhunter is found
 1. Paste base64 string into "Import/export" field
 2. Click "Import" button
 3. Configurations will be merged with existing ones
+
+### Updating Unique Items List
+
+The plugin uses `UniqueItemsInfo.json` file containing information about all unique items (Tier, Base, Grouping, League, etc.). 
+
+To update the list:
+1. Replace `UniqueItemsInfo.json` in the plugin directory with an updated version
+2. Restart the plugin or reload ExileCore
+
+The JSON file structure:
+```json
+[
+  {
+    "Name": "Headhunter",
+    "Art": "Art/2DItems/Belts/Headhunter.dds",
+    "Tier": "T0",
+    "Base": "Leather Belt",
+    "Grouping": "Pinnacle",
+    "League": ""
+  }
+]
+```

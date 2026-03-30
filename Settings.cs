@@ -139,9 +139,6 @@ namespace UniqueLootHelper
             new(() =>
             {
                 ImGui.Text("Statistics are tracked per session and lifetime.");
-                ImGui.Text("Session statistics reset when you change areas or manually reset.");
-                ImGui.Text("Lifetime statistics persist across sessions.");
-                ImGui.TextColored(new Vector4(0.5f, 1, 0.5f, 1), "Unique items are categorized by tier (T0-T4)");
                 ImGui.TextColored(new Vector4(1, 1, 0.5f, 1), "Statistics are saved automatically on area change and plugin close");
             });
     }

@@ -40,7 +40,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
     // Profiler fields
     private readonly Stopwatch _profilerGetItems;
     private readonly Stopwatch _profilerTotal;
-    private readonly Stopwatch _profilerUI;
 
     private ConfigurationManager _configurationManager;
     private ImportExportService _importExportService;
@@ -77,7 +76,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
         _profilerFiltering = new Stopwatch();
         _profilerDrawing = new Stopwatch();
         _profilerTotal = new Stopwatch();
-        _profilerUI = new Stopwatch();
     }
 
     public override bool Initialise()
@@ -90,51 +88,22 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
             ConfigDirectory,
             LogMessage,
             LogError,
-            (path, volume) =>
-            {
-                GameController.SoundController.PlaySound(path, volume);
-                return true;
-            }
+            (path, volume) => { GameController.SoundController.PlaySound(path, volume); return true; }
         );
         _itemDrawingManager = new ItemDrawingManager(() => Graphics, () => Settings);
         _importExportService = new ImportExportService(LogMessage, LogError);
-        _uniqueItemsListManager = new UniqueItemsListManager(
-            DirectoryFullName,
-            LogMessage,
-            LogError
-        );
-        _statisticsManager = new StatisticsManager(
-            ConfigDirectory,
-            LogMessage,
-            LogError,
-            _uniqueItemsListManager
-        );
+        _uniqueItemsListManager = new UniqueItemsListManager(DirectoryFullName, LogMessage, LogError);
+        _statisticsManager = new StatisticsManager(ConfigDirectory, LogMessage, LogError, _uniqueItemsListManager);
 
         // Initialize area state in case plugin loaded while already in a map
-        if (GameController?.Area?.CurrentArea != null)
-            _statisticsManager.AreaChange(GameController.Area.CurrentArea);
+        if (GameController?.Area?.CurrentArea != null) _statisticsManager.AreaChange(GameController.Area.CurrentArea);
 
         // Setup event handlers
-        Settings.SoundNotificationSettings.ResetEntityNotificationFlags.OnPressed += () =>
-        {
-            _soundManager.ClearCache();
-        };
-        Settings.SoundNotificationSettings.OpenConfigDirectory.OnPressed += () =>
-        {
-            Process.Start("explorer.exe", ConfigDirectory);
-        };
-        Settings.SoundNotificationSettings.ReloadSoundList.OnPressed += () =>
-        {
-            _soundManager.ReloadSoundList();
-        };
-        Settings.ProfilerSettings.ShowProfilerWindow.OnPressed += () =>
-        {
-            _showProfilerWindow = !_showProfilerWindow;
-        };
-        Settings.StatisticsSettings.ShowStatisticsWindow.OnPressed += () =>
-        {
-            _showStatisticsWindow = !_showStatisticsWindow;
-        };
+        Settings.SoundNotificationSettings.ResetEntityNotificationFlags.OnPressed += () => _soundManager.ClearCache();
+        Settings.SoundNotificationSettings.OpenConfigDirectory.OnPressed += () => Process.Start("explorer.exe", ConfigDirectory);
+        Settings.SoundNotificationSettings.ReloadSoundList.OnPressed += () => _soundManager.ReloadSoundList();
+        Settings.ProfilerSettings.ShowProfilerWindow.OnPressed += () => _showProfilerWindow = !_showProfilerWindow;
+        Settings.StatisticsSettings.ShowStatisticsWindow.OnPressed += () => _showStatisticsWindow = !_showStatisticsWindow;
 
         GameController.EntityListWrapper.EntityAdded += EntityAdd;
         return base.Initialise();
@@ -254,12 +223,7 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
 
         if (ImGui.Button("Add Unique"))
         {
-            if (
-                _configurationManager.AddOrUpdateUniqueItem(
-                    _tempUniqueItemSettings.ArtPath,
-                    _tempUniqueItemSettings
-                )
-            )
+            if (_configurationManager.AddOrUpdateUniqueItem(_tempUniqueItemSettings.ArtPath, _tempUniqueItemSettings))
             {
                 _tempUniqueItemSettings = new UniqueItemSettings();
                 _selectedItemName = string.Empty;
@@ -547,12 +511,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
         }
         try
         {
-            // Profile: UI operations (windows, hotkeys, panel checks)
-            if (Settings.ProfilerSettings.Enabled)
-            {
-                _profilerUI.Restart();
-            }
-
             DrawProfilerWindow();
             DrawStatisticsWindow();
 
@@ -596,11 +554,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
             if (!Settings.IgnoreRightPanels && inGameUi.OpenRightPanel.IsVisible)
             {
                 return;
-            }
-
-            if (Settings.ProfilerSettings.Enabled)
-            {
-                _profilerUI.Stop();
             }
 
             var player = GameController?.Player;
@@ -698,8 +651,7 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
 
                 if (uniqueSettings.LineDrawMap && drawMapLines)
                 {
-                    var itemMapPos =
-                        GameController?.IngameState.Data.GetGridMapScreenPosition(item.Location);
+                    var itemMapPos = GameController?.IngameState.Data.GetGridMapScreenPosition(item.Location);
                     if (itemMapPos == null) continue;
 
                     _itemDrawingManager.DrawMapLine((Vector2)itemMapPos, playerMapPos);
@@ -707,8 +659,7 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
 
                 if (drawWorldLines && uniqueSettings.LineDrawWorld)
                 {
-                    var itemWorldPos =
-                        GameController?.IngameState.Data.GetGridScreenPosition(item.Location);
+                    var itemWorldPos = GameController?.IngameState.Data.GetGridScreenPosition(item.Location);
                     if (itemWorldPos == null) continue;
 
                     _itemDrawingManager.DrawWorldLine((Vector2)itemWorldPos, playerWorldPos);
@@ -718,8 +669,7 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
 
                 if (!item.IsIdentified)
                 {
-                    var labelText =
-                        uniqueSettings.Label ?? item.Entity?.RenderName ?? "Unknown Item";
+                    var labelText = uniqueSettings.Label ?? item.Entity?.RenderName ?? "Unknown Item";
                     _itemDrawingManager.DrawLabelName(rect, labelText, item.IsIdentified, uniqueSettings);
                 }
 
@@ -762,7 +712,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
                     _profilerGetItems,
                     _profilerFiltering,
                     _profilerDrawing,
-                    _profilerUI,
                     _profilerTotal
                 );
 
@@ -770,7 +719,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
                 _profilerGetItems.Reset();
                 _profilerFiltering.Reset();
                 _profilerDrawing.Reset();
-                _profilerUI.Reset();
                 _profilerTotal.Reset();
             }
         }
@@ -857,8 +805,4 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
         return _result;
     }
 
-    public override Job Tick()
-    {
-        return null;
-    }
 }

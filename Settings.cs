@@ -18,7 +18,6 @@ namespace UniqueLootHelper
         public LabelDrawingSettings LabelDrawingSettings { get; set; } = new();
         public BoxSettings BoxSettings { get; set; } = new();
         public MapDrawingSettings MapDrawingSettings { get; set; } = new();
-        public ToggleNode UseCorruptedFilter { get; set; } = new(false);
         public SoundNotificationSettings SoundNotificationSettings { get; set; } = new();
         public ProfilerSettings ProfilerSettings { get; set; } = new();
         public StatisticsSettings StatisticsSettings { get; set; } = new();

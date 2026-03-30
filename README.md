@@ -96,9 +96,9 @@ The JSON file structure:
   {
     "Name": "Headhunter",
     "Art": "Art/2DItems/Belts/Headhunter.dds",
-    "Tier": "T0",
+    "Tier": "0",
     "Base": "Leather Belt",
-    "Grouping": "Pinnacle",
+    "Grouping": "T0",
     "League": ""
   }
 ]

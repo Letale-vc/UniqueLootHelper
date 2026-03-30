@@ -218,6 +218,37 @@ public class ItemDrawingManager(Func<Graphics> getGraphics, Func<Settings> getSe
     }
 
     /// <summary>
+    ///     Draws a separate box for total uniques count above the main count box
+    /// </summary>
+    public void DrawTotalUniquesBox(int totalCount)
+    {
+        Settings settings = getSettings();
+        if (totalCount <= 0) return;
+
+        float posX = settings.BoxSettings.BoxPositionX.Value;
+        float posY = settings.BoxSettings.BoxPositionY.Value - 45; // Position above main box
+        int height = 35;
+        RectangleF rect = new(posX, posY, 230, height);
+
+        getGraphics().DrawBox(rect, settings.BoxSettings.BoxBackgroundColor);
+
+        if (settings.BoxSettings.BoxOutline.Value)
+        {
+            getGraphics().DrawFrame(rect, settings.BoxSettings.BoxOutlineColor, 2);
+        }
+
+        posX += 10;
+        posY += 10;
+
+        getGraphics()
+            .DrawText(
+                $"Total Uniques: {totalCount}",
+                new Vector2(posX, posY),
+                settings.BoxSettings.BoxTextColor
+            );
+    }
+
+    /// <summary>
     ///     Gets the current size of the text measurement cache
     /// </summary>
     public int GetCacheSize()

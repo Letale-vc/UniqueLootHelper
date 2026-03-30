@@ -58,6 +58,13 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
     private readonly Dictionary<(long, long), CustomItemData> _prevDict = [];
     private readonly List<string> _countList = [];
     private readonly HashSet<(long, long)> _currentItemIds = [];
+
+    // Unique items counting
+    private readonly HashSet<(long, string)> _uniqueItemIds = [];
+    private int _totalUniquesCount = 0;
+    private long _lastUniqueCountUpdate = 0;
+    private const long UniqueCountUpdateInterval = 250; // milliseconds
+
     public UniqueLootHelperCore()
     {
 
@@ -597,33 +604,27 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
                 _profilerGetItems.Stop();
                 _profilerFiltering.Restart();
             }
+
             _countList.Clear();
             _currentItemIds.Clear();
             // List<string> countList = new(groundItems.Count / 2);
             // var currentItemIds = new HashSet<uint>(groundItems.Count);
 
             // Optimization: Cache dictionary reference to avoid repeated property access
-            var uniqueArtWork =
-                _configurationManager.UniqueArtWork;
+            var uniqueArtWork = _configurationManager.UniqueArtWork;
 
-            var drawMapLines =
-                Settings.MapDrawingSettings.EnableMapDrawing
-                && GameController.IngameState.IngameUi.Map.LargeMap.IsVisible;
+            var drawMapLines = Settings.MapDrawingSettings.EnableMapDrawing && GameController.IngameState.IngameUi.Map.LargeMap.IsVisible;
 
             bool drawWorldLines = Settings.MapDrawingSettings.WorldMapDrawing;
             var playerMapPos = Vector2.Zero;
             var playerWorldPos = Vector2.Zero;
             if (drawMapLines)
             {
-                playerMapPos =
-                    GameController.IngameState.Data.GetGridMapScreenPosition(
-                        player.GridPosNum
-                    );
+                playerMapPos = GameController.IngameState.Data.GetGridMapScreenPosition(player.GridPosNum);
             }
             if (drawWorldLines)
             {
-                playerWorldPos =
-                    GameController.IngameState.Data.GetGridScreenPosition(player.GridPosNum);
+                playerWorldPos = GameController.IngameState.Data.GetGridScreenPosition(player.GridPosNum);
             }
 
             foreach (var item in groundItems)
@@ -696,12 +697,7 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
                 {
                     var labelText =
                         uniqueSettings.Label ?? item.Entity?.RenderName ?? "Unknown Item";
-                    _itemDrawingManager.DrawLabelName(
-                        rect,
-                        labelText,
-                            item.IsIdentified,
-                            uniqueSettings
-                    );
+                    _itemDrawingManager.DrawLabelName(rect, labelText, item.IsIdentified, uniqueSettings);
                 }
 
                 if (Settings.ProfilerSettings.Enabled)
@@ -720,7 +716,14 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
 
             ImGui.End();
 
-            if (Settings.BoxSettings.EnableBoxCountDrawing)
+            // Draw total uniques count box (separate box above the main one)
+            if (Settings.BoxSettings.EnableBoxCountDrawing && _totalUniquesCount > 0)
+            {
+                _itemDrawingManager.DrawTotalUniquesBox(_totalUniquesCount);
+            }
+
+            // Draw tracked items box (original behavior)
+            if (_countList.Count > 0)
             {
                 _itemDrawingManager.DrawItemCountBox(_countList);
             }
@@ -735,7 +738,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
                     _profilerGetItems,
                     _profilerFiltering,
                     _profilerDrawing,
-                    null, // statistics (not tracked)
                     _profilerUI,
                     _profilerTotal
                 );
@@ -757,6 +759,9 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
     public override void AreaChange(AreaInstance area)
     {
         _soundManager.ClearCache();
+        _uniqueItemIds.Clear();
+        _totalUniquesCount = 0;
+        _lastUniqueCountUpdate = 0;
     }
     private List<CustomItemData> GetItemsOnGround(List<CustomItemData> previousValue)
     {
@@ -806,5 +811,48 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
         }
 
         return _result;
+    }
+
+    private void UpdateUniqueItemsCount()
+    {
+        var entities = GameController.EntityListWrapper.OnlyValidEntities;
+
+        foreach (var entity in entities)
+        {
+            if (!entity.TryGetComponent<WorldItem>(out var worldItem)) continue;
+
+            var itemEntity = worldItem.ItemEntity;
+            if (itemEntity == null || !itemEntity.IsValid) continue;
+
+            if (!itemEntity.TryGetComponent<Mods>(out var mods)) continue;
+
+            if (mods.ItemRarity != ExileCore.Shared.Enums.ItemRarity.Unique) continue;
+
+            if (!itemEntity.TryGetComponent<RenderItem>(out var render)) continue;
+
+            var resourcePath = render.ResourcePath;
+            if (string.IsNullOrEmpty(resourcePath)) continue;
+
+            var uniqueKey = (entity.Id, resourcePath);
+
+            // Add only if new (HashSet.Add returns true if item was added)
+            if (_uniqueItemIds.Add(uniqueKey))
+            {
+                _totalUniquesCount++;
+            }
+        }
+    }
+
+    public override Job Tick()
+    {
+        // Update unique items count periodically (every 250ms)
+        long currentTime = Environment.TickCount64;
+        if (currentTime - _lastUniqueCountUpdate >= UniqueCountUpdateInterval)
+        {
+            UpdateUniqueItemsCount();
+            _lastUniqueCountUpdate = currentTime;
+        }
+
+        return null;
     }
 }

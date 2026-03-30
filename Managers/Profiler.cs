@@ -19,7 +19,6 @@ public class Profiler
         Stopwatch getItems,
         Stopwatch filtering,
         Stopwatch drawing,
-        Stopwatch statistics,
         Stopwatch ui,
         Stopwatch total
     )
@@ -30,7 +29,6 @@ public class Profiler
             GetItemsTicks = getItems?.ElapsedTicks ?? 0,
             FilteringTicks = filtering?.ElapsedTicks ?? 0,
             DrawingTicks = drawing?.ElapsedTicks ?? 0,
-            StatisticsTicks = statistics?.ElapsedTicks ?? 0,
             UITicks = ui?.ElapsedTicks ?? 0,
             TotalTicks = total?.ElapsedTicks ?? 0,
         };
@@ -76,7 +74,6 @@ public class Profiler
             var avgGetItems = _profilerHistory.Average(e => e.GetItemsMs);
             var avgFiltering = _profilerHistory.Average(e => e.FilteringMs);
             var avgDrawing = _profilerHistory.Average(e => e.DrawingMs);
-            var avgStatistics = _profilerHistory.Average(e => e.StatisticsMs);
             var avgUI = _profilerHistory.Average(e => e.UIMs);
             var avgTotal = _profilerHistory.Average(e => e.TotalMs);
 
@@ -84,7 +81,6 @@ public class Profiler
             var maxGetItems = _profilerHistory.Max(e => e.GetItemsMs);
             var maxFiltering = _profilerHistory.Max(e => e.FilteringMs);
             var maxDrawing = _profilerHistory.Max(e => e.DrawingMs);
-            var maxStatistics = _profilerHistory.Max(e => e.StatisticsMs);
             var maxUI = _profilerHistory.Max(e => e.UIMs);
             var maxTotal = _profilerHistory.Max(e => e.TotalMs);
 
@@ -113,7 +109,6 @@ public class Profiler
                 AddTableRow("Get Ground Items", avgGetItems, maxGetItems);
                 AddTableRow("Filtering & Processing", avgFiltering, maxFiltering);
                 AddTableRow("Drawing Operations", avgDrawing, maxDrawing);
-                AddTableRow("Statistics Recording", avgStatistics, maxStatistics);
                 AddTableRow("UI & Windows", avgUI, maxUI);
                 ImGui.TableNextRow();
                 ImGui.TableNextColumn();
@@ -153,7 +148,6 @@ public class Profiler
                 ImGui.TableSetupColumn("Get Items", ImGuiTableColumnFlags.WidthFixed, 85);
                 ImGui.TableSetupColumn("Filtering", ImGuiTableColumnFlags.WidthFixed, 85);
                 ImGui.TableSetupColumn("Drawing", ImGuiTableColumnFlags.WidthFixed, 85);
-                ImGui.TableSetupColumn("Statistics", ImGuiTableColumnFlags.WidthFixed, 85);
                 ImGui.TableSetupColumn("UI", ImGuiTableColumnFlags.WidthFixed, 85);
                 ImGui.TableSetupColumn("Total", ImGuiTableColumnFlags.WidthFixed, 85);
                 ImGui.TableHeadersRow();
@@ -170,8 +164,6 @@ public class Profiler
                     ImGui.Text($"{entry.FilteringMs:F3}");
                     ImGui.TableNextColumn();
                     ImGui.Text($"{entry.DrawingMs:F3}");
-                    ImGui.TableNextColumn();
-                    ImGui.Text($"{entry.StatisticsMs:F3}");
                     ImGui.TableNextColumn();
                     ImGui.Text($"{entry.UIMs:F3}");
                     ImGui.TableNextColumn();
@@ -287,14 +279,12 @@ public class Profiler
         public long GetItemsTicks { get; set; }
         public long FilteringTicks { get; set; }
         public long DrawingTicks { get; set; }
-        public long StatisticsTicks { get; set; }
         public long UITicks { get; set; }
         public long TotalTicks { get; set; }
 
         public double GetItemsMs => TicksToMs(GetItemsTicks);
         public double FilteringMs => TicksToMs(FilteringTicks);
         public double DrawingMs => TicksToMs(DrawingTicks);
-        public double StatisticsMs => TicksToMs(StatisticsTicks);
         public double UIMs => TicksToMs(UITicks);
         public double TotalMs => TicksToMs(TotalTicks);
 

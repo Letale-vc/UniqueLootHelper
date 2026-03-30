@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using UniqueLootHelper;
 
 namespace UniqueLootHelper.Managers;
 
@@ -57,10 +56,14 @@ public class UniqueItemsListManager
                 return;
             }
 
-            _uniqueItemsList.AddRange(items);
+            var filteredItems = items
+                .Where(item => !string.Equals(item.League, "Heist", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            _uniqueItemsList.AddRange(filteredItems);
 
             // Calculate base counts
-            foreach (var item in items)
+            foreach (var item in filteredItems)
             {
                 if (!string.IsNullOrWhiteSpace(item.Base))
                 {
@@ -70,7 +73,7 @@ public class UniqueItemsListManager
             }
 
             _logMessage(
-                $"UniqueLootHelper: Loaded {items.Count} unique items from list file"
+                $"UniqueLootHelper: Loaded {filteredItems.Count} unique items from list file (filtered {items.Count - filteredItems.Count} Heist items)"
             );
         }
         catch (Exception ex)

@@ -1,7 +1,9 @@
 ﻿using ExileCore;
 using ExileCore.PoEMemory.Components;
 using ExileCore.PoEMemory.Elements;
+using ExileCore.PoEMemory.MemoryObjects;
 using ExileCore.Shared.Cache;
+using ExileCore.Shared.Enums;
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
@@ -47,7 +49,11 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
     private bool _showProfilerWindow;
     private SoundManager _soundManager;
     private UniqueItemsListManager _uniqueItemsListManager;
+    private StatisticsManager _statisticsManager;
     private UniqueItemSettings _tempUniqueItemSettings = new();
+
+    // Statistics UI state
+    private bool _showStatisticsWindow;
 
     // UI state for item selection
     private string _searchTerm = string.Empty;
@@ -58,12 +64,6 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
     private readonly Dictionary<(long, long), CustomItemData> _prevDict = [];
     private readonly List<string> _countList = [];
     private readonly HashSet<(long, long)> _currentItemIds = [];
-
-    // Unique items counting
-    private readonly HashSet<(long, string)> _uniqueItemIds = [];
-    private int _totalUniquesCount = 0;
-    private long _lastUniqueCountUpdate = 0;
-    private const long UniqueCountUpdateInterval = 250; // milliseconds
 
     public UniqueLootHelperCore()
     {
@@ -103,6 +103,16 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
             LogMessage,
             LogError
         );
+        _statisticsManager = new StatisticsManager(
+            ConfigDirectory,
+            LogMessage,
+            LogError,
+            _uniqueItemsListManager
+        );
+
+        // Initialize area state in case plugin loaded while already in a map
+        if (GameController?.Area?.CurrentArea != null)
+            _statisticsManager.AreaChange(GameController.Area.CurrentArea);
 
         // Setup event handlers
         Settings.SoundNotificationSettings.ResetEntityNotificationFlags.OnPressed += () =>
@@ -121,19 +131,26 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
         {
             _showProfilerWindow = !_showProfilerWindow;
         };
+        Settings.StatisticsSettings.ShowStatisticsWindow.OnPressed += () =>
+        {
+            _showStatisticsWindow = !_showStatisticsWindow;
+        };
 
+        GameController.EntityListWrapper.EntityAdded += EntityAdd;
         return base.Initialise();
     }
 
     public override void OnUnload()
     {
         _configurationManager.SaveUniqueArtToFile();
+        _statisticsManager?.SaveStatistics();
         base.OnUnload();
     }
 
     public override void OnClose()
     {
         _configurationManager.SaveUniqueArtToFile();
+        _statisticsManager?.SaveStatistics();
         base.OnClose();
     }
 
@@ -474,6 +491,11 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
         Profiler.ShowProfilerWindow(ref _showProfilerWindow);
     }
 
+    private void DrawStatisticsWindow()
+    {
+        StatisticsUI.ShowStatisticsWindow(ref _showStatisticsWindow, _statisticsManager);
+    }
+
     private void Import(bool merge)
     {
         Dictionary<string, UniqueItemSettings>? imported = _importExportService.Import(
@@ -532,6 +554,7 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
             }
 
             DrawProfilerWindow();
+            DrawStatisticsWindow();
 
             if (Input.IsKeyDown(Keys.F7))
             {
@@ -717,9 +740,10 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
             ImGui.End();
 
             // Draw total uniques count box (separate box above the main one)
-            if (Settings.BoxSettings.EnableBoxCountDrawing && _totalUniquesCount > 0)
+            int currentMapUniques = _statisticsManager.GetCurrentMapUniqueCount();
+            if (Settings.BoxSettings.EnableBoxCountDrawing && currentMapUniques > 0)
             {
-                _itemDrawingManager.DrawTotalUniquesBox(_totalUniquesCount);
+                _itemDrawingManager.DrawTotalUniquesBox(currentMapUniques);
             }
 
             // Draw tracked items box (original behavior)
@@ -759,10 +783,30 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
     public override void AreaChange(AreaInstance area)
     {
         _soundManager.ClearCache();
-        _uniqueItemIds.Clear();
-        _totalUniquesCount = 0;
-        _lastUniqueCountUpdate = 0;
+
+        if (area == null)
+        {
+            // Logout detected - finalize current map session and save statistics
+            _statisticsManager.HandleLogout();
+            return;
+        }
+
+        _statisticsManager.AreaChange(area);
     }
+
+    private void EntityAdd(Entity entity)
+    {
+        if (entity == null || !entity.IsValid) return;
+        if (entity.Type != EntityType.WorldItem) return;
+
+        if (!entity.TryGetComponent<WorldItem>(out var worldItem)) return;
+
+        var itemEntity = worldItem.ItemEntity;
+        if (itemEntity == null || !itemEntity.IsValid) return;
+
+        _statisticsManager.TrackItemDrop(entity.Id, itemEntity);
+    }
+
     private List<CustomItemData> GetItemsOnGround(List<CustomItemData> previousValue)
     {
         var labelsOnGround =
@@ -813,46 +857,8 @@ public class UniqueLootHelperCore : BaseSettingsPlugin<Settings>
         return _result;
     }
 
-    private void UpdateUniqueItemsCount()
-    {
-        var entities = GameController.EntityListWrapper.OnlyValidEntities;
-
-        foreach (var entity in entities)
-        {
-            if (!entity.TryGetComponent<WorldItem>(out var worldItem)) continue;
-
-            var itemEntity = worldItem.ItemEntity;
-            if (itemEntity == null || !itemEntity.IsValid) continue;
-
-            if (!itemEntity.TryGetComponent<Mods>(out var mods)) continue;
-
-            if (mods.ItemRarity != ExileCore.Shared.Enums.ItemRarity.Unique) continue;
-
-            if (!itemEntity.TryGetComponent<RenderItem>(out var render)) continue;
-
-            var resourcePath = render.ResourcePath;
-            if (string.IsNullOrEmpty(resourcePath)) continue;
-
-            var uniqueKey = (entity.Id, resourcePath);
-
-            // Add only if new (HashSet.Add returns true if item was added)
-            if (_uniqueItemIds.Add(uniqueKey))
-            {
-                _totalUniquesCount++;
-            }
-        }
-    }
-
     public override Job Tick()
     {
-        // Update unique items count periodically (every 250ms)
-        long currentTime = Environment.TickCount64;
-        if (currentTime - _lastUniqueCountUpdate >= UniqueCountUpdateInterval)
-        {
-            UpdateUniqueItemsCount();
-            _lastUniqueCountUpdate = currentTime;
-        }
-
         return null;
     }
 }

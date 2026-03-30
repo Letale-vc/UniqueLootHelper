@@ -21,6 +21,7 @@ namespace UniqueLootHelper
         public ToggleNode UseCorruptedFilter { get; set; } = new(false);
         public SoundNotificationSettings SoundNotificationSettings { get; set; } = new();
         public ProfilerSettings ProfilerSettings { get; set; } = new();
+        public StatisticsSettings StatisticsSettings { get; set; } = new();
         public ToggleNode Enable { get; set; } = new(false);
     }
 
@@ -119,6 +120,29 @@ namespace UniqueLootHelper
                 ImGui.TextColored(new Vector4(0, 1, 0, 1), "Green: < 10ms (good)");
                 ImGui.TextColored(new Vector4(1, 1, 0, 1), "Yellow: 10-16ms (acceptable)");
                 ImGui.TextColored(new Vector4(1, 0, 0, 1), "Red: > 16ms (bad, drops FPS)");
+            });
+    }
+
+    [Submenu(CollapsedByDefault = true)]
+    public class StatisticsSettings
+    {
+        [Menu("Enable Statistics", "Enable drop statistics tracking")]
+        public ToggleNode Enabled { get; set; } = new(true);
+
+        [JsonIgnore]
+        [Menu("Show Statistics Window", "Open statistics window to view drop statistics")]
+        public ButtonNode ShowStatisticsWindow { get; set; } = new();
+
+        [JsonIgnore]
+        [Menu(null, "Statistics Information")]
+        public CustomNode Info { get; set; } =
+            new(() =>
+            {
+                ImGui.Text("Statistics are tracked per session and lifetime.");
+                ImGui.Text("Session statistics reset when you change areas or manually reset.");
+                ImGui.Text("Lifetime statistics persist across sessions.");
+                ImGui.TextColored(new Vector4(0.5f, 1, 0.5f, 1), "Unique items are categorized by tier (T0-T4)");
+                ImGui.TextColored(new Vector4(1, 1, 0.5f, 1), "Statistics are saved automatically on area change and plugin close");
             });
     }
 }
